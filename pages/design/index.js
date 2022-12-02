@@ -11,6 +11,23 @@ export default function Design() {
 
       <main>
         <h1 className="text-3xl font-bold">Design System</h1>
+
+        <h2 className="text-2xl font-bold">Typography</h2>
+
+        <p>Title 1</p>
+        <p>Title 2</p>
+        <p>Title 3</p>
+        <p>Body</p>
+
+        <h2 className="text-2xl font-bold">Buttons</h2>
+
+        <h2 className="text-2xl font-bold">Navbar</h2>
+
+        <h3 className="text-xl font-bold">Logo</h3>
+
+        <h3 className="text-xl font-bold">Links</h3>
+
+        <h3 className="text-xl font-bold">Metamask</h3>
       </main>
 
       <footer>
