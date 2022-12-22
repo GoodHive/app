@@ -1,9 +1,9 @@
 import Head from 'next/head'
-import { Navbar } from '../components/Navbar'
+import { Navbar } from '../../components/Navbar'
 
 // import styles from '../styles/Home.module.css'
 
-export default function Home() {
+export default function LookForTalent() {
   return (
     <div>
       <Head>
@@ -15,9 +15,7 @@ export default function Home() {
       <Navbar />
 
       <main>
-        <h1 className="text-xl">Home Page</h1>
-
-        <p>Get started by clicking on Design</p>
+        <h1 className="text-xl">Look For Talent Page</h1>
       </main>
 
       <footer>
