@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { Navbar } from "../../components/Navbar";
+import { Button } from "../../components/Button";
 
 export default function Design() {
   
@@ -21,15 +22,28 @@ export default function Design() {
         <h2 className="text-2xl font-bold">Typography</h2>
 
         <p>Headline 1</p>
-        <p>Title 2</p>
+        <p>Title 2</p> 
         <p>Title 3</p>
         <p>Body</p>
 
         <h2 className="text-2xl font-bold">Buttons</h2>
+        <h3 className="ml-1">Large Buttons</h3>
+        <div className="ml-5">
+          <Button text="Primary Button" type="primary" size="large"></Button>
+          <Button text="Secondary Button" type="secondary" size="large"></Button>
+        </div>
+        <div className="my-3"></div>
+        <h3 className="ml-1">Medium Buttons</h3>
+        <div className="ml-5">
+          <Button text="Primary Button" type="primary" size="medium"></Button>
+          <Button text="Secondary Button" type="secondary" size="medium"></Button>
+        </div>
 
         <h2 className="text-2xl font-bold">Navbar</h2>
+        <Navbar />
 
         <h3 className="text-xl font-bold">Logo</h3>
+        <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
 
         <h3 className="text-xl font-bold">Links</h3>
 
