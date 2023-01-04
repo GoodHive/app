@@ -1,4 +1,4 @@
-import { LinkStyled } from "./Link_Styled";
+import { LinkStyled } from "./link-styled";
 
 export const Navbar = () => {
 
