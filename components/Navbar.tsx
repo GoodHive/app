@@ -1,9 +1,9 @@
-import { LinkStyled } from "./Link_Styled";
+import { LinkStyled } from "./link-styled";
 
 export const Navbar = () => {
 
   return (
-    <div className="container bg-black rounded-b-3xl max-w-7xl mx-auto px-6 py-5 md:px-0">
+     <div className="container bg-black rounded-b-3xl max-w-7xl mx-auto px-6 py-5 md:px-0">
       <div className="flex items-center justify-between text-lg text-white capitalize">
         <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
         <LinkStyled text="Home" href="/" />
@@ -17,5 +17,5 @@ export const Navbar = () => {
         </span>
       </div>
     </div>
-  )
-}
+  );
+};

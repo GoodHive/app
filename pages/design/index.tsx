@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import { Navbar } from "../../components/Navbar";
-import { Button } from "../../components/Button";
+import { Button } from "../../components/button";
+import { Navbar } from "../../components/navbar";
 
 export default function Design() {
   
@@ -27,25 +27,29 @@ export default function Design() {
         <p>Body</p>
 
         <h2 className="text-2xl font-bold">Buttons</h2>
-        <h3 className="ml-1">Large Buttons</h3>
-        <div className="ml-5">
-          <Button text="Primary Button" type="primary" size="large"></Button>
-          <Button text="Secondary Button" type="secondary" size="large"></Button>
-        </div>
-        <div className="my-3"></div>
-        <h3 className="ml-1">Medium Buttons</h3>
-        <div className="ml-5">
-          <Button text="Primary Button" type="primary" size="medium"></Button>
-          <Button text="Secondary Button" type="secondary" size="medium"></Button>
+        <div className="container max-w-7xl mx-auto px-6 py-5 md:px-0">
+          <div className="flex">
+            <div className="grid justify-items-center mx-10">
+              <h3 className="text-xl font-semibold">Primary Buttons</h3>
+              <Button text="Large" type="primary" size="large"></Button>
+              <Button text="Medium" type="primary" size="medium"></Button>
+            </div>
+            <div className="grid justify-items-center mx-10">
+              <h3 className="text-xl font-semibold">Secondary Buttons</h3>
+              <Button text="Large" type="secondary" size="large"></Button>
+              <Button text="Medium" type="secondary" size="medium"></Button>
+            </div>
+          </div>
         </div>
 
         <h2 className="text-2xl font-bold">Navbar</h2>
-        <Navbar />
+        <Navbar/>
 
         <h3 className="text-xl font-bold">Logo</h3>
         <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
 
-        <h3 className="text-xl font-bold">Links</h3>
+
+        <h2 className="text-2xl font-bold">Links</h2>
 
         <h3 className="text-xl font-bold">Metamask</h3>
       </main>
