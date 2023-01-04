@@ -43,8 +43,10 @@ export default function Design() {
         </div>
 
         <h2 className="text-2xl font-bold">Navbar</h2>
+        <NavBar />
 
         <h3 className="text-xl font-bold">Logo</h3>
+        <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
 
         <h3 className="text-xl font-bold">Links</h3>
 
