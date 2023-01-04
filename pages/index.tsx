@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
-// import { Navbar } from "../components/navbar";
+import { NavBar } from "../components/nav-bar";
 
 export default function Home() {
 
@@ -13,7 +13,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <Navbar /> */}
+      <NavBar />
 
       <main className="mx-16">
         <h1 className="text-2xl">Home Page</h1>

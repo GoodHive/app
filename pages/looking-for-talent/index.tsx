@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
-// import { Navbar } from "../../components/navbar";
+import { NavBar } from "../../components/nav-bar";
 
 export default function LookingForTalent() {
 
@@ -13,10 +13,10 @@ export default function LookingForTalent() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <Navbar /> */}
+      <NavBar />
 
       <main className="mx-16">
-        <h1 className="text-2xl">Look For Talent Page</h1>
+        <h1 className="text-2xl">Looking For Talent Page</h1>
       </main>
 
       <footer className="mx-16">
