@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import { Buttons } from "../../components/button";
+import { Buttons } from "../../components/buttons";
 import { Navbar } from "../../components/navbar";
 
 export default function Design() {
