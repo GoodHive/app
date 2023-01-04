@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
-import { Button } from "../../components/button";
+import { Buttons } from "../../components/button";
 import { Navbar } from "../../components/navbar";
 
 export default function Design() {
@@ -31,13 +31,13 @@ export default function Design() {
           <div className="flex">
             <div className="grid justify-items-center mx-10">
               <h3 className="text-xl font-semibold">Primary Buttons</h3>
-              <Button text="Large" type="primary" size="large"></Button>
-              <Button text="Medium" type="primary" size="medium"></Button>
+              <Buttons text="Large" type="primary" size="large"></Buttons>
+              <Buttons text="Medium" type="primary" size="medium"></Buttons>
             </div>
             <div className="grid justify-items-center mx-10">
               <h3 className="text-xl font-semibold">Secondary Buttons</h3>
-              <Button text="Large" type="secondary" size="large"></Button>
-              <Button text="Medium" type="secondary" size="medium"></Button>
+              <Buttons text="Large" type="secondary" size="large"></Buttons>
+              <Buttons text="Medium" type="secondary" size="medium"></Buttons>
             </div>
           </div>
         </div>

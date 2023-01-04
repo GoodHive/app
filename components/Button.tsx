@@ -1,4 +1,4 @@
-import { FC } from "react";
+// import { FC } from "react";
 
 interface Props {
     text: string
@@ -6,7 +6,7 @@ interface Props {
     size: string
 }
 
-export const Button: FC<Props> = ({ text, type, size }) => {
+export const Buttons: FC<Props> = ({ text, type, size }) => {
     let whichButton: string = type + size;
     
     switch(whichButton) {
