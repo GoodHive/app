@@ -18,7 +18,7 @@ export default function Design() {
 
       <NavBar />
 
-      <main className="mx-14">
+      <main className="mx-5">
         <h1 className="text-3xl font-bold font-montserrat">Design System</h1>
 
         <section className="mt-5 body-font font-montserrat">
@@ -29,8 +29,7 @@ export default function Design() {
         <section className="mt-5 body-font font-montserrat">
           <h2 className="text-2xl font-bold">Typography</h2>
           <p className="m-3 font-light text-sm">Font family: Montserrat</p>
-          <div className="container max-w-7xl mx-auto px-6 py-5 md:px-0">
-            <div className="flex">
+          <div className="grid min-w-full grid-cols-1 grid-flow-row sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 4xl:grid-cols-3 gap-3">
 
               <div className="bg-gray-200 grid justify-items-left p-5 mx-10 rounded-lg space-y-2">
                 <h3 className="text-xl font-semibold">Headlines</h3>
@@ -87,26 +86,23 @@ export default function Design() {
                   <p>text-sm</p>
                 </div>
               </div>
-
-            </div>
+              
           </div>
         </section>
         
         <section className="mt-5 body-font font-montserrat">
           <h2 className="text-2xl font-bold">Buttons</h2>
-          <div className="container max-w-7xl mx-auto px-6 py-5 md:px-0">
-            <div className="flex">
+          <div className="grid min-w-full grid-cols-1 grid-flow-row sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 4xl:grid-cols-3 gap-3">
               <div className="grid justify-items-center mx-10">
-                <h3 className="text-xl">Primary Buttons</h3>
+                <h3 className="mt-5 text-xl">Primary Buttons</h3>
                 <Buttons text="Large" type="primary" size="large"></Buttons>
                 <Buttons text="Medium" type="primary" size="medium"></Buttons>
               </div>
               <div className="grid justify-items-center mx-10">
-                <h3 className="text-xl">Secondary Buttons</h3>
+                <h3 className="mt-5 text-xl">Secondary Buttons</h3>
                 <Buttons text="Large" type="secondary" size="large"></Buttons>
                 <Buttons text="Medium" type="secondary" size="medium"></Buttons>
               </div>
-            </div>
           </div>
         </section>
 
@@ -133,6 +129,8 @@ export default function Design() {
         <section className="mt-5 body-font font-montserrat">
           <h2 className="text-2xl font-bold">Metamask</h2>
         </section>
+
+        
       </main>
 
       <footer className="mx-16">

@@ -18,7 +18,7 @@ interface Props {
 export const Card: FC<Props> = ({title, postedBy, postedOn, image, countryFlag, city, rate, description, skills, buttonText}) => {
     
   return (
-    <div className="grid justify-center w-[26rem] md:w-[18rem] sm:w-[26rem] min-w-full">
+    <div className="grid justify-center">
         <div className="flex">
         <div className="block p-6 rounded-xl shadow-xl bg-white">
             <div className="md:flex md:flex-row">
