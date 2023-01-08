@@ -7,7 +7,7 @@ export const NavBar = () => {
       <div className="flex items-center justify-between text-lg text-white capitalize">
         <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
         <LinkStyled text="Home" href="/" />
-        <LinkStyled text="Design" href="/design" />
+        <LinkStyled text="Design System" href="/design" />
         <LinkStyled text="Looking for talent" href="/looking-for-talent" />
         <span className="flex items-center space-x-2 mr-10">
           <img src="/img/user_icon.png" alt="user" />
