@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { NavBar } from "../../components/nav-bar";
+import { Buttons } from "../../components/buttons"
 
 export default function Design() {
   
@@ -26,10 +27,26 @@ export default function Design() {
         <p>Body</p>
 
         <h2 className="text-2xl font-bold">Buttons</h2>
+        <div className="container max-w-7xl mx-auto px-6 py-5 md:px-0">
+          <div className="flex">
+            <div className="grid justify-items-center mx-10">
+              <h3 className="text-xl font-semibold">Primary Buttons</h3>
+              <Buttons text="Large" type="primary" size="large"></Buttons>
+              <Buttons text="Medium" type="primary" size="medium"></Buttons>
+            </div>
+            <div className="grid justify-items-center mx-10">
+              <h3 className="text-xl font-semibold">Secondary Buttons</h3>
+              <Buttons text="Large" type="secondary" size="large"></Buttons>
+              <Buttons text="Medium" type="secondary" size="medium"></Buttons>
+            </div>
+          </div>
+        </div>
 
         <h2 className="text-2xl font-bold">Navbar</h2>
+        <NavBar />
 
         <h3 className="text-xl font-bold">Logo</h3>
+        <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
 
         <h3 className="text-xl font-bold">Links</h3>
 
