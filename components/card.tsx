@@ -53,17 +53,17 @@ export const Card: FC<Props> = ({
             </div>
           </div>
           <p className="text-gray-500 font-light mb-6">{description}</p>
-          <div className="flex justify-center">
-            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+          <div className="grid min-w-full grid-cols-2 grid-flow-row sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-4 4xl:grid-cols-4 gap-3">
+            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold text-center mr-2 mb-2">
               {skills[0]}
             </span>
-            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold text-center mr-2 mb-2">
               {skills[1]}
             </span>
-            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold text-center mr-2 mb-2">
               {skills[2]}
             </span>
-            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">
+            <span className="inline-block bg-[#FFF2CE] rounded-full px-3 py-1 text-sm font-semibold text-center mr-2 mb-2">
               {skills[3]}
             </span>
           </div>

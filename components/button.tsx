@@ -22,12 +22,12 @@ export const Button: FC<Props> = ({ text, type, size }) => {
     }
     case 'secondarylarge': {
       styleType =
-        'my-2 text-base font-semibold outline bg-[#FFC905] bg-opacity-0 outline-[#FFC905] h-14 w-56 rounded-full hover:bg-opacity-20 active:shadow-md transition duration-150 ease-in-out'
+        'my-2 text-base font-semibold border-2 border-[#FFC905] bg-[#FFC905] bg-opacity-0 h-14 w-56 rounded-full hover:bg-opacity-20 active:shadow-md transition duration-150 ease-in-out'
       break
     }
     case 'secondarymedium': {
       styleType =
-        'my-2 text-base outline  bg-[#FFC905] bg-opacity-0 outline-[#FFC905] h-12 w-44 rounded-full hover:bg-opacity-20 active:shadow-md transition duration-150 ease-in-out'
+        'my-2 text-base border-2 border-[#FFC905] bg-[#FFC905] bg-opacity-0 h-12 w-44 rounded-full hover:bg-opacity-20 active:shadow-md transition duration-150 ease-in-out'
       break
     }
     default: {
