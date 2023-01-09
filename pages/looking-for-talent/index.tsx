@@ -10,16 +10,17 @@ export default function LookingForTalent() {
       <Head>
         <title>GoodHive | Talent Search</title>
         <meta name="description" content="Find a job" />
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <NavBar />
 
-      <main className="mx-16">
-        <h1 className="text-2xl">Looking For Talent Page</h1>
+      <main className="mx-5">
+        <h1 className="my-5 text-2xl">Looking For Talent Page</h1>
       </main>
 
-      <footer className="mx-16">
+      <footer className="mx-5 text-sm">
         <Link
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
