@@ -1,11 +1,36 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
+import React, { useState } from 'react'
+
 import { NavBar } from '../../components/nav-bar'
 import { Button } from '../../components/button'
 import { Card } from '../../components/card'
+import { Input } from '../../components/input'
 
 export default function Design() {
+  const [textValue, setTextValue] = useState('')
+  const [numberValue, setNumberValue] = useState('')
+  const [emailValue, setEmailValue] = useState('')
+  const [passwordValue, setPasswordValue] = useState('')
+  const [urlValue, setURLValue] = useState('')
+
+  const textHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTextValue(event.target.value)
+  }
+  const numberHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNumberValue(event.target.value)
+  }
+  const emailHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailValue(event.target.value)
+  }
+  const passwordHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordValue(event.target.value)
+  }
+  const urlHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setURLValue(event.target.value)
+  }
+
   return (
     <div>
       <Head>
@@ -189,6 +214,66 @@ export default function Design() {
               skills={['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']}
               buttonText="Connect"
             />
+          </div>
+        </section>
+
+        <section className="mt-5 body-font font-montserrat">
+          <h2 className="text-2xl font-bold">Inputs</h2>
+          <div className="grid min-w-full grid-cols-1 grid-flow-row sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 4xl:grid-cols-3 gap-3">
+            <Input
+              labelText="Text Input*"
+              placeholder="Enter a text"
+              type="text"
+              required={true}
+              disabled={false}
+              value={textValue}
+              onChange={textHandleChange}
+            ></Input>
+            <Input
+              labelText="Number Input*"
+              placeholder="Enter a number"
+              type="number"
+              required={true}
+              disabled={false}
+              value={numberValue}
+              onChange={numberHandleChange}
+            ></Input>
+            <Input
+              labelText="Email Input*"
+              placeholder="Enter your email"
+              type="email"
+              required={true}
+              disabled={false}
+              value={emailValue}
+              onChange={emailHandleChange}
+            ></Input>
+            <Input
+              labelText="Password Input*"
+              placeholder="Enter your password"
+              type="password"
+              required={true}
+              disabled={false}
+              value={passwordValue}
+              onChange={passwordHandleChange}
+            ></Input>
+            <Input
+              labelText="URL Input"
+              placeholder="Enter a URL"
+              type="url"
+              required={false}
+              disabled={false}
+              value={urlValue}
+              onChange={urlHandleChange}
+            ></Input>
+            <Input
+              labelText="Disabled Input"
+              placeholder="Not able to write"
+              type="text"
+              required={false}
+              disabled={true}
+              value="Disabled value"
+              onChange={textHandleChange}
+            ></Input>
           </div>
         </section>
 
