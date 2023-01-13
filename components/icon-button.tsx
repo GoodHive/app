@@ -44,7 +44,7 @@ export const IconButton: FC<Props> = ({ text, type, size, image }) => {
         data-prefix="far"
         className="w-4 h-4 mr-3"
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 650 650"
+        viewBox="0 0 525 525"
       >
         <path fill="currentColor" d={image}></path>
       </svg>
