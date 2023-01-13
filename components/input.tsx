@@ -19,7 +19,7 @@ export const Input: FC<Props> = ({
   value,
   onChange,
 }) => {
-  let inputStyle: string =
+  let inputStyle =
     'form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none'
   if (disabled) {
     inputStyle =
