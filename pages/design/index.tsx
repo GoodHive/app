@@ -227,7 +227,7 @@ export default function Design() {
               countryFlag="/img/country_flag.png"
               city="Hyderabad"
               rate="50"
-              currency="BTC"
+              currency="USD"
               description="Talent profile description will come here when posted Amet, consecq consec consectetur adipiscing elit, sed do eiusmod."
               skills={['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']}
               buttonText="Connect"

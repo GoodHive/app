@@ -4,31 +4,19 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 
 import { NavBar } from '../../components/nav-bar'
-import { Button } from '../../components/button'
+import { IconButton } from '../../components/icon-button'
 import { Card } from '../../components/card'
 import { Input } from '../../components/input'
 
 export default function Design() {
-  const [textValue, setTextValue] = useState('')
-  const [numberValue, setNumberValue] = useState('')
-  const [emailValue, setEmailValue] = useState('')
-  const [passwordValue, setPasswordValue] = useState('')
-  const [urlValue, setURLValue] = useState('')
+  const [skillValue, setSkillValue] = useState('')
+  const [locationValue, setLocationValue] = useState('')
 
-  const textHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTextValue(event.target.value)
+  const skillHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSkillValue(event.target.value)
   }
-  const numberHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNumberValue(event.target.value)
-  }
-  const emailHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailValue(event.target.value)
-  }
-  const passwordHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordValue(event.target.value)
-  }
-  const urlHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setURLValue(event.target.value)
+  const locationHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocationValue(event.target.value)
   }
 
   return (
@@ -59,8 +47,8 @@ export default function Design() {
                 type="text"
                 required={true}
                 disabled={false}
-                value={textValue}
-                onChange={textHandleChange}
+                value={skillValue}
+                onChange={skillHandleChange}
               ></Input>
               <Input
                 labelText="Location"
@@ -68,8 +56,8 @@ export default function Design() {
                 type="text"
                 required={true}
                 disabled={false}
-                value={textValue}
-                onChange={textHandleChange}
+                value={locationValue}
+                onChange={locationHandleChange}
               ></Input>
             </div>
           </div>
@@ -77,10 +65,20 @@ export default function Design() {
 
         <section className="mt-5 body-font font-montserrat">
           <span className="mr-5">
-            <Button text="Post a Job" type="secondary" size="large"></Button>
+            <IconButton
+              text="Post a Job"
+              type="secondary"
+              size="large"
+              image="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z"
+            ></IconButton>
           </span>
           <span>
-            <Button text="Search Talent" type="primary" size="large"></Button>
+            <IconButton
+              text="Search Talent"
+              type="primary"
+              size="large"
+              image="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"
+            ></IconButton>
           </span>
         </section>
 
@@ -89,50 +87,55 @@ export default function Design() {
           <h3 className="text-xl mt-2">Talent Listings</h3>
           <div className="grid min-w-fit grid-cols-1 grid-flow-row sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 4xl:grid-cols-3 gap-3">
             <Card
+              type="talent"
               title="Talent 1 Position"
               postedBy="Talent Name"
               postedOn="Active 4 days ago"
               image="/img/talent_avatar.png"
               countryFlag="/img/country_flag.png"
               city="Paris"
-              rate="$75 USD/hour"
+              rate="75"
+              currency="EUR"
               description="Talent profile description will come here when posted Amet, consecq consec consectetur adipiscing elit, sed do eiusmod."
               skills={['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']}
               buttonText="Connect"
+              escrowFee=""
             />
             <Card
+              type="talent"
               title="Talent 2 Position"
               postedBy="Talent Name"
               postedOn="Active 3 days ago"
               image="/img/talent_avatar.png"
               countryFlag="/img/country_flag.png"
               city="Hyderabad"
-              rate="$50 USD/hour"
+              rate="50"
+              currency="USD"
               description="Talent profile description will come here when posted Amet, consecq consec consectetur adipiscing elit, sed do eiusmod."
               skills={['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']}
               buttonText="Connect"
+              escrowFee=""
             />
             <Card
+              type="talent"
               title="Talent 3 Position"
               postedBy="Talent Name"
               postedOn="Active 2 days ago"
               image="/img/talent_avatar.png"
               countryFlag="/img/country_flag.png"
               city="San Francisco"
-              rate="$120 USD/hour"
+              rate="120"
+              currency="USD"
               description="Talent profile description will come here when posted Amet, consecq consec consectetur adipiscing elit, sed do eiusmod."
               skills={['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']}
               buttonText="Connect"
+              escrowFee=""
             />
           </div>
         </section>
-
-        <section className="mt-5 body-font font-montserrat">
-          <h2 className="text-2xl font-bold">Metamask</h2>
-        </section>
       </main>
 
-      <footer className="mx-16">
+      <footer className="mx-5 my-3 font-light text-sm">
         <Link
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
