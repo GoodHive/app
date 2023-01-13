@@ -310,13 +310,9 @@ export default function Design() {
             ></Input>
           </div>
         </section>
-
-        <section className="mt-5 body-font font-montserrat">
-          <h2 className="text-2xl font-bold">Metamask</h2>
-        </section>
       </main>
 
-      <footer className="mx-16">
+      <footer className="mx-5 mt-10 font-light text-sm">
         <Link
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"

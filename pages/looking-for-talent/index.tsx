@@ -135,7 +135,7 @@ export default function Design() {
         </section>
       </main>
 
-      <footer className="mx-5 my-3 font-light text-sm">
+      <footer className="mx-5 mt-10 font-light text-sm">
         <Link
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
