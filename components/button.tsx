@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const Button: FC<Props> = ({ text, type, size, image }) => {
-  let styleType: string = type + size
+  let styleType = `${type}${size}`
 
   switch (styleType) {
     case 'primarylarge': {
