@@ -27,7 +27,7 @@ export const Input: FC<Props> = ({
   }
   return (
     <div>
-      <label className="form-label inline-block ml-3 text-black text-base">
+      <label className="form-label inline-block ml-3 mt-3 text-black text-base">
         {labelText}
       </label>
       <input
