@@ -210,9 +210,6 @@ export default function Design() {
               buttonText="Connect"
             />
           </div>
-        </section>
-
-        <section className="mt-5 body-font font-montserrat">
           <h2 className="text-2xl font-bold">Metamask</h2>
         </section>
       </main>

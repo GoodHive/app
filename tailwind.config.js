@@ -33,18 +33,6 @@ module.exports = {
       '5xl': '1440px',
       // => @media (min-width: 1440px) { ... }
     },
-    extend: {
-      screens: {
-        '3xl': '1024px',
-        // => @media (min-width: 1024px) { ... }
-  
-        '4xl': '1200px',
-        // => @media (min-width: 1200px) { ... }
-        
-        '5xl': '1440px',
-        // => @media (min-width: 1440px) { ... }
-      },
-    },
   },
   plugins: [],
 }
