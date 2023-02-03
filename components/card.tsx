@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { Button } from '../components/button'
 
 interface Props {
+  type: string
   title: string
   postedBy: string
   postedOn: string
@@ -10,12 +11,15 @@ interface Props {
   countryFlag: string
   city: string
   rate: string
+  currency: string
   description: string
   skills: string[]
   buttonText: string
+  escrowFee: string
 }
 
 export const Card: FC<Props> = ({
+  type,
   title,
   postedBy,
   postedOn,
@@ -23,10 +27,23 @@ export const Card: FC<Props> = ({
   countryFlag,
   city,
   rate,
+  currency,
   description,
   skills,
   buttonText,
+  escrowFee,
 }) => {
+  let escrowIcon = '/img/escrow_icon.png'
+  let ratePerHour = `$${rate} ${currency}/Hour`
+  let escrowDescription = `$${escrowFee}`
+
+  if (type === 'talent') {
+    escrowIcon = '/img/white_space.png'
+    escrowDescription = ''
+  } else {
+    ratePerHour = ''
+  }
+
   return (
     <div className="grid justify-center">
       <div className="flex">
@@ -49,7 +66,7 @@ export const Card: FC<Props> = ({
                 alt="country"
               />
               <p className="text-xs text-gray-600 mb-2">{city}</p>
-              <p className="text-sm font-bold mb-1">{rate}</p>
+              <p className="text-sm font-bold mb-1">{ratePerHour}</p>
             </div>
           </div>
           <p className="text-gray-500 font-light mb-6">{description}</p>
@@ -67,13 +84,12 @@ export const Card: FC<Props> = ({
               {skills[3]}
             </span>
           </div>
-          <div className="flex justify-end">
-            <Button
-              text={buttonText}
-              type="primary"
-              size="medium"
-              image="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4L224 214.3V256v41.7L52.5 440.6zM256 352V256 128 96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l192 160c7.3 6.1 11.5 15.1 11.5 24.6s-4.2 18.5-11.5 24.6l-192 160c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V352z"
-            ></Button>
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center">
+              <img className="h-5 w-8 mr-2" src={escrowIcon} alt="escrow" />
+              <p className="text-sm font-bold">{escrowDescription}</p>
+            </div>
+            <Button text={buttonText} type="primary" size="medium"></Button>
           </div>
         </div>
       </div>
