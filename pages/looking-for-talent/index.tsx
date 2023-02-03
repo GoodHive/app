@@ -10,6 +10,7 @@ export default function LookingForTalent() {
       <Head>
         <title>GoodHive | Talent Search</title>
         <meta name="description" content="Find a job" />
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
