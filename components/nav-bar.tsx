@@ -3,9 +3,9 @@ import { LinkStyled } from "./link-styled";
 export const NavBar = () => {
 
   return (
-    <div className="container bg-black rounded-b-3xl max-w-7xl mx-auto px-6 py-5 md:px-0">
-      <div className="flex items-center justify-between text-lg text-white capitalize">
-        <img className="ml-10" src="/img/goodhive_logo.png" alt="Goodhive" />
+    <div className="sticky top-0 w-full flex flex-wrap items-center justify-between bg-black px-5 py-2">
+      <div className="container-fluid w-full flex flex-wrap items-center justify-between px-5 py-2 text-lg text-white capitalize">
+        <img className="ml-2" src="/img/goodhive_light_logo.png" alt="Goodhive" />
         <LinkStyled text="Home" href="/" />
         <LinkStyled text="Design System" href="/design" />
         <LinkStyled text="Looking for talent" href="/looking-for-talent" />
