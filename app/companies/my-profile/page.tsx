@@ -21,17 +21,19 @@ export default function MyProfile() {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = {
-      jobHeadline: e.currentTarget["job-headline"].value,
-      companiesName: e.currentTarget["companies-name"].value,
-      companiesAddress: e.currentTarget["companies-address"].value,
-      country: e.currentTarget.country.value,
-      city: e.currentTarget.city.value,
-      phoneCountryCode: e.currentTarget["phone-country-code"].value,
-      phoneNumber: e.currentTarget["phone-number"].value,
-      email: e.currentTarget.email.value,
-      telegram: e.currentTarget.telegram.value,
-      aboutWork: e.currentTarget["about-work"].value,
+    const formData = new FormData(e.currentTarget);
+
+    const dataForm = {
+      jobHeadline: formData.get("job-headline"),
+      companiesName: formData.get("companies-name"),
+      companiesAddress: formData.get("companies-address"),
+      country: formData.get("country"),
+      city: formData.get("city"),
+      phoneCountryCode: formData.get("phone-country-code"),
+      phoneNumber: formData.get("phone-number"),
+      email: formData.get("email"),
+      telegram: formData.get("telegram"),
+      aboutWork: formData.get("about-work"),
     };
 
     // TODO: POST formData to the server with fetch
@@ -40,7 +42,7 @@ export default function MyProfile() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(dataForm),
     });
 
     const data = await res.json();
