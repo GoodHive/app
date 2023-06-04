@@ -95,8 +95,9 @@ export const Card: FC<Props> = ({
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between pt-12">
-            <div className="inline-flex items-center space-x-2">
+
+          <div className="flex w-full flex-wrap 2xl:flex-nowrap xl:flex-wrap lg:flex-wrap  items-center justify-between pt-12">
+            <div className="inline-flex justify-center space-x-2 xl:items-center xl:w-full lg:items-center lg:w-full ">
               <a href="">
                 <svg
                   width="29"
@@ -180,9 +181,14 @@ export const Card: FC<Props> = ({
                 `}</style>
               </a>
             </div>
-            <div className="space-x-3">
-              <Button text="Know more..." type="secondary" size="medium" />
-              <Button text="Apply Now" type="primary" size="medium" />
+            <div className="space-x-3 flex xl:pt-2  lg:pt-2 xl:justify-center ">
+              <div>
+                {" "}
+                <Button text="Know more..." type="secondary" size="medium" />
+              </div>
+              <div>
+                <Button text="Apply Now" type="primary" size="medium" />
+              </div>
             </div>
           </div>
         </div>
@@ -190,3 +196,10 @@ export const Card: FC<Props> = ({
     </div>
   );
 };
+/*      <div className="flex w-full flex-nowrap sm:flex-wrap lg:flex-wrap xl:flex-wrap items-center justify-between pt-12">
+        <div className="inline-flex justify-center space-x-2">*/
+
+/*
+          <div className="flex w-full flex-nowrap sm:flex-wrap lg:flex-wrap xl: 2xl: items-center justify-between pt-12">
+            <div className="inline-flex justify-center space-x-2">
+            */
