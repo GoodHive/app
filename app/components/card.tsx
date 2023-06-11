@@ -96,7 +96,7 @@ export const Card: FC<Props> = ({
             </div>
           </div>
 
-          <div className="flex w-full flex-wrap 2xl:flex-nowrap xl:flex-wrap lg:flex-wrap  items-center justify-between pt-12">
+          <div className="flex gap-2 w-full flex-wrap sm:flex-nowrap 2xl:flex-nowrap xl:flex-wrap lg:flex-wrap  items-center justify-between pt-12">
             <div className="inline-flex justify-center space-x-2 xl:items-center xl:w-full lg:items-center lg:w-full ">
               <a href="">
                 <svg
@@ -181,13 +181,23 @@ export const Card: FC<Props> = ({
                 `}</style>
               </a>
             </div>
-            <div className="space-x-3 flex xl:pt-2  lg:pt-2 xl:justify-center ">
-              <div>
+            <div className="w-full sm:flex   gap-3 sm:flex md:flex lg:justify-center md:justify-end sm:justify-end xl:flex lg:grid xl:pt-2  lg:pt-2 xl:justify-center ">
+              <div className="flex justify-center lg:items-center ">
                 {" "}
-                <Button text="Know more..." type="secondary" size="medium" />
+                <Button
+                  className="  "
+                  text="Know more..."
+                  type="secondary"
+                  size="medium"
+                />
               </div>
-              <div>
-                <Button text="Apply Now" type="primary" size="medium" />
+              <div className="flex  justify-center lg:items-center ">
+                <Button
+                  className="flex justify-center lg:items-center "
+                  text="Apply Now"
+                  type="primary"
+                  size="medium"
+                />
               </div>
             </div>
           </div>
