@@ -1,24 +1,20 @@
 import React, { FC, useState } from "react";
 
-// TODO: move to a separate file
-interface Option {
-  value: string;
-  label: string;
-}
+import LabelOption from "@interfaces/label-option";
 
 interface Props {
   labelText?: string;
   name?: string;
   required: boolean;
   disabled?: boolean;
-  inputValue: Option | null;
-  setInputValue: (option: Option | null) => void;
-  options: Option[];
+  inputValue: LabelOption | null;
+  setInputValue: (option: LabelOption | null) => void;
+  options: LabelOption[];
 }
 
 export const SelectInput: FC<Props> = ({
   labelText,
-  required, // TODO: add logic
+  required,
   disabled,
   inputValue,
   setInputValue,
@@ -26,7 +22,7 @@ export const SelectInput: FC<Props> = ({
 }) => {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
-  const handleInputClickAndCloseOptions = (option: Option) => {
+  const handleInputClickAndCloseOptions = (option: LabelOption) => {
     setInputValue(option);
     setIsOptionsOpen(false);
   };
@@ -52,6 +48,7 @@ export const SelectInput: FC<Props> = ({
     <div className="w-full relative">
       <label className="inline-block ml-3 text-base text-black form-label">
         {labelText}
+        {required && <span>*</span>}
       </label>
       <div className="flex items-center">
         <p

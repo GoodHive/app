@@ -2,22 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import JobOffer from "@interfaces/job-offer";
 import OfferResult from "./job-offer-result";
 
-interface JobOffer {
-  type: string;
-  image: string;
-  title: string;
-  postedBy: string;
-  postedOn: string;
-  country: string;
-  countryFlag: string;
-  jobDescription: string;
-  skills: string[];
-  designation: string;
-  companyDescription: string;
-  buttonText: string;
-}
 
 export default function JobSearch() {
   const [jobOffersData, setJobOffersData] = useState<JobOffer[]>([]);

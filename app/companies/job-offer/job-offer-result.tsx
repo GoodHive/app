@@ -1,21 +1,7 @@
 "use client";
 
 import { OfferCard } from "../../components/offer-card";
-
-interface JobOffer {
-  type: string;
-  image: string;
-  title: string;
-  postedBy: string;
-  postedOn: string;
-  country: string;
-  countryFlag: string;
-  jobDescription: string;
-  skills: string[];
-  designation: string;
-  companyDescription: string;
-  buttonText: string;
-}
+import JobOffer from "@interfaces/job-offer";
 
 export default function OfferResult({ jobOffers }: { jobOffers: JobOffer[] }) {
   return (

@@ -106,7 +106,7 @@ export default function CreateJob() {
 
     const onSuggestionSelected = (
       event: React.FormEvent<HTMLInputElement>,
-      { suggestion }: Autosuggest.SuggestionSelectedEventData<any>
+      { suggestion }: Autosuggest.SuggestionSelectedEventData<string>
     ) => {
       if (!selectedSkills.includes(suggestion)) {
         setSelectedSkills([...selectedSkills, suggestion]);

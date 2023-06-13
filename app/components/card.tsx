@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { FC } from "react";
+import { BigNumberish } from "ethers";
 
 import { Button } from "../components/button";
 
@@ -12,7 +13,7 @@ interface Props {
   image: string;
   countryFlag: string;
   city: string;
-  rate: string;
+  rate: BigNumberish;
   currency: string;
   description: string;
   skills: string[];
@@ -21,21 +22,21 @@ interface Props {
 }
 
 export const Card: FC<Props> = ({
-  type,
   title,
   postedBy,
   postedOn,
   image,
   countryFlag,
-  city,
-  rate,
-  currency,
+  //TODO: add when ratePerHour is added
+  //rate, 
+  //currency,
   description,
   skills,
-  buttonText,
-  escrowFee,
+  //escrowFee,    TODO: add when escrowIcon and EscrowDescription are added
 }) => {
-  let escrowIcon = "/img/escrow_icon.png";
+  // Not used for now
+  // TODO: add escrowIcon, escrowDescription and ratePerHour spaces on card
+  /*let escrowIcon = "/img/escrow_icon.png";
   let ratePerHour = `$${rate} ${currency}/Hour`;
   let escrowDescription = `$${escrowFee}`;
 
@@ -44,7 +45,7 @@ export const Card: FC<Props> = ({
     escrowDescription = "";
   } else {
     ratePerHour = "";
-  }
+  }*/
 
   return (
     <div className="mt-11">
@@ -59,7 +60,7 @@ export const Card: FC<Props> = ({
               <p className="text-base text-gray-600">{postedBy}</p>
               <p className="text-base text-gray-600 mb-5">{postedOn}</p>
             </div>
-            <div className="hover: flex pt-7 flex grow justify-end md:ml-5">
+            <div className="pt-7 flex grow justify-end md:ml-5">
               <Image
                 className="mt-1 h-5 w-8 mb-4 hover:"
                 src={countryFlag}

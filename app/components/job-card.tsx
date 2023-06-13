@@ -2,8 +2,6 @@ import Image from "next/image";
 
 import { FC } from "react";
 
-import { Button } from "./button";
-
 interface Props {
   type: string;
   title: string;
@@ -21,7 +19,6 @@ interface Props {
 }
 
 export const JobCard: FC<Props> = ({
-  type,
   title,
   postedBy,
   details,
@@ -30,10 +27,8 @@ export const JobCard: FC<Props> = ({
   country,
   countryFlag,
   city,
-  ratePerHour,
   typeEngagement,
   skills,
-  buttonText,
 }) => {
   return (
     <div className="mt-11 ">

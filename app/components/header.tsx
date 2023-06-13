@@ -3,7 +3,6 @@ import React, { useState } from "react";
 
 import { Input } from "./input";
 import { IconButton } from "./icon-button";
-import { Card } from "./card";
 import { usePathname } from "next/navigation";
 export default function Header() {
   const [textValue, setTextValue] = useState("");

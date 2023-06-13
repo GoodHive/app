@@ -11,17 +11,8 @@ import { SelectInput } from "../../components/select-input";
 // import { Button } from "../../components/button";
 import { skills } from "../../constants/skills";
 import { countries } from "../../constants/countries";
-
-interface FileData {
-  name: string;
-  type: string;
-  data: string | ArrayBuffer | null;
-}
-
-interface Option {
-  value: string;
-  label: string;
-}
+import LabelOption from "@interfaces/label-option";
+import FileData from "@interfaces/file-data";
 
 export default function MyProfile() {
   const invoiceInputValue = useRef(null);
@@ -31,7 +22,7 @@ export default function MyProfile() {
   const [isRenderedPage, setIsRenderedPage] = useState<boolean>(true);
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<Option | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(null);
 
   useEffect(() => {
     if (typeof file === "object" && file !== null) {

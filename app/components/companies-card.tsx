@@ -30,8 +30,6 @@ export const CompaniesCard: FC<Props> = ({
   city,
   address,
   countryFlag,
-  telegram,
-  buttonText,
 }) => {
   return (
     <div className="mt-11 ">

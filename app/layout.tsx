@@ -56,7 +56,13 @@ export default function RootLayout({
 
       try {
         // TODO: check if the user is authenticated
-        setAuthStatus("authenticated");
+        const hasCookieNonce = Boolean(false); // Mocking this for now
+
+        if (hasCookieNonce) {
+          setAuthStatus("authenticated");
+        } else {
+          setAuthStatus("unauthenticated");
+        }
       } catch (error) {
         console.error(error);
 

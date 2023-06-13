@@ -6,7 +6,7 @@ const sql = postgres(process.env.DATABASE_URL || "", {
   },
 });
 
-export async function GET(request: Request) {
+export async function GET() {
   {
     try {
       const jobs = await sql`SELECT * FROM goodhive.job_offers`;

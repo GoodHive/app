@@ -3,12 +3,7 @@ import { useEffect, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-// TODO: remove all the any types in this file
-interface FileData {
-  name: string;
-  type: string;
-  data: string | ArrayBuffer | null;
-}
+import FileData from "@interfaces/file-data";
 
 interface Props {
   setFile: (file: FileData | false) => void;

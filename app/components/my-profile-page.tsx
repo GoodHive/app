@@ -3,13 +3,8 @@
 import { useRef, useState, FormEvent } from "react";
 
 import DragAndDropFile from "./drag-and-drop-file";
-import { Button } from "./button";
 
-interface FileData {
-  name: string;
-  type: string;
-  data: string | ArrayBuffer | null;
-}
+import FileData from "@interfaces/file-data";
 
 export default function MyProfilePage() {
   const invoiceInputValue = useRef(null);

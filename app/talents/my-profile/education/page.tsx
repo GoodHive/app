@@ -6,23 +6,20 @@ import toast from "react-hot-toast";
 
 import { SelectInput } from "../../../components/select-input";
 import { degrees } from "../../../constants/degrees";
+import LabelOption from "@interfaces/label-option";
 
-interface Option {
-  value: string;
-  label: string;
-}
 export default function CreateJob() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [selectedDegree, setSelectedDegree] = useState<Option | null>(null);
-  const [selectedStartMonth, setSelectedStartMonth] = useState<Option | null>(
+  const [selectedDegree, setSelectedDegree] = useState<LabelOption | null>(null);
+  const [selectedStartMonth, setSelectedStartMonth] = useState<LabelOption | null>(
     null
   );
-  const [selectedStartYear, setSelectedStartYear] = useState<Option | null>(
+  const [selectedStartYear, setSelectedStartYear] = useState<LabelOption | null>(
     null
   );
-  const [selectedEndMonth, setSelectedEndMonth] = useState<Option | null>(null);
-  const [selectedEndYear, setSelectedEndYear] = useState<Option | null>(null);
+  const [selectedEndMonth, setSelectedEndMonth] = useState<LabelOption | null>(null);
+  const [selectedEndYear, setSelectedEndYear] = useState<LabelOption | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,7 +63,7 @@ export default function CreateJob() {
     }
   };
 
-  const month: Option[] = Array.from({ length: 12 }, (_, index) => {
+  const month: LabelOption[] = Array.from({ length: 12 }, (_, index) => {
     const monthName = new Date(0, index).toLocaleString("en-US", {
       month: "long",
     });
@@ -76,7 +73,7 @@ export default function CreateJob() {
   const startYear = parseInt(process.env.NEXT_PUBLIC_START_YEAR || "0");
   const endYear = parseInt(process.env.NEXT_PUBLIC_END_YEAR || "0");
 
-  const year: Option[] = Array.from(
+  const year: LabelOption[] = Array.from(
     { length: endYear - startYear + 1 },
     (_, index) => {
       const yearValue = String(startYear + index);

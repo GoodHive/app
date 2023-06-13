@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ChangeEventHandler  } from "react";
 
 interface Props {
   labelText: string;
@@ -8,7 +8,7 @@ interface Props {
   name?: string;
   disabled?: boolean;
   value?: string | number;
-  onChange?: any;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
 export const Input: FC<Props> = ({

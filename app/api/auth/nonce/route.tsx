@@ -1,7 +1,4 @@
-"use server";
-
 import { cookies } from "next/headers";
-
 import { generateNonce } from "siwe";
 
 const ALLOWED_METHODS = ["GET"];
