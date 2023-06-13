@@ -206,10 +206,3 @@ export const Card: FC<Props> = ({
     </div>
   );
 };
-/*      <div className="flex w-full flex-nowrap sm:flex-wrap lg:flex-wrap xl:flex-wrap items-center justify-between pt-12">
-        <div className="inline-flex justify-center space-x-2">*/
-
-/*
-          <div className="flex w-full flex-nowrap sm:flex-wrap lg:flex-wrap xl: 2xl: items-center justify-between pt-12">
-            <div className="inline-flex justify-center space-x-2">
-            */
