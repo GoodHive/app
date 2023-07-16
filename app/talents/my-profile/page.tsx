@@ -12,6 +12,7 @@ import { SearchSelectInput } from "../../components/search-select-input";
 // TODO: use button but before add the type of the button component (i.e. type="button" or type="submit")
 // import { Button } from "../../components/button";
 import { skills } from "@/app/constants/skills";
+import CVInput from "./cvinput";
 import { countries } from "@/app/constants/countries";
 import {
   ethereumTokens,
@@ -39,6 +40,14 @@ export default function MyProfile() {
   const [selectedCurrency, setSelectedCurrency] = useState<LabelOption | null>(
     null
   );
+
+  const [cvFile, setCvFile] = useState(null);
+
+  const handleCvFileChange = (event) => {
+    const file = event.target.files[0];
+    setCvFile(file);
+  };
+  console.log(cvFile);
 
   useEffect(() => {
     if (typeof file === "object" && file !== null) {
@@ -70,6 +79,7 @@ export default function MyProfile() {
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    console.log(cvFile);
 
     const dataForm = {
       title: formData.get("title"),
@@ -84,12 +94,12 @@ export default function MyProfile() {
       telegram: formData.get("telegram"),
       aboutWork: formData.get("about-work"),
       chain: selectedChain ? selectedChain?.value : undefined,
-      currency:
-        selectedCurrency ? selectedCurrency.value : undefined,
+      currency: selectedCurrency ? selectedCurrency.value : undefined,
       rate: formData.get("rate"),
       skills: selectedSkills,
       imageUrl,
       walletAddress,
+      cvFile,
     };
 
     const profileResponse = await fetch("/api/talents/my-profile", {
@@ -411,6 +421,18 @@ export default function MyProfile() {
                 required
                 rows={5}
                 maxLength={65000}
+              />
+            </div>
+
+            <div classsName="flex gap-4">
+              <h1 className="inline-block ml-3 text-base text-black form-label">
+                Import CV *
+              </h1>
+              <input
+                classsName=""
+                type="file"
+                accept=".jpg, .jpeg, .png, .pdf"
+                onChange={handleCvFileChange}
               />
             </div>
             <div className="flex flex-col gap-4 mt-4 sm:flex-row">

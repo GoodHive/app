@@ -1,21 +1,22 @@
 "use client";
 import { CompaniesCard } from "../../components/companies-card";
 
-export default function CompaniesResult() {
+export default function CompaniesResult({ companie }) {
   return (
     <div className="flex flex-col min-w-full">
       <CompaniesCard
-        designation="Company Name"
-        image="/img/company_img.png"
-        website="websitename.com"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum …see more"
-        mail="example@example.com"
-        phoneNumber="(123) 123 1234"
-        country="USA"
-        city="San Francisco"
-        address="1975 Boring Lane"
+        key={companie.id}
+        designation={companie.designation}
+        image={companie.image_url || "/img/company_img.png"}
+        website={companie.website}
+        details={companie.details}
+        mail={companie.email}
+        phoneNumber={companie.phoneNumber}
+        country={companie.country}
+        city={companie.city}
+        address={companie.address}
         countryFlag="/img/country_flag.png"
-        telegram=""
+        telegram={companie.telegram}
         buttonText="Connect"
       />
     </div>
