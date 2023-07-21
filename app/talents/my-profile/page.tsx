@@ -6,19 +6,12 @@ import toast from "react-hot-toast";
 import Autosuggest from "react-autosuggest";
 
 import DragAndDropFile from "../../components/drag-and-drop-file";
-import { SelectInput } from "../../components/select-input";
 import { AddressContext } from "../../components/context";
 import { SearchSelectInput } from "../../components/search-select-input";
 // TODO: use button but before add the type of the button component (i.e. type="button" or type="submit")
 // import { Button } from "../../components/button";
 import { skills } from "@/app/constants/skills";
 import { countries } from "@/app/constants/countries";
-import {
-  ethereumTokens,
-  polygonTokens,
-  gnosisChainTokens,
-} from "@/app/constants/token-list/index.js";
-import { chains } from "@/app/constants/chains";
 import LabelOption from "@interfaces/label-option";
 import FileData from "@interfaces/file-data";
 
@@ -32,13 +25,12 @@ export default function MyProfile() {
   const walletAddress = useContext(AddressContext);
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(
-    null
-  );
-  const [selectedChain, setSelectedChain] = useState<LabelOption | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState<LabelOption | null>(
-    null
-  );
+  const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(null);
+  const [isRemoteOnly, setIsRemoteOnly] = useState(false);
+
+  const handleRemoteOnlyClick = () => {
+    setIsRemoteOnly(!isRemoteOnly);
+  };
 
   useEffect(() => {
     if (typeof file === "object" && file !== null) {
@@ -69,6 +61,12 @@ export default function MyProfile() {
     e.preventDefault();
     setIsLoading(true);
 
+    if (!walletAddress) {
+      toast("Connect web3 wallet first to save your profile")
+
+      return
+    }
+
     const formData = new FormData(e.currentTarget);
 
     const dataForm = {
@@ -76,23 +74,26 @@ export default function MyProfile() {
       jobHeadline: formData.get("job-headline"),
       firstName: formData.get("first-name"),
       lastName: formData.get("last-name"),
-      country: selectedCountry?.value,
+      country: selectedCountry ? selectedCountry?.value : undefined,
       city: formData.get("city"),
       phoneCountryCode: formData.get("phone-country-code"),
       phoneNumber: formData.get("phone-number"),
       email: formData.get("email"),
       telegram: formData.get("telegram"),
       aboutWork: formData.get("about-work"),
-      chain: selectedChain ? selectedChain?.value : undefined,
-      currency:
-        selectedCurrency ? selectedCurrency.value : undefined,
       rate: formData.get("rate"),
+      website: formData.get("website"),
       skills: selectedSkills,
       imageUrl,
       walletAddress,
+      //todo: add is remote only (from checkbox)
     };
 
-    const profileResponse = await fetch("/api/talents/my-profile", {
+    const isExistsResponse = await fetch(`/api/talents/my-profile/${walletAddress}?isExists`);
+    const { isExists } = await isExistsResponse.json();
+
+    if (!isExists) {  
+    const createProfileResponse = await fetch("/api/talents/my-profile/create-profile", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,14 +103,30 @@ export default function MyProfile() {
 
     setIsLoading(false);
 
-    if (!profileResponse.ok) {
+    if (!createProfileResponse.ok) {
       toast.error("Something went wrong!");
     } else {
       toast.success("Profile Saved!");
     }
   };
 
-  //TODO: Put the following code in a Autosuggest Input component
+  if (isExists) { 
+    const updateProfileResponse = await fetch(`/api/talents/${walletAddress}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataForm),
+      });
+
+      setIsLoading(false);
+
+      if (!updateProfileResponse.ok) {
+        toast.error("Something went wrong!");
+      } else {
+        toast.success("Profile Updated!");
+      }
+    }
+  }
+
   const AutoSuggestInput = () => {
     const [inputValue, setInputValue] = useState("");
 
@@ -186,21 +203,18 @@ export default function MyProfile() {
           </div>
           <div className="flex flex-col w-full mt-20">
             <div>
-              <label
-                htmlFor="job-headline"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Job Headline*
+              <label htmlFor="job-headline" className="inline-block ml-3 text-base text-black form-label">
+                Profession*
               </label>
+              <input
+                className="form-control block w-full px-4 py-2 text-base text-gray-600 bg-white border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
+                placeholder="Web developer, graphic designer..."
+                name="title"
+                type="text"
+                required
+                maxLength={100}
+              />
             </div>
-            <input
-              className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-              placeholder="Title"
-              name="title"
-              type="text"
-              required
-              maxLength={100}
-            />
             <div className="mt-5">
               <textarea
                 name="job-headline"
@@ -249,15 +263,15 @@ export default function MyProfile() {
             </div>
             <div className="flex flex-col gap-4 mt-4 sm:flex-row">
               <div className="flex-1">
-                <SelectInput
-                  labelText="Country"
-                  name="country"
-                  required={true}
-                  disabled={false}
-                  inputValue={selectedCountry}
-                  setInputValue={setSelectedCountry}
-                  options={countries}
-                />
+                  <SearchSelectInput
+                    labelText="Country"
+                    name="country"
+                    required={true}
+                    disabled={false}
+                    inputValue={selectedCountry}
+                    setInputValue={setSelectedCountry}
+                    options={countries}
+                  />
               </div>
               <div className="flex-1">
                 <label
@@ -275,6 +289,25 @@ export default function MyProfile() {
                   maxLength={100}
                 />
               </div>
+              <div className="flex items-center">
+    <span className="text-base text-black mr-2 mt-4">Remote Only</span>
+    <label htmlFor="remote-only" className="flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        id="remote-only"
+        className="hidden"
+        checked={isRemoteOnly}
+        onChange={handleRemoteOnlyClick}
+      />
+      <div className="relative inline-block w-12 h-6 bg-[#FFC905] rounded-full transition-colors duration-300 ease-in-out mt-4">
+        <div
+          className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ease-in-out ${
+            isRemoteOnly ? "transform translate-x-6" : ""
+          }`}
+        ></div>
+      </div>
+    </label>
+  </div>
             </div>
             <div className="flex flex-col gap-4 mt-4 sm:flex-row">
               <div className="flex-1">
@@ -349,50 +382,33 @@ export default function MyProfile() {
               </div>
             </div>
             <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-              <div className="flex flex-col gap-2 sm:w-1/2 sm:flex-row">
-                <div className="flex sm:w-1/3">
-                  <SelectInput
-                    labelText="Chain"
-                    name="chain"
-                    required={false}
-                    disabled={false}
-                    inputValue={selectedChain}
-                    setInputValue={setSelectedChain}
-                    options={chains}
-                  />
-                </div>
-                <div className="flex sm:w-2/3">
-                  <SearchSelectInput
-                    labelText="Currency"
-                    name="currency"
-                    required={false}
-                    disabled={!selectedChain}
-                    inputValue={selectedCurrency}
-                    setInputValue={setSelectedCurrency}
-                    options={
-                      selectedChain?.value === "ethereum"
-                        ? ethereumTokens
-                        : selectedChain?.value === "polygon"
-                        ? polygonTokens
-                        : selectedChain?.value === "gnosis-chain"
-                        ? gnosisChainTokens
-                        : []
-                    }
-                  />
-                </div>
-              </div>
               <div className="flex-1">
                 <label
                   htmlFor="rate"
                   className="inline-block ml-3 text-base text-black form-label"
                 >
-                  Rate
+                  Rate (in USD)
                 </label>
                 <input
                   className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
                   placeholder="Rate per hour"
                   type="number"
                   name="rate"
+                  maxLength={255}
+                />
+              </div>
+              <div className="flex-1">
+                <label
+                  htmlFor="website"
+                  className="inline-block ml-3 text-base text-black form-label"
+                >
+                  Website
+                </label>
+                <input
+                  className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
+                  placeholder="Website"
+                  type="text"
+                  name="website"
                   maxLength={255}
                 />
               </div>
