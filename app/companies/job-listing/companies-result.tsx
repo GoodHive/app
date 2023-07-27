@@ -1,23 +1,43 @@
 "use client";
-import { CompaniesCard } from "../../components/companies-card";
 
-export default function CompaniesResult() {
+import { useContext } from "react";
+import { AddressContext } from "@/app/components/context";
+import { CompaniesCard } from "../../components/companies-card";
+import CompanyProfile from "@interfaces/company-profile";
+
+export default function CompaniesResult({
+  companiesProfile
+}: {
+  companiesProfile: CompanyProfile[];
+}) {
+  const walletAddress = useContext(AddressContext);
+
+  const filteredCompanies = companiesProfile.filter(
+    (companyProfile) => companyProfile.walletAddress === walletAddress
+  );
+
   return (
     <div className="flex flex-col min-w-full">
-      <CompaniesCard
-        designation="Company Name"
-        image="/img/company_img.png"
-        website="websitename.com"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum …see more"
-        mail="example@example.com"
-        phoneNumber="(123) 123 1234"
-        country="USA"
-        city="San Francisco"
-        address="1975 Boring Lane"
-        countryFlag="/img/country_flag.png"
-        telegram=""
-        buttonText="Connect"
-      />
+      {filteredCompanies.map((company) => (
+        <CompaniesCard
+          key={company.id}
+          designation={company.designation}
+          image={company.imageUrl}
+          website={company.website}
+          details={company.details}
+          mail={company.mail}
+          phoneNumber={company.phoneNumber}
+          country={company.country}
+          city={company.city}
+          address={company.address}
+          countryFlag="/img/country_flag.png"
+          telegram={company.telegram}
+          buttonText="Connect"
+        />
+      ))}
+      {filteredCompanies.length === 0 && (
+        <p>No company found for the specified wallet address.</p>
+      )}
     </div>
   );
 }

@@ -45,7 +45,9 @@ export const CompaniesCard: FC<Props> = ({
           />
         </div>
         <div className="w-20 mx-auto flex justify-center">
-          <Image src={image} alt="avatar" width={157} height={166} />
+        {image && (
+                <Image src={image} alt="avatar" width={157} height={166} />
+              )}
         </div>
         <div className=" pt-7 flex flex-col items-center ">
           <p className="flex text-center font-semibold text-xl text-gray-800 ">

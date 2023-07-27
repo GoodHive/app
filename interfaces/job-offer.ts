@@ -4,12 +4,16 @@ interface JobOffer {
     title: string;
     postedBy: string;
     postedOn: string;
+    description: string;
+    duration: string;
     country: string;
     countryFlag: string;
-    jobDescription: string;
+    city: string;
+    rate: number;
+    typeEngement: string;
+    currency: string;
     skills: string[];
-    designation: string;
-    companyDescription: string;
+    walletAddress: string;
     buttonText: string;
   }
 

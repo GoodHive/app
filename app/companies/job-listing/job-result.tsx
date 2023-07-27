@@ -1,71 +1,38 @@
 "use client";
-import { JobCard } from "../../components/job-card";
 
-//ADD REAL DATA TO MAP THE CARD COMPONENT
+import { useContext } from "react";
 
-export default function JobResult() {
+import { AddressContext } from "@/app/components/context";
+import { Card } from "../../components/card";
+import JobOffer from "@interfaces/job-offer";
+
+export default function JobResult({ jobOffers }: { jobOffers: JobOffer[] }) {
+
+  const walletAddress = useContext(AddressContext);
+
+  const filteredJobOffers = jobOffers.filter((jobOffer) => jobOffer.walletAddress === walletAddress);
+  
   return (
-    <div className="flex flex-col min-w-full  gap-3 ">
-      <JobCard
-        type="Job"
-        title="Responsible for In publishing and graphic design, Lorem ipsum."
-        postedBy="Company Name"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meani  Lorem ipsum …see more"
-        duration="3 months"
-        image="/img/company_img.png"
-        countryFlag="/img/country_flag.png"
-        city="San Francisco"
-        country="US"
-        typeEngagement="Full time"
-        ratePerHour="120"
-        skills={["Skill 1", "Skill 2", "Skill 3", "Skill 4"]}
-        buttonText="Connect"
-      />
-      <JobCard
-        type="Job"
-        title="Responsible for In publishing and graphic design, Lorem ipsum."
-        postedBy="Company Name"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meani  Lorem ipsum …see more"
-        duration="3 months"
-        image="/img/company_img.png"
-        countryFlag="/img/country_flag.png"
-        city="San Francisco"
-        country="US"
-        typeEngagement="Full time"
-        ratePerHour="120"
-        skills={["Skill 1", "Skill 2", "Skill 3", "Skill 4"]}
-        buttonText="Connect"
-      />
-      <JobCard
-        type="Job"
-        title="Responsible for In publishing and graphic design, Lorem ipsum."
-        postedBy="Company Name"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meani  Lorem ipsum …see more"
-        duration="3 months"
-        image="/img/company_img.png"
-        countryFlag="/img/country_flag.png"
-        city="San Francisco"
-        country="US"
-        typeEngagement="Full time"
-        ratePerHour="120"
-        skills={["Skill 1", "Skill 2", "Skill 3", "Skill 4"]}
-        buttonText="Connect"
-      />
-      <JobCard
-        type="Job"
-        title="Responsible for In publishing and graphic design, Lorem ipsum."
-        postedBy="Company Name"
-        details="Responsible for In publishing and graphic design, Lorem ipsum is a placeonly used to demonstrate the visual form of a document or a typeface without relying on meani  Lorem ipsum …see more"
-        duration="3 months"
-        image="/img/company_img.png"
-        countryFlag="/img/country_flag.png"
-        city="San Francisco"
-        country="US"
-        typeEngagement="Full time"
-        ratePerHour="120"
-        skills={["Skill 1", "Skill 2", "Skill 3", "Skill 4"]}
-        buttonText="Connect"
-      />
+    <div className="w-full">
+      {filteredJobOffers.map((jobOffer, index) => (
+        <Card
+          key={index}
+          type="company"
+          title={jobOffer.title}
+          postedBy="Company Name" //TODO: connect job_offers table to companies table
+          postedOn="posted 2 days ago"
+          image="/img/company_img.png" //TODO: connect job_offers table to companies table
+          countryFlag="/img/country_flag.png" // TODO: create flag table
+          city="City" //TODO: connect job_offers table to companies table
+          rate={jobOffer.rate}
+          currency={jobOffer.currency}
+          description={jobOffer.description}
+          skills={jobOffer.skills}
+          buttonText="Apply"
+          // escrowAmount={jobOffer.escrowAmount} Add escrowAmount to job_offers table
+          // escrowCurrency={jobOffer.escrowCurrency} Add escrowCurrency to job_offers table
+        />
+      ))}
     </div>
   );
 }
