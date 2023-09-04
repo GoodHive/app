@@ -11,6 +11,7 @@ export async function GET() {
     try {
       const talents = await sql`SELECT * FROM goodhive.users`;
       const formattedTalents = talents.map((item) => ({
+        talentId: item.id,
         title: item.title,
         jobHeadline: item.job_headline,
         firstName: item.first_name,

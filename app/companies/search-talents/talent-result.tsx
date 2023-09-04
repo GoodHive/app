@@ -1,9 +1,13 @@
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
-import { Card } from "../../components/card";
 import Talent from "@interfaces/talent";
+import { LittleTalentCard } from "@/app/components/little-talent-card";
 
 export default function TalentResult({ talents }: { talents: Talent[] }) {
+  const router = useRouter();
+
   const itemsPerPage = 9;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -16,11 +20,15 @@ export default function TalentResult({ talents }: { talents: Talent[] }) {
     setCurrentPage(pageNumber);
   };
 
+  const handleKnowMoreClick = (talentId: string) => {
+    router.push("search-talents/talent-profile"); // TODO redirect to actual clicked profile
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {talentsToDisplay.map((talent, index) => (
-          <Card
+          <LittleTalentCard
             key={index}
             type="talent"
             title={talent.title}
@@ -33,7 +41,8 @@ export default function TalentResult({ talents }: { talents: Talent[] }) {
             currency={talent.currency}
             description={talent.jobHeadline}
             skills={talent.skills}
-            buttonText="Connect"
+            buttonText="Know more"
+            onClick={() => handleKnowMoreClick(talent.talentId)} 
           />
         ))}
       </div>

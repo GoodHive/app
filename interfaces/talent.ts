@@ -1,6 +1,7 @@
 import { BigNumberish } from "ethers";
 
 interface Talent {
+    talentId: string;
     title: string;
     jobHeadline: string;
     firstName: string;

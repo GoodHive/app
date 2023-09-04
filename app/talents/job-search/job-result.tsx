@@ -2,7 +2,7 @@
 
 import { BigNumberish } from "ethers";
 
-import { Card } from "../../components/card";
+import { LittleJobCard } from "@/app/components/little-job-card";
 
 export interface JobOffer {
   type: string;
@@ -27,7 +27,7 @@ export default function JobResult({ jobOffers }: { jobOffers: JobOffer[] }) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {jobOffers.map((jobOffer, index) => (
-        <Card
+        <LittleJobCard
           key={index}
           type="company"
           title={jobOffer.title}

@@ -4,9 +4,10 @@ interface Props {
   text: string;
   type: string;
   size: string;
+  onClick?: () => void; // Add onClick prop
 }
 
-export const Button: FC<Props> = ({ text, type, size }) => {
+export const Button: FC<Props> = ({ text, type, size, onClick }) => {
   let styleType = `${type}${size}`;
 
   switch (styleType) {
@@ -37,5 +38,15 @@ export const Button: FC<Props> = ({ text, type, size }) => {
     }
   }
 
-  return <button className={styleType}>{text}</button>;
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <button className={styleType} onClick={handleClick}>
+      {text}
+    </button>
+  );
 };
