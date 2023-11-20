@@ -1,18 +1,14 @@
-import clsx from "clsx";
+import { FC } from "react";
 import Link from "next/link";
+
+import clsx from "clsx";
 import { v4 as uuid } from "uuid";
 
-export default function Pagination({
-  itemsPerPage,
-  activePage,
-  totalItems,
-  query,
-}: {
-  itemsPerPage: number;
-  activePage?: number;
-  totalItems: number;
-  query: object;
-}) {
+import { PaginationProps } from "./pagination.types";
+
+export const Pagination: FC<PaginationProps> = (props) => {
+  const { itemsPerPage, activePage, totalItems, query, isSearchTalent = false } = props;
+
   const numberOfPages = Math.ceil(totalItems / itemsPerPage);
 
   if (numberOfPages === 1) return null;
@@ -24,7 +20,9 @@ export default function Pagination({
           key={uuid()}
           className={clsx(activePage === pageNum && "text-yellow-400")}
           href={{
-            href: "/companies/search-talents",
+            href: isSearchTalent
+              ? "/companies/search-talents"
+              : "/talents/job-search/",
             query: { ...query, page: pageNum },
           }}
         >
@@ -33,4 +31,4 @@ export default function Pagination({
       ))}
     </div>
   );
-}
+};

@@ -23,19 +23,19 @@ export interface JobOffer {
   escrow: BigNumberish;
 }
 
-export default function JobResult({ jobOffers }: { jobOffers: JobOffer[] }) {
+export default function JobResult({ jobOffers }: { jobOffers: any[] }) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
       {jobOffers.map((jobOffer, index) => (
         <Card
           key={index}
           type="company"
           title={jobOffer.title}
-          postedBy="Company Name" //TODO: connect job_offers table to companies table
+          postedBy={jobOffer.companyName} //TODO: connect job_offers table to companies table
           postedOn="posted 2 days ago"
           image="/img/company_img.png" //TODO: connect job_offers table to companies table
           countryFlag="/img/country_flag.png" // TODO: create flag table
-          city="City" //TODO: connect job_offers table to companies table
+          city={jobOffer.city} //TODO: connect job_offers table to companies table
           rate={jobOffer.rate}
           currency={jobOffer.currency}
           description={jobOffer.jobDescription}

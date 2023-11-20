@@ -14,11 +14,13 @@ function contains(str: string) {
 export async function fetchTalents({
   search = "",
   location = "",
+  name = "",
   items = 9,
   page = 1,
 }: {
   search?: string;
   location?: string;
+  name?: string;
   items: number;
   page: number;
 }) {
@@ -34,6 +36,10 @@ export async function fetchTalents({
       (LOWER(city) LIKE ${contains(location)} OR LOWER(country) LIKE ${contains(
       location
     )})
+    AND
+      (LOWER(first_name) LIKE ${contains(
+        name
+      )} OR LOWER(last_name) LIKE ${contains(name)})
     `;
 
     const count = countCursor[0].count as number;
@@ -52,6 +58,10 @@ export async function fetchTalents({
       (LOWER(city) LIKE ${contains(location)} OR LOWER(country) LIKE ${contains(
       location
     )})
+      AND
+      (LOWER(first_name) LIKE ${contains(
+        name
+      )} OR LOWER(last_name) LIKE ${contains(name)})
       LIMIT ${limit}
       OFFSET ${offset}
       `;

@@ -1,6 +1,6 @@
 import { fetchTalents } from "@/lib/talents";
 import { Card } from "@/app/components/card";
-import Pagination from "./pagination";
+import { Pagination } from "@/app/components/pagination";
 
 const itemsPerPage = 9;
 
@@ -29,7 +29,7 @@ export default async function SearchTalentsPage({
         <span className="text-base font-normal">- Talent Search</span>
       </h1>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {talents.map((talent) => (
           <Card
             key={talent.phoneNumber}
