@@ -40,18 +40,18 @@ export const NavBar = () => {
 
   return (
     <header aria-label="Site Header" className="bg-black ">
-      <div className="flex items-center h-16 gap-8 px-4 mx-auto sm:px-6 lg:px-8">
+      <div className="flex items-center h-16 gap-8 px-8 mx-auto sm:px-6">
         <Link className="block" href="/">
           <span className="sr-only">Home</span>
           <Image
-            className="hidden md:block"
+            className="block sm:hidden"
             src="/img/goodhive_light_logo.png"
             alt="GoodHive Logo"
             width={192}
             height={47}
           />
           <Image
-            className="block md:hidden"
+            className="sm:block hidden"
             src="/img/goodhive_logo_icon.png"
             alt="GoodHive Logo Icon"
             width={47}
@@ -59,8 +59,8 @@ export const NavBar = () => {
           />
         </Link>
 
-        <div className="flex items-center justify-end flex-1 md:justify-between">
-          <nav aria-label="Site Nav" className="hidden md:block">
+        <div className="flex items-center sm:justify-end flex-1 justify-between">
+          <nav aria-label="Site Nav" className="block sm:hidden">
             <ul className="flex items-center gap-6 text-sm">
               {links.map(({ href, label }) => (
                 <li key={`${href}${label}`}>
@@ -76,13 +76,13 @@ export const NavBar = () => {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="sm:flex sm:gap-4">
+            <div className="flex gap-4">
               <ConnectButton />
             </div>
 
             <button
               onClick={() => setIsOpenMobileMenu(!isOpenMobileMenu)}
-              className="block rounded bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-600/75 md:hidden"
+              className="hidden sm:block rounded bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-600/75"
             >
               <span className="sr-only">Toggle menu</span>
               <svg
@@ -114,7 +114,7 @@ export const NavBar = () => {
 
       {isOpenMobileMenu && (
         <div>
-          <nav aria-label="Site Nav" className="block md:hidden">
+          <nav aria-label="Site Nav" className="hidden sm:block">
             <ul className="flex flex-col items-center justify-center gap-6 pb-3 text-sm">
               {links.map(({ href, label }) => (
                 <li key={`${href}${label}`}>

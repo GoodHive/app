@@ -38,7 +38,7 @@ export const SearchFilters: FC<SearchFiltersProps> = (props) => {
   return (
     <div className="mx-5">
       <h1 className="my-5 font-bold text-2xl">{TRANSLATIONS.title}</h1>
-      <div className=" space-y-6 sm:w-full md:w-full lg:w-6/12 xl:w-6/12 2xl:w-6/12">
+      <div className=" space-y-6 w-6/12 sm:w-full md:w-full">
         <Input
           placeholder={TRANSLATIONS.searchPlaceholder}
           type="text"

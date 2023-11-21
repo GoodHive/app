@@ -102,7 +102,7 @@ export const Card: FC<Props> = ({
               </div>
             )}
           </div>
-          <div className="w-full gap-3 sm:flex md:flex lg:justify-center md:justify-end sm:justify-end xl:flex lg:grid xl:pt-2 lg:pt-2 xl:justify-center ">
+          <div className="w-full flex gap-3 justify-center md:justify-end sm:justify-end ">
             <Link href={`/talents/${walletAddress}`}>
               <div className="flex justify-center lg:items-center">
                 <Button text="Know more..." type="secondary" size="medium" />
