@@ -1,5 +1,4 @@
 import React from "react";
-// import SearchFilters from "./search-filters";
 import { SearchFilters } from "@/app/components/search-filters";
 
 export default function SearchTalentsLayout({
