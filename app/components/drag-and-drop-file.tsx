@@ -3,14 +3,12 @@ import { useEffect, useRef } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import FileData from "@interfaces/file-data";
-
 interface Props {
-  setFile: (file: null | FileData) => void;
-  file: null | FileData;
+  setFile: (file: File | null) => void;
+  file: File | null;
   isRenderedPage: boolean;
   setIsRenderedPage: (isRenderedPage: boolean) => void;
-  invoiceInputValue: React.Ref<HTMLInputElement>;
+  imageInputValue: React.Ref<HTMLInputElement>;
 }
 
 const DragAndDropFile = ({
@@ -18,7 +16,7 @@ const DragAndDropFile = ({
   file,
   isRenderedPage,
   setIsRenderedPage,
-  invoiceInputValue,
+  imageInputValue,
 }: Props) => {
   const DEFAULT_SCALE = 0.2;
   const pageRenderRef = useRef(null);
@@ -27,6 +25,7 @@ const DragAndDropFile = ({
     process.env.NEXT_PUBLIC_UPLOAD_PROFILE_IMAGE_SIZE_LIMIT_MB || 10;
 
   const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+  const imagePreview = file ? URL.createObjectURL(file) : null;
 
   type AssetData = string;
 
@@ -55,9 +54,9 @@ const DragAndDropFile = ({
     setIsRenderedPage(false);
     const reader = new FileReader();
 
-    const { size, type, name } = file;
+    const { size, type } = file;
 
-    setFile(null);
+    setFile(file);
 
     // TODO: move errors files to the modal errors
     if (validTypes.indexOf(type) === -1) {
@@ -80,7 +79,6 @@ const DragAndDropFile = ({
     reader.readAsDataURL(file);
     reader.onload = (loadEvt: ProgressEvent<FileReader>) => {
       if (loadEvt.target && typeof loadEvt.target.result === "string") {
-        setFile({ name, type, data: loadEvt.target.result });
         showAssetInCanvas(loadEvt.target.result);
       }
     };
@@ -110,7 +108,7 @@ const DragAndDropFile = ({
   };
 
   useEffect(() => {
-    if (file && typeof file !== "boolean" && file.data) {
+    if (file) {
       setIsRenderedPage(false);
     }
   }, [file, setIsRenderedPage]);
@@ -128,7 +126,7 @@ const DragAndDropFile = ({
         name="file-upload"
         type="file"
         className="absolute top-0 bottom-0 left-0 right-0 w-full h-full opacity-0 cursor-pointer"
-        ref={invoiceInputValue}
+        ref={imageInputValue}
         onChange={changeHandler}
       />
       {file ? (
@@ -137,12 +135,7 @@ const DragAndDropFile = ({
           onDragOver={(e: React.DragEvent<HTMLDivElement>) => onDragOver(e)}
           className="flex"
         >
-          {isRenderedPage && typeof file.data === "string" ? (
-            <img className="object-cover" src={file.data} />
-          ) : (
-            // TODO: fix this skeleton
-            <Skeleton height="100px" />
-          )}
+          {imagePreview && <img className="object-cover" src={imagePreview} />}
         </div>
       ) : (
         <div

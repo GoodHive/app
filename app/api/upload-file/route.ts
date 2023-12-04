@@ -3,7 +3,7 @@ import { generateFileKeyName } from "@/app/utils/generate-file-key-name";
 
 export async function POST(request: Request) {
   try {
-    const file = await request.json();
+    const { file, fileType } = await request.json();
 
     const s3 = new S3({
       credentials: {
@@ -15,21 +15,22 @@ export async function POST(request: Request) {
     });
 
     const bucketName = process.env.B2_BUCKET || "";
-    const keyName = generateFileKeyName(file.type);
-    const dataBuffer = Buffer.from(file.data);
+    const keyName = generateFileKeyName(fileType);
+
+    // Decode the Base64 file back to binary data
+    const base64Data = file.replace(/^data:.*,/, '');
+    const decodedFile = Buffer.from(base64Data, 'base64');
 
     const putObjectParams = {
       Bucket: bucketName,
       Key: keyName,
-      Body: dataBuffer,
+      Body: decodedFile,
       ACL: ObjectCannedACL.public_read,
-      ContentType: file.type,
+      ContentType: fileType,
     };
 
     try {
       await s3.send(new PutObjectCommand(putObjectParams));
-
-      console.log("Successfully uploaded data to", bucketName + "/" + keyName);
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +44,6 @@ export async function POST(request: Request) {
 
     try {
       await s3.send(new GetObjectCommand(getObjectParams));
-
       const url = `https://${bucketName}.${hostB2}/${keyName}`;
 
       return new Response(JSON.stringify({ fileUrl: url }));

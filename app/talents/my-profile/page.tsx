@@ -17,22 +17,23 @@ import DragAndDropFile from "@components/drag-and-drop-file";
 import { SelectInput } from "@components/select-input";
 import { AddressContext } from "@components/context";
 // TODO: use button but before add the type of the button component (i.e. type="button" or type="submit")
-// import { Button } from "../../components/button";
+// import { Button } from '../../components/button';
 import { skills } from "@/app/constants/skills";
 import { countries } from "@/app/constants/countries";
 import LabelOption from "@interfaces/label-option";
-import FileData from "@interfaces/file-data";
 import { resumeUploadSizeLimit } from "./constants";
 import { ToogleButton } from "@components/toogle-button";
 import { SocialLink } from "./social-link";
 import { AutoSuggestInput } from "@components/autosuggest-input/autosuggest-input";
 import { socialLinks } from "./constant";
+import { Button } from "@/app/components/button";
+import { useRouter } from "next/navigation";
 
 export default function MyProfile() {
-  const invoiceInputValue = useRef(null);
+  const imageInputValue = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [imageFile, setImageFile] = useState<null | FileData>(null);
-  const [cvFile, setCvFile] = useState<null | FileData>(null);
+  const [profileImage, setProfileImage] = useState<null | File>(null);
+  const [cvFile, setCvFile] = useState<null | File>(null);
   const [isUploadedCvLink, setIsUploadedCvLink] = useState(false);
   const [isRenderedPage, setIsRenderedPage] = useState<boolean>(true);
   const [profileData, setProfileData] = useState({
@@ -60,11 +61,21 @@ export default function MyProfile() {
   });
 
   const walletAddress = useContext(AddressContext);
+  console.log("wallet address: >>", walletAddress);
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(
     null
   );
+  const router = useRouter();
+
+  const handleImageClick = () => {
+    setProfileData({ ...profileData, image_url: "" });
+  };
+
+  const handlePublicViewClick = () => {
+    router.push(`/talents/${walletAddress}`);
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -95,49 +106,52 @@ export default function MyProfile() {
     if (!event.target.files) return;
 
     const cvFile = event.target.files[0];
-    const { type, name } = cvFile;
 
     if (cvFile.size > 1024 * 1024 * Number(resumeUploadSizeLimit)) {
       toast.error(`File size should be less than ${resumeUploadSizeLimit} MB`);
       return;
     }
-    const reader = new FileReader();
-    reader.readAsDataURL(cvFile);
-
-    reader.onload = function (event: ProgressEvent<FileReader>) {
-      if (!event.target) return;
-      const arrayBuffer = event.target.result;
-
-      setCvFile({
-        name,
-        type,
-        data: arrayBuffer,
-      });
-    };
+    setCvFile(cvFile);
   };
 
-  const uploadeFileToBucket = async (file: FileData | null) => {
-    if (!file) return null;
-    try {
-      const postImageResponse = await fetch("/api/upload-file", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(file),
-      });
+  const uploadFileToBucket = async (file: File | null) => {
+    return new Promise(async (resolve, reject) => {
+      if (!file) return resolve(null);
 
-      if (postImageResponse.ok) {
-        const { fileUrl } = await postImageResponse.json();
-        return fileUrl;
-      } else {
-        console.error(postImageResponse.statusText);
-        return null;
-      }
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = async () => {
+        const base64File = reader.result;
+
+        try {
+          const postImageResponse = await fetch("/api/upload-file", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ file: base64File, fileType: file.type }),
+          });
+
+          if (postImageResponse.ok) {
+            const { fileUrl } = await postImageResponse.json();
+            console.log("File url >>", fileUrl);
+            resolve(fileUrl);
+          } else {
+            console.error(postImageResponse.statusText);
+            resolve(null);
+          }
+        } catch (error) {
+          console.error(error);
+          resolve(null);
+        }
+      };
+
+      reader.onerror = (error) => {
+        console.error("File reading failed:", error);
+        reject(error);
+      };
+    });
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -146,8 +160,8 @@ export default function MyProfile() {
 
     const formData = new FormData(event.currentTarget);
 
-    const imageUrl = await uploadeFileToBucket(imageFile);
-    const cvUrl = await uploadeFileToBucket(cvFile);
+    const imageUrl = await uploadFileToBucket(profileImage);
+    const cvUrl = await uploadFileToBucket(cvFile);
     const freelanceOnly = formData.get("freelance-only") === "on" ? true : false;
     const remoteOnly = formData.get("remote-only") === "on" ? true : false;
 
@@ -172,8 +186,8 @@ export default function MyProfile() {
       freelanceOnly,
       remoteOnly,
       skills: selectedSkills,
-      imageUrl,
-      cvUrl,
+      imageUrl: imageUrl || profileData.image_url,
+      cvUrl: cvUrl || profileData.cv_url,
       walletAddress,
       linkedin: formData.get("linkedin"),
       github: formData.get("github"),
@@ -227,6 +241,7 @@ export default function MyProfile() {
                   clipPath:
                     "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
                 }}
+                onClick={handleImageClick}
               >
                 <Image
                   className="object-cover"
@@ -237,22 +252,29 @@ export default function MyProfile() {
               </div>
             ) : (
               <DragAndDropFile
-                file={imageFile}
-                setFile={setImageFile}
+                file={profileImage}
+                setFile={setProfileImage}
                 isRenderedPage={isRenderedPage}
                 setIsRenderedPage={setIsRenderedPage}
-                // FIXME: change name of invoiceInputValue to fileInputValue
-                invoiceInputValue={invoiceInputValue}
+                imageInputValue={imageInputValue}
               />
             )}
           </div>
-          <div className="flex flex-col w-full mt-20">
+          <div className="w-full flex justify-center mt-7">
+            <Button
+              text="Public View"
+              type="secondary"
+              size="medium"
+              onClickHandler={handlePublicViewClick}
+            />
+          </div>
+          <div className="flex flex-col w-full mt-10">
             <div>
               <label
                 htmlFor="title"
                 className="inline-block ml-3 text-base text-black form-label"
               >
-                Job Profile*
+                Profile header*
               </label>
             </div>
             <input

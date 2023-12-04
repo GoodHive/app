@@ -9,13 +9,12 @@ import { AddressContext } from "../../components/context";
 import { SelectInput } from "../../components/select-input";
 import { countries } from "../../constants/countries";
 import LabelOption from "@interfaces/label-option";
-import FileData from "@interfaces/file-data";
 
 export default function MyProfile() {
-  const invoiceInputValue = useRef(null);
+  const imageInputValue = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [file, setFile] = useState<null | FileData>(null);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isRenderedPage, setIsRenderedPage] = useState<boolean>(true);
 
   const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(
@@ -25,7 +24,7 @@ export default function MyProfile() {
   const walletAddress = useContext(AddressContext);
 
   useEffect(() => {
-    if (typeof file === "object" && file !== null) {
+    if (profileImage) {
       const fetchImage = async () => {
         setIsLoading(true);
 
@@ -34,7 +33,7 @@ export default function MyProfile() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(file),
+          body: JSON.stringify(profileImage),
         });
 
         if (postImageResponse.ok) {
@@ -48,7 +47,7 @@ export default function MyProfile() {
 
       fetchImage();
     }
-  }, [file]);
+  }, [profileImage]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,11 +96,11 @@ export default function MyProfile() {
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col items-center justify-center w-full mt-10">
             <DragAndDropFile
-              file={file}
-              setFile={setFile}
+              file={profileImage}
+              setFile={setProfileImage}
               isRenderedPage={isRenderedPage}
               setIsRenderedPage={setIsRenderedPage}
-              invoiceInputValue={invoiceInputValue}
+              imageInputValue={imageInputValue}
             />
           </div>
           <div className="flex flex-col w-full mt-20">

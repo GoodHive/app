@@ -1,339 +1,211 @@
-"use client";
+import Image from "next/image";
+import { Button } from "@/app/components/button";
+import Link from "next/link";
 
-import { useState, useEffect, useContext } from "react";
+async function getProfileData(address: string) {
+  const res = await fetch(`http://localhost:3000/api/talents/${address}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
 
-import { SelectInput } from "../../components/select-input";
-import { AddressContext } from "../../components/context";
-// TODO: use button but before add the type of the button component (i.e. type="button" or type="submit")
-// import { Button } from "../../components/button";
-import { countries } from "@/app/constants/countries";
-import LabelOption from "@interfaces/label-option";
+  return res.json();
+}
 
-export default function MyProfile({ params }: { params: { address: string } }) {
-  const [profileData, setProfileData] = useState({
-    title: "",
-    description: "",
-    first_name: "",
-    last_name: "",
-    country: "",
-    city: "",
-    phone_country_code: "",
-    phone_number: "",
-    email: "",
-    telegram: "",
-    about_work: "",
-    rate: "",
-    skills: [],
-    image_url: "",
-  });
+type MyProfilePageProps = {
+  params: {
+    address: string;
+  };
+};
 
-  const walletAddress = useContext(AddressContext);
-
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(
-    null
-  );
-
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await fetch(`/api/talents/${params.address}`); // replace with your actual API endpoint
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const profile = await response.json();
-
-        setProfileData(profile);
-        setSelectedSkills(profile.skills.split(","));
-      } catch (error) {
-        console.error("There was an error!", error);
-      }
-    };
-
-    fetchProfileData();
-  }, [walletAddress]);
+export default async function MyProfilePage(context: MyProfilePageProps) {
+  const { address } = context.params;
+  const profileData = await getProfileData(address);
+  const {
+    skills,
+    title,
+    first_name,
+    last_name,
+    image_url,
+    about_work,
+    cv_url,
+    description,
+    email,
+    phone_number,
+    phone_country_code,
+    city,
+    rate,
+    country,
+    linkedin,
+    telegram,
+    github,
+    stackoverflow,
+    portfolio,
+    freelance_only,
+    remote_only,
+  } = profileData;
 
   return (
-    <main className="mx-5">
-      <h1 className="my-5 text-2xl border-b-[1px] border-slate-300 pb-2">
-        Profile
-      </h1>
-      {!walletAddress && (
-        <div>
-          <p className="px-4 py-3 text-xl font-medium text-center text-red-500 rounded-md shadow-md bg-yellow-50">
-            🚀 To get started, please connect your wallet. This will enable you
-            to create or save your profile. Thanks!
-          </p>
+    <main className="relative pt-16">
+      <div className="bg-yellow-400 absolute w-full top-0 left-0 h-28 z-10"></div>
+      <div className="container mx-auto mb-20 bg-white w-full relative rounded-2xl flex flex-col items-center p-5 z-20 shadow-[2px_7px_20px_4px_#e2e8f0]">
+        <div className="flex flex-col items-center justify-center w-full mt-5 mb-5">
+          <div
+            className="relative h-[180px] w-[180px] flex items-center justify-center cursor-pointer bg-gray-100"
+            style={{
+              clipPath:
+                "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
+            }}
+          >
+            <Image
+              className="object-cover"
+              src={image_url || "/img/placeholder-image.png"}
+              alt="profile-picture"
+              fill
+            />
+          </div>
         </div>
-      )}
-      <section>
-        <div className="flex flex-col items-center justify-center w-full mt-10">
-          {profileData.image_url && (
-            <div
-              className="relative h-[230px] w-[230px] flex items-center mt-10 justify-center cursor-pointer bg-gray-100"
-              style={{
-                clipPath:
-                  "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
-              }}
-            >
-              <img className="object-cover" src={profileData.image_url} />
+        <h1 className="text-[#4E4E4E] text-3xl font-bold mb-3">
+          {`${first_name} ${last_name}`}
+        </h1>
+        <h3 className="text-[#4E4E4E] text-xl font-bold mb-3">{title}</h3>
+        <h4 className="text-[#4E4E4E] text-base mb-4">
+          {city}, {country}
+        </h4>
+        {rate && (
+          <h4 className="text-[#4E4E4E] text-base font-medium mb-7">
+            {rate} USD/hr
+          </h4>
+        )}
+        {freelance_only && (
+          <h4 className="text-[#4E4E4E] text-base font-medium mb-8">
+            • Available for freelance only
+          </h4>
+        )}
+        {remote_only && (
+          <h4 className="text-[#4E4E4E] text-base font-medium mb-8">
+            • Available for remote only
+          </h4>
+        )}
+        <div className="flex w-full justify-center gap-5 mb-12">
+          <Button text="Contact me" type="secondary" size="medium"></Button>
+          <Button text="Hire me" type="primary" size="medium"></Button>
+        </div>
+        <div className="flex flex-col w-1/2">
+          <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">Bio:</h3>
+          <p className="w-full max-h-52 mb-10 text-ellipsis overflow-hidden">
+            {description}
+          </p>
+          <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
+            About my work:
+          </h3>
+          <p className="w-full max-h-52 mb-10 text-ellipsis overflow-hidden">
+            {about_work}
+          </p>
+          <div className="flex flex-col mb-10">
+            <h4 className="text-[#3E3E3E] font-bold text-lg mb-5">
+              Social Media:
+            </h4>
+            <div className="flex gap-2">
+              {linkedin && (
+                <Link
+                  href={linkedin}
+                  target="_blank"
+                  className="relative w-7 h-7 rounded-full"
+                >
+                  <Image src="/icons/linkedin.svg" alt="social-icon" fill />
+                </Link>
+              )}
+              {telegram && (
+                <Link
+                  href={`https://t.me/${telegram}`}
+                  target="_blank"
+                  className="relative w-7 h-7 rounded-full"
+                >
+                  <Image src="/icons/telegram.svg" alt="social-icon" fill />
+                </Link>
+              )}
+              {github && (
+                <Link
+                  href={github}
+                  target="_blank"
+                  className="relative w-7 h-7 rounded-full"
+                >
+                  <Image src="/icons/github.svg" alt="social-icon" fill />
+                </Link>
+              )}
+              {stackoverflow && (
+                <Link
+                  href={stackoverflow}
+                  target="_blank"
+                  className="relative w-7 h-7 rounded-full"
+                >
+                  <Image
+                    src="/icons/stackoverflow.svg"
+                    alt="social-icon"
+                    fill
+                  />
+                </Link>
+              )}
+              {portfolio && (
+                <Link
+                  href={portfolio}
+                  target="_blank"
+                  className="relative w-7 h-7 rounded-full"
+                >
+                  <Image src="/icons/portfolio.svg" alt="social-icon" fill />
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
+            Specialization and Skills
+          </h3>
+
+          <div className="flex flex-wrap gap-2 mb-10">
+            {!!skills.length &&
+              skills.split(",").map((skill: string) => (
+                <div
+                  key={skill}
+                  className="border-[#FFC905] flex items-center bg-gray-200 rounded-full px-4 py-1 text-sm m-1"
+                >
+                  <p>{skill}</p>
+                </div>
+              ))}
+          </div>
+
+          {cv_url && (
+            <h3 className="text-[#4E4E4E] text-lg font-bold mb-3">
+              Resume/CV:
+            </h3>
+          )}
+          {cv_url && (
+            <div className="relative w-12 h-10 mb-7">
+              <Link href={cv_url} target="_blank">
+                <Image src="/icons/resume.svg" alt="resume-icon" fill />
+              </Link>
             </div>
           )}
-        </div>
-        <div className="flex flex-col w-full mt-20">
-          <div>
-            <label
-              htmlFor="title"
-              className="inline-block ml-3 text-base text-black form-label"
-            >
-              Job Profile*
-            </label>
+
+          <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
+            Contact info
+          </h3>
+          <div className="flex w-full justify-between mb-8">
+            <h4 className="text-[#4E4E4E] text-base font-bold">Email</h4>
+            <p className="text-[#4E4E4E] text-base">{email}</p>
           </div>
-          <input
-            className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-            placeholder="Title"
-            name="title"
-            type="text"
-            required
-            maxLength={100}
-            defaultValue={profileData?.title}
-            disabled
-          />
-          <div className="mt-5">
-            <textarea
-              name="description"
-              className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-lg hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-              placeholder="Describe your skills and experience in a few words*"
-              required
-              maxLength={255}
-              rows={5}
-              defaultValue={profileData?.description}
-              disabled
-            />
+          <div className="flex w-full justify-between mb-8">
+            <h4 className="text-[#4E4E4E] text-base font-bold">Phone</h4>
+            <p className="text-[#4E4E4E] text-base">{`${phone_country_code} ${phone_number}`}</p>
           </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <label
-                htmlFor="first-name"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                First Name*
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="First Name"
-                name="first-name"
-                type="text"
-                required
-                pattern="[a-zA-Z -]+"
-                maxLength={100}
-                defaultValue={profileData?.first_name}
-                disabled
-              />
-            </div>
-            <div className="flex-1">
-              <label
-                htmlFor="last-name"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Last Name*
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="Last Name"
-                name="last-name"
-                type="text"
-                required
-                pattern="[a-zA-Z -]+"
-                maxLength={100}
-                defaultValue={profileData?.last_name}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <SelectInput
-                labelText="Country"
-                name="country"
-                required={false}
-                disabled
-                inputValue={selectedCountry}
-                setInputValue={setSelectedCountry}
-                options={countries}
-                defaultValue={
-                  countries[
-                    countries.findIndex(
-                      (country) => country.value === profileData?.country
-                    )
-                  ]
-                }
-              />
-            </div>
-            <div className="flex-1">
-              <label
-                htmlFor="city"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                City*
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="City"
-                type="text"
-                name="city"
-                pattern="[a-zA-Z -]+"
-                maxLength={100}
-                defaultValue={profileData?.city}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <label
-                htmlFor="phone-country-code"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Phone Country Code*
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 top-[-4px] flex items-center pl-5 pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">+</span>
-                </div>
-                <input
-                  className="pl-8 form-control block w-full py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                  placeholder="Phone Country Code"
-                  type="number"
-                  name="phone-country-code"
-                  required
-                  maxLength={5}
-                  defaultValue={profileData?.phone_country_code}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="flex-1">
-              <label
-                htmlFor="phone-number"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Phone Number*
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="Phone Number"
-                type="number"
-                required
-                name="phone-number"
-                maxLength={20}
-                defaultValue={profileData?.phone_number}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <label
-                htmlFor="email"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Email*
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="Email"
-                type="email"
-                required
-                name="email"
-                maxLength={255}
-                defaultValue={profileData?.email}
-                disabled
-              />
-            </div>
-            <div className="flex-1">
-              <label
-                htmlFor="telegram"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Telegram
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="Telegram"
-                type="text"
-                name="telegram"
-                maxLength={255}
-                defaultValue={profileData?.telegram}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <label
-                htmlFor="rate"
-                className="inline-block ml-3 text-base text-black form-label"
-              >
-                Rate ($/hour)
-              </label>
-              <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-                placeholder="Your rate per hour"
-                type="number"
-                name="rate"
-                maxLength={255}
-                defaultValue={profileData?.rate}
-                disabled
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label
-              htmlFor="about-work"
-              className="inline-block ml-3 text-base text-black form-label"
-            >
-              About your Work*
-            </label>
-            <textarea
-              name="about-work"
-              className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-lg hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
-              placeholder="What you are looking for?"
-              required
-              rows={5}
-              maxLength={65000}
-              defaultValue={profileData?.about_work}
-              disabled
-            />
-          </div>
-          <div className="flex flex-col gap-4 mt-4 sm:flex-row">
-            <div className="flex-1">
-              <label
-                htmlFor="skills"
-                className="inline-block ml-3 text-base font-bold text-black form-label"
-              >
-                Skills*
-              </label>
-              <div className="pt-1 pb-4">
-                {!!selectedSkills && selectedSkills.length > 0 && (
-                  <div className="flex flex-wrap mt-1">
-                    {selectedSkills.map((skill, index) => (
-                      <div
-                        key={index}
-                        className="border border-[#FFC905] flex items-center bg-gray-200 rounded-full py-1 px-3 m-1"
-                      >
-                        <span className="mr-2">{skill}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="flex w-full justify-between mb-8">
+            <h4 className="text-[#4E4E4E] text-base font-bold">Address</h4>
+            <p className="text-[#4E4E4E] text-base">
+              {city}, {country}
+            </p>
           </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { FormEvent, useState } from "react";
 
 import toast from "react-hot-toast";
 
+import LabelOption from "@interfaces/label-option";
 import { SelectInput } from "../../../components/select-input";
 import { degrees } from "../../../constants/degrees";
-import LabelOption from "@interfaces/label-option";
 
 export default function CreateJob() {
   const [isLoading, setIsLoading] = useState<boolean>(false);

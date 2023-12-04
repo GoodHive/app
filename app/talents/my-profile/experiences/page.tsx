@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { FormEvent, useState } from "react";
 
 import Autosuggest from "react-autosuggest";
 import toast from "react-hot-toast";
 
 // TODO: use button but before add the type of the button component (i.e. type="button" or type="submit")
 //import { Button } from "../../../components/button";
+import LabelOption from "@interfaces/label-option";
 import { SelectInput } from "../../../components/select-input";
 import { employmentType } from "../../../constants/employment-type";
 import { skills } from "../../../constants/skills";
-import LabelOption from "@interfaces/label-option";
 
 export default function CreateJob() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
