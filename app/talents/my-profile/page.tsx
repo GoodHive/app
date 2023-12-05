@@ -89,6 +89,7 @@ export default function MyProfile() {
         }
 
         const profile = await response.json();
+        console.log("profile >>", profile);
         if (profile.cv_url) setIsUploadedCvLink(true);
 
         setProfileData(profile);

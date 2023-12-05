@@ -29,7 +29,7 @@ export default async function SearchTalentsPage({
         <span className="text-base font-normal">- Talent Search</span>
       </h1>
 
-      <div className="grid grid-cols-3 gap-5 md:gap-4 sm:gap-4 md:grid-cols-2 sm:grid-cols-1">
+      <div className="grid grid-cols-3 gap-5 md:gap-4 sm:gap-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1">
         {talents.map((talent) => (
           <Card
             key={talent.phoneNumber}

@@ -1,11 +1,11 @@
 "use client";
 
+import { BigNumberish } from "ethers";
 import Image from "next/image";
 import Link from "next/link";
-import { BigNumberish } from "ethers";
 
 import type { FC } from "react";
-import { Button } from "../components/button";
+import { Button } from "@components/button";
 
 interface Props {
   type: string;
@@ -108,7 +108,7 @@ export const Card: FC<Props> = ({
           ))}
         </div>
 
-        <div className="flex justify-end w-full md-2 gap-3 sm:flex-col md:flex-col">
+        <div className="flex justify-end w-full md-2 gap-3 sm:flex-col sm:items-center">
           <Link href={`/talents/${walletAddress}`}>
             <Button text="Know more..." type="secondary" size="small" />
           </Link>

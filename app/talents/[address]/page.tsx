@@ -1,15 +1,11 @@
 import Image from "next/image";
-import { Button } from "@/app/components/button";
 import Link from "next/link";
 
-async function getProfileData(address: string) {
-  const res = await fetch(`http://localhost:3000/api/talents/${address}`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
+import { getProfileData } from "@/lib/fetch-profile-data";
+import { generateAvailabilityStatus } from "./utils";
+import { Button } from "@/app/components/button";
 
-  return res.json();
-}
+export const revalidate = 0;
 
 type MyProfilePageProps = {
   params: {
@@ -44,6 +40,11 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
     remote_only,
   } = profileData;
 
+  const availabilityStatus = generateAvailabilityStatus(
+    freelance_only,
+    remote_only
+  );
+
   return (
     <main className="relative pt-16">
       <div className="bg-yellow-400 absolute w-full top-0 left-0 h-28 z-10"></div>
@@ -76,14 +77,9 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
             {rate} USD/hr
           </h4>
         )}
-        {freelance_only && (
-          <h4 className="text-[#4E4E4E] text-base font-medium mb-8">
-            • Available for freelance only
-          </h4>
-        )}
-        {remote_only && (
-          <h4 className="text-[#4E4E4E] text-base font-medium mb-8">
-            • Available for remote only
+        {availabilityStatus && (
+          <h4 className="text-[#4E4E4E] text-base font-medium mb-7">
+            {availabilityStatus}
           </h4>
         )}
         <div className="flex w-full justify-center gap-5 mb-12">
