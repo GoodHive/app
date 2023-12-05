@@ -11,8 +11,6 @@ export async function getProfileData(address: string) {
     return {};
   }
 
-  console.log("wallet address >>", address);
-
   try {
     const user = await sql`
         SELECT *
