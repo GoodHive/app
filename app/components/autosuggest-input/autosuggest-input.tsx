@@ -1,3 +1,6 @@
+"use client";
+
+import clsx from "clsx";
 import { FC, useState } from "react";
 import Autosuggest from "react-autosuggest";
 import { AutosuggestInputProps } from "./autosuggest-input.types";
@@ -5,7 +8,14 @@ import { AutosuggestInputProps } from "./autosuggest-input.types";
 export const AutoSuggestInput: FC<AutosuggestInputProps> = (props) => {
   const [inputValue, setInputValue] = useState("");
 
-  const { inputs, selectedInputs, setSelectedInputs } = props;
+  const {
+    inputs,
+    classes,
+    placeholder,
+    selectedInputs,
+    setSelectedInputs,
+    isSingleInput = false,
+  } = props;
 
   const getSuggestions = (value: string) => {
     const inputValue = value.trim().toLowerCase();
@@ -22,6 +32,10 @@ export const AutoSuggestInput: FC<AutosuggestInputProps> = (props) => {
     event: React.FormEvent<HTMLInputElement>,
     { suggestion }: Autosuggest.SuggestionSelectedEventData<string>
   ) => {
+    if (isSingleInput) {
+      setSelectedInputs([suggestion]);
+      return;
+    }
     if (!selectedInputs.includes(suggestion)) {
       setSelectedInputs([...selectedInputs, suggestion]);
     }
@@ -34,9 +48,10 @@ export const AutoSuggestInput: FC<AutosuggestInputProps> = (props) => {
   );
 
   const inputProps = {
-    className:
-      "relative rounded-lg block w-full px-4 py-2 text-base font-normal text-gray-600 bg-clip-padding transition ease-in-out focus:text-black bg-gray-100 focus:outline-none focus:ring-0",
-    placeholder: "JavaScript, NextJS,...",
+    className: classes
+      ? clsx(classes)
+      : "relative rounded-lg block w-full px-4 py-2 text-base font-normal text-gray-600 bg-clip-padding transition ease-in-out focus:text-black bg-gray-100 focus:outline-none focus:ring-0",
+    placeholder: placeholder || "JavaScript, NextJS,...",
     type: "text",
     maxLength: 255,
     name: "skills",
@@ -50,6 +65,10 @@ export const AutoSuggestInput: FC<AutosuggestInputProps> = (props) => {
     onKeyDown(event: React.KeyboardEvent<HTMLElement>) {
       if (event.key === "Enter") {
         event.preventDefault();
+        if (isSingleInput) {
+          setSelectedInputs([inputValue]);
+          return;
+        }
         if (!selectedInputs.includes(inputValue)) {
           setSelectedInputs([...selectedInputs, inputValue]);
         }

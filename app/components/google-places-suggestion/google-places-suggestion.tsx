@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import { FC, useEffect, useRef } from "react";
 import { GooglePlaceSuggestionProps } from "./google-place-suggestion.types";
 import {
@@ -29,7 +30,7 @@ function loadAsyncScript(src: string): Promise<HTMLScriptElement> {
 export const GooglePlaceSuggestion: FC<GooglePlaceSuggestionProps> = (
   props
 ) => {
-  const { handleLocationChange, label } = props;
+  const { handleLocationChange, label, classes } = props;
   const searchInput = useRef<HTMLInputElement | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +77,7 @@ export const GooglePlaceSuggestion: FC<GooglePlaceSuggestionProps> = (
     <div>
       <input
         aria-label="Search location"
-        className="w-full px-4 py-2 text-base bg-white bg-clip-padding border border-solid rounded-full font-normal text-gray-600 border-[#FFC905] hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
+        className={clsx(classes)}
         ref={searchInput}
         onChange={handleChange}
         type="text"

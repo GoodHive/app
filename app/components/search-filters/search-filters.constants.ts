@@ -1,7 +1,32 @@
 export const TRANSLATIONS = {
-    title: "Looking for Job",
-    searchPlaceholder: "Try Developer Solidity, Rust, C++...",
-    locationPlaceholder: "Location Paris, Lodon, Remote...",
-    searchByDeveloperName: "Search by Developer Name",
-    searchByCompanyName: "Search by Company Name",
-}
+  title: "Looking for Job",
+  searchPlaceholder: "Try Developer Solidity, Rust, C++...",
+  locationPlaceholder: "Location Paris, Lodon, Remote...",
+  searchByDeveloperName: "Search by Developer Name",
+  searchByCompanyName: "Search by Company Name",
+};
+
+export const InputClasses = [
+  "form-control",
+  "block",
+  "w-full",
+  "px-4",
+  "py-2",
+  "text-base",
+  "bg-white",
+  "bg-clip-padding",
+  "border",
+  "border-solid",
+  "rounded-full",
+  "font-normal",
+  "text-gray-600",
+  "border-[#FFC905]",
+  "hover:shadow-lg",
+  "transition",
+  "ease-in-out",
+  "m-0",
+  "focus:text-black",
+  "focus:bg-white",
+  "focus:border-[#FF8C05]",
+  "focus:outline-none",
+];

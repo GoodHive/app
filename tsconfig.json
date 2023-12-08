@@ -24,6 +24,7 @@
       "@interfaces/*": ["./interfaces/*"],
       "@components/*": ["./app/components/*"],
       "@hooks/*": ["./app/hooks/*"],
+      "@constants/*": ["./app/constants/*"],
     }
   },
   "typescript": {

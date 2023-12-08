@@ -67,12 +67,12 @@ export const Card: FC<Props> = ({
               fill
             />
           </div>
-          <div className="pt-2 pl-4 md:ml-2">
-            <p className="text-lg font-semibold text-gray-800">
+          <div className="pt-2 pl-4 md:ml-2 sm:max-w-[130px]">
+            <p className="text-lg font-semibold text-gray-800 sm:leading-tight sm:text-sm sm:mb-1">
               {croppedTitle}
             </p>
-            <p className="text-base text-gray-600">{postedBy}</p>
-            <p className="mb-3 text-sm font-bold text-gray-600">{postedOn}</p>
+            <p className="text-base text-gray-600 sm:text-sm sm:mb-1">{postedBy}</p>
+            <p className="mb-3 text-sm font-bold text-gray-600 sm:text-xs">{postedOn}</p>
           </div>
           <div className="flex flex-col items-end pt-2 grow">
             <div className="flex mb-1">
@@ -83,9 +83,9 @@ export const Card: FC<Props> = ({
                 <Image src={countryFlag} alt="country" fill />
               </div>
             </div>
-            <p className="font-light mb-1 text-sm text-gray-500">{city}</p>
+            <p className="font-light mb-1 text-sm text-gray-500 text-right sm:text-xs">{city}</p>
             <div className="flex space-between">
-              <div className="text-sm font-bold">{ratePerHour}</div>
+              <div className="text-sm font-bold sm:text-xs">{ratePerHour}</div>
               {!!escrowAmount && (
                 <div>
                   {escrowAmount?.toString()} {escrowCurrency}
@@ -94,7 +94,7 @@ export const Card: FC<Props> = ({
             </div>
           </div>
         </div>
-        <p className="flex pt-3 mb-3 h-16 text-sm overflow-hidden text-ellipsis font-light text-[#151414]">
+        <p className="flex pt-3 mb-3 h-16 sm:h-10 text-sm overflow-hidden text-ellipsis font-light text-[#151414]">
           {croppedDescription}
         </p>
         <div className="flex flex-wrap mb-3">
@@ -108,7 +108,7 @@ export const Card: FC<Props> = ({
           ))}
         </div>
 
-        <div className="flex justify-end w-full md-2 gap-3 sm:flex-col sm:items-center">
+        <div className="flex justify-end w-full md-2 gap-3 sm:gap-1.5 sm:flex-col sm:items-center">
           <Link href={`/talents/${walletAddress}`}>
             <Button text="Know more..." type="secondary" size="small" />
           </Link>

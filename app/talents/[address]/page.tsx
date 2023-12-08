@@ -45,6 +45,8 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
     remote_only
   );
 
+  const contactUrl = email ? `mailto:${email}` : `https://t.me/${telegram}`;
+
   return (
     <main className="relative pt-16">
       <div className="bg-yellow-400 absolute w-full top-0 left-0 h-28 z-10"></div>
@@ -83,7 +85,9 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
           </h4>
         )}
         <div className="flex w-full justify-center gap-5 mb-12">
-          <Button text="Contact me" type="secondary" size="medium"></Button>
+          <Link href={{ pathname: contactUrl }}>
+            <Button text="Contact me" type="secondary" size="medium"></Button>
+          </Link>
           <Button text="Hire me" type="primary" size="medium"></Button>
         </div>
         <div className="flex flex-col w-1/2">
