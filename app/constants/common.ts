@@ -72,3 +72,5 @@ export const createJobServices: createJobServicesType[] = [
 ];
 
 export const GoodHiveContractEmail = "contact@goodhive.io";
+
+export const GoodhiveQuestLink = 'https://zealy.io/cw/goodhive';

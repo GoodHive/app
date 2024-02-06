@@ -5,7 +5,7 @@ export const allServices = [
     description:
       "Play collaboratively and co-own your platform. 100% commission returned for your participation and excellence. Earn more as a recruiter, mentor, or referrer.",
     imageSrc: "/img/polygon.png",
-    btnText: "Create your talent profile",
+    btnText: "Create your profile",
   },
   {
     id: "companies",
@@ -13,7 +13,7 @@ export const allServices = [
     description:
       "GoodHive fosters stake-backed recruiters committed to client success, rewards talents for their excellence with protocol fees, and enhances peer performance through community mentoring",
     imageSrc: "/img/polygon.png",
-    btnText: "Create your company profile",
+    btnText: "Create your profile",
   },
 ];
 

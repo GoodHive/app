@@ -13,7 +13,7 @@ export const FeatureCard: FC<FeatureCardProps> = (props) => {
   };
 
   return (
-    <div className="w-full flex max-w-[500px] sm:max-w-[300px]">
+    <div className="w-full flex max-w-[475px] sm:max-w-[300px]">
       <div className="shrink-0 relative w-24 h-24 mr-5 sm:w-14 sm:h-14">
         <Image alt="feature card polygon image" src={imageSrc} fill={true} />
       </div>
