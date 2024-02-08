@@ -269,7 +269,6 @@ export default function MyProfile() {
                   name="address"
                   type="text"
                   required
-                  pattern="[a-zA-Z0-9 ]+"
                   maxLength={100}
                   defaultValue={profileData.address}
                 />

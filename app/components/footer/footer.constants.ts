@@ -23,11 +23,11 @@ export const pageLinks = [
 
 export const socialLinks = [
   {
-    name: "twitter",
+    name: "Twitter",
     url: "https://twitter.com/GoodHiveLabs",
   },
   {
-    name: "linkedin",
+    name: "Linkedin",
     url: "https://www.linkedin.com/company/goodhivefoundation",
   },
 ];

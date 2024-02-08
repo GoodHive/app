@@ -15,6 +15,7 @@ type referralObject = {
 export const ReferralSection = () => {
   const [referral, setReferral] = useState<null | referralObject>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMyStats, setIsMyStats] = useState(false);
 
   const walletAddress = useContext(AddressContext);
 
@@ -67,6 +68,10 @@ export const ReferralSection = () => {
     }
   };
 
+  const onMyStatsClick = () => {
+    setIsMyStats(true);
+  };
+
   useEffect(() => {
     if (walletAddress) {
       getReferralCode();
@@ -76,7 +81,7 @@ export const ReferralSection = () => {
   return (
     <div>
       <h1 className="text-xl mb-5">Referral Section:</h1>
-      {!referral && !isLoading && (
+      {!referral && !isLoading ? (
         <button
           type="button"
           className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
@@ -84,8 +89,16 @@ export const ReferralSection = () => {
         >
           Claim Your Referral Code
         </button>
-      )}
-      {referral && !!Object.keys(referral).length && (
+      ) : !isMyStats ? (
+        <button
+          type="button"
+          className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          onClick={onMyStatsClick}
+        >
+          My Stats
+        </button>
+      ) : null}
+      {referral && isMyStats && !!Object.keys(referral).length && (
         <div>
           <p className="text-base mb-2">
             <strong>Your referral link:</strong>{" "}

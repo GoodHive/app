@@ -139,6 +139,7 @@ export default async function CompanyProfilePage(
           </h2>
           <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 ">
             {jobs.map((job) => {
+              if (singleJob && singleJob.id === job.id) return null;
               const {
                 id,
                 title,

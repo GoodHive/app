@@ -218,6 +218,13 @@ export default function MyProfile() {
           }),
         });
       }
+      if (
+        profileData.talent_status === "approved" ||
+        profileData.mentor_status === "approved" ||
+        profileData.recruiter_status === "approved"
+      ) {
+        toast.success(`🎉 Your profile has been successfully saved!`);
+      }
       toast.success(
         `🎉 Your profile has been successfully saved!
 

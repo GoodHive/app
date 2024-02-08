@@ -17,7 +17,7 @@ import {
 import { skills } from "@constants/skills";
 import {
   ethereumTokens,
-  gnosisChainTokens
+  gnosisChainTokens,
 } from "@constants/token-list/index.js";
 import { polygonTestnetTokens } from "@constants/token-list/polygon";
 
@@ -561,14 +561,14 @@ export default function CreateJob() {
                   labelText="Chain"
                   name="chain"
                   required={true}
-                  disabled={false}
+                  disabled={true}
                   inputValue={selectedChain}
                   setInputValue={setSelectedChain}
                   options={chains}
                   defaultValue={
                     chains[
                       chains.findIndex((type) => type.value === jobData?.chain)
-                    ]
+                    ] || chains[0]
                   }
                 />
               </div>
