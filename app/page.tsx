@@ -8,7 +8,10 @@ import GoogleAnalytics from "@components/google-analytics";
 
 export const metadata: Metadata = {
   title: "Home Page | GoodHive",
-  description: "The Decentralized Freelancing Platform",
+  keywords:
+    "Recruitment, Web3 Talent, Crypto Jobs, Blockchain Jobs, Collaborative Recruitment",
+  description:
+    "Unlock opportunities in the Web3 space with our Collaborative Recruitment Platform. Find the best Web3 talent, crypto jobs, and blockchain jobs today. Your go-to hub for seamless recruitment.",
 };
 
 export default function Home() {
