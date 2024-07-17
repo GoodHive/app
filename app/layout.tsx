@@ -25,9 +25,10 @@ import { SiweMessage } from "siwe";
 
 import { SwitchWalletCheck } from "@components/switch-wallet-check";
 import { NavBar } from "@components/nav-bar";
-import { AddressContext } from "@components/context";
 import { Footer } from "@components/footer/footer";
 import { GoodhiveInfuraApi } from "./constants/common";
+
+import AddressContextWrapper from "./components/addressContextWrapper/AddressContextWrapper";
 
 import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
@@ -82,42 +83,44 @@ export default function RootLayout({
     }
   }, [referralCode]);
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      if (fetchingStatusRef.current || verifyingRef.current) {
-        return;
-      }
+  // FIXED BUT KEP FOR REFERENCE - ADDRESS CONTEXT WRAPPER
+  // useEffect(() => {
+  //   const fetchStatus = async () => {
+  //     if (fetchingStatusRef.current || verifyingRef.current) {
+  //       return;
+  //     }
 
-      fetchingStatusRef.current = true;
+  //     fetchingStatusRef.current = true;
 
-      try {
-        const checkAuthResponse = await fetch("/api/auth/me");
+  //     try {
+  //       const checkAuthResponse = await fetch("/api/auth/me");
 
-        const authResponse = await checkAuthResponse.json();
+  //       const authResponse = await checkAuthResponse.json();
 
-        const authenticated = Boolean(authResponse?.ok === true);
+  //       const authenticated = Boolean(authResponse?.ok === true);
 
-        if (authenticated) {
-          setAuthStatus("authenticated");
-          setWalletAddress(authResponse?.address);
-        } else {
-          setAuthStatus("unauthenticated");
-        }
-      } catch (error) {
-        console.error(error);
+  //       if (authenticated) {
+  //         setAuthStatus("authenticated");
+  //         Cookies.set("walletAddress", authResponse?.address);
+  //         setWalletAddress(authResponse?.address);
+  //       } else {
+  //         setAuthStatus("unauthenticated");
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
 
-        setAuthStatus("unauthenticated");
-      } finally {
-        fetchingStatusRef.current = false;
-      }
-    };
+  //       setAuthStatus("unauthenticated");
+  //     } finally {
+  //       fetchingStatusRef.current = false;
+  //     }
+  //   };
 
-    fetchStatus();
+  //   if (!walletAddressCookie) fetchStatus();
 
-    window.addEventListener("focus", fetchStatus);
+  //   window.addEventListener("focus", fetchStatus);
 
-    return () => window.removeEventListener("focus", fetchStatus);
-  }, []);
+  //   return () => window.removeEventListener("focus", fetchStatus);
+  // }, [walletAddressCookie]);
 
   const authAdapter = useMemo(() => {
     return createAuthenticationAdapter({
@@ -216,9 +219,9 @@ export default function RootLayout({
                 <Toaster />
 
                 <div className="flex-grow">
-                  <AddressContext.Provider value={walletAddress}>
+                  <AddressContextWrapper setAuthStatus={setAuthStatus}>
                     {children}
-                  </AddressContext.Provider>
+                  </AddressContextWrapper>
                 </div>
                 <Footer />
               </div>
