@@ -12,13 +12,14 @@ export const PopupModal: FC<AddFundsModalProps> = (props) => {
   const [amount, setAmount] = useState(0);
   const [isFullAmount, setIsFullAmount] = useState(false);
 
-  const { jobId, open, onClose, type, onSubmit } = props;
+  const { jobId, open, onClose, type, onSubmit, currencyToken } = props;
 
   const { title, description, buttonText } = generateContent(type);
   const walletAddress = useContext(AddressContext);
 
   const { checkBalanceTx } = useCreateJob({
     walletAddress,
+    token: currencyToken,
   });
 
   const handleProvisionAmountChange = (

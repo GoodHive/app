@@ -69,6 +69,7 @@ export default function CreateJob() {
   const { createJobTx, withdrawFundsTx, checkBalanceTx, transferFundsTx } =
     useCreateJob({
       walletAddress,
+      token: selectedCurrency?.value ?? "",
     });
 
   const onPopupModalSubmit = async (amount: number, type: string) => {
@@ -262,7 +263,7 @@ export default function CreateJob() {
             ]
           : data.chain === "polygon"
           ? polygonMainnetTokens[
-            polygonMainnetTokens.findIndex(
+              polygonMainnetTokens.findIndex(
                 (token) => token.value === data.currency
               )
             ]
@@ -694,6 +695,7 @@ export default function CreateJob() {
         jobId={id}
         type={popupModalType}
         onSubmit={onPopupModalSubmit}
+        currencyToken={selectedCurrency?.value ?? ""}
       />
     </main>
   );

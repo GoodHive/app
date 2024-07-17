@@ -6,7 +6,6 @@ import React, { FC, useContext, useEffect, useState } from "react";
 
 import { AddressContext } from "@components/context";
 
-
 type Props = {
   linkedin?: string;
   telegram?: string;
@@ -64,7 +63,8 @@ export const TalentSocialMedia: FC<Props> = (props) => {
               <Image src="/icons/linkedin.svg" alt="social-icon" fill />
             </Link>
           )}
-          {telegram && (
+
+          {/* {telegram && (
             <Link
               href={`https://t.me/${telegram}`}
               target="_blank"
@@ -72,7 +72,8 @@ export const TalentSocialMedia: FC<Props> = (props) => {
             >
               <Image src="/icons/telegram.svg" alt="social-icon" fill />
             </Link>
-          )}
+          )} */}
+
           {github && (
             <Link
               href={{ pathname: github }}

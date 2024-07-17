@@ -4,4 +4,5 @@ export type AddFundsModalProps = {
     type: string;
     onClose: VoidFunction;
     onSubmit: (amount: number, type: string) => void;
+    currencyToken: string;
 };

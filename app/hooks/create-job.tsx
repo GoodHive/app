@@ -9,6 +9,7 @@ import {
 import TokenAbi from "@/contracts/TokenAbi.json";
 interface Props {
   walletAddress: string;
+  token: string;
 }
 
 export const useCreateJob = (props: Props) => {
@@ -39,20 +40,25 @@ export const useCreateJob = (props: Props) => {
     }
   };
   const requestApproval = async (amount: number) => {
-    const token = process.env.NEXT_PUBLIC_GOODHIVE_USDC_TOKEN_POLYGON;
+    const token = props.token;
     if (!window.ethereum) return "";
     const web3 = new Web3(process.env.NEXT_PUBLIC_GOODHIVE_INFURA_API);
     const accounts = await window.ethereum.request({ method: "eth_accounts" });
     if (accounts.length === 0) {
       return console.log("no accout found");
     }
-    const contract:any = new web3.eth.Contract(TokenAbi, token, {
+    const contract: any = new web3.eth.Contract(TokenAbi, props.token, {
       from: accounts[0],
     });
     const tx = contract.methods
       .approve(
         GoodhiveContractAddress,
-        web3.utils.toWei(amount.toString(), "mwei")
+        web3.utils.toWei(
+          amount.toString(),
+          props.token === "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+            ? "mwei"
+            : "ether"
+        )
       )
       .encodeABI();
     try {
@@ -96,13 +102,22 @@ export const useCreateJob = (props: Props) => {
       if (accounts.length === 0) {
         return console.log("no accout found");
       }
-      const contract:any = new web3.eth.Contract(
+      const contract: any = new web3.eth.Contract(
         GoodhiveJobContract.abi,
         GoodhiveContractAddress,
         { from: accounts[0] }
       );
       const tx = contract.methods
-        .createJob(jobId, web3.utils.toWei(amount.toString(), "mwei"))
+        .createJob(
+          jobId,
+          web3.utils.toWei(
+            amount.toString(),
+            props.token === "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+              ? "mwei"
+              : "ether"
+          ),
+          props.token
+        )
         .encodeABI();
 
       try {
@@ -132,7 +147,11 @@ export const useCreateJob = (props: Props) => {
     try {
       const balance = await contract.methods.checkBalance(jobId).call();
 
-      const balanceInEther = Number(balance) / 1000000;
+      const balanceInEther =
+        Number(balance) /
+        (props.token === "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+          ? 1000000
+          : 1);
       return balanceInEther;
     } catch (error) {
       console.error("Error checking balance:", error);
@@ -147,13 +166,21 @@ export const useCreateJob = (props: Props) => {
     if (accounts.length === 0) {
       return console.log("no accout found");
     }
-    const contract:any = new web3.eth.Contract(
+    const contract: any = new web3.eth.Contract(
       GoodhiveJobContract.abi,
       GoodhiveContractAddress,
       { from: accounts[0] }
     );
     const tx = contract.methods
-      .withdrawFunds(jobId, web3.utils.toWei(amount.toString(), "mwei"))
+      .withdrawFunds(
+        jobId,
+        web3.utils.toWei(
+          amount.toString(),
+          props.token === "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
+            ? "mwei"
+            : "ether"
+        )
+      )
       .encodeABI();
     try {
       const balance = await checkBalanceTx(jobId);
@@ -183,7 +210,7 @@ export const useCreateJob = (props: Props) => {
     if (accounts.length === 0) {
       return console.log("no accout found");
     }
-    const contract:any = new web3.eth.Contract(
+    const contract: any = new web3.eth.Contract(
       GoodhiveJobContract.abi,
       GoodhiveContractAddress,
       { from: accounts[0] }

@@ -45,7 +45,11 @@ export async function POST(request: Request) {
         await sql`
         UPDATE goodhive.referrals
         SET
-          companies = ${referralCompanies ? [...referralCompanies, walletAddress] : [walletAddress]}
+          companies = ${
+            referralCompanies
+              ? [...referralCompanies, walletAddress]
+              : [walletAddress]
+          }
         WHERE wallet_address = ${referrerWalletAddress}
         `;
       }
@@ -122,7 +126,7 @@ export async function POST(request: Request) {
 export async function GET(request: NextRequest) {
   const searchParamsEntries = request.nextUrl.searchParams.entries();
   const searchParams = Object.fromEntries(searchParamsEntries);
-  
+
   const { walletAddress } = searchParams;
 
   const sql = postgres(process.env.DATABASE_URL || "", {

@@ -12,10 +12,20 @@ type MyProfilePageProps = {
   params: {
     address: string;
   };
+  searchParams: {
+    vkey: string;
+    ref: string;
+  };
 };
 
 export default async function MyProfilePage(context: MyProfilePageProps) {
   const { address } = context.params;
+  const { vkey, ref } = context.searchParams;
+
+  const isValidVkey = vkey === process.env.NEXT_PUBLIC_ADMIN_VERIFICATION_KEY;
+
+  console.log(ref, isValidVkey);
+
   const profileData = await getProfileData(address);
   const {
     skills,
@@ -49,6 +59,16 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
     freelance_only,
     remote_only
   );
+
+  if (ref === "admin" && isValidVkey === false) return;
+  if (ref !== "admin" && talent_status === "pending")
+    return (
+      <div>
+        <p className="px-4 py-3 text-xl font-medium text-center text-red-500 rounded-md shadow-md bg-yellow-50">
+          🚀 This account is still under review. Account will be live soon.
+        </p>
+      </div>
+    );
 
   return (
     <main className="relative pt-16">
@@ -111,6 +131,21 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
           <p className="w-full max-h-52 mb-10 text-ellipsis overflow-hidden">
             {description}
           </p>
+
+          {(talent_status === "approved" ||
+            mentor_status === "approved" ||
+            recruiter_status === "approved") && (
+            <>
+              <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
+                I Can Help You As:
+              </h3>
+              <p className="w-full max-h-52 mb-10 text-ellipsis overflow-hidden">
+                {`${talent_status === "approved" ? "Talent " : ""}${
+                  mentor_status === "approved" ? "Mentor " : ""
+                }${recruiter_status === "approved" ? "Recruiter" : ""}`}
+              </p>
+            </>
+          )}
           <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
             About my work:
           </h3>
@@ -142,19 +177,21 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
               ))}
           </div>
 
-          {cv_url && (
-            <h3 className="text-[#4E4E4E] text-lg font-bold mb-3">
-              Resume/CV:
-            </h3>
+          {cv_url && talent_status === "approved" && (
+            <>
+              <h3 className="text-[#4E4E4E] text-lg font-bold mb-3">
+                Resume/CV:
+              </h3>
+
+              <div className="relative w-12 h-10 mb-7">
+                <Link href={cv_url} target="_blank">
+                  <Image src="/icons/resume.svg" alt="resume-icon" fill />
+                </Link>
+              </div>
+            </>
           )}
-          {cv_url && (
-            <div className="relative w-12 h-10 mb-7">
-              <Link href={cv_url} target="_blank">
-                <Image src="/icons/resume.svg" alt="resume-icon" fill />
-              </Link>
-            </div>
-          )}
-          {!hide_contact_details && (
+
+          {/* {!hide_contact_details && (
             <div>
               <h3 className="text-[#4E4E4E] text-lg font-bold mb-5">
                 Contact info
@@ -165,7 +202,9 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
               </div>
               <div className="flex w-full justify-between mb-8">
                 <h4 className="text-[#4E4E4E] text-base font-bold">Phone</h4>
-                <p className="text-[#4E4E4E] text-base">+{`${phone_country_code} ${phone_number}`}</p>
+                <p className="text-[#4E4E4E] text-base">
+                  +{`${phone_country_code} ${phone_number}`}
+                </p>
               </div>
               <div className="flex w-full justify-between mb-8">
                 <h4 className="text-[#4E4E4E] text-base font-bold">Address</h4>
@@ -174,7 +213,7 @@ export default async function MyProfilePage(context: MyProfilePageProps) {
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </main>
