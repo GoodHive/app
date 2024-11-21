@@ -340,6 +340,13 @@ export default function MyProfile() {
       🚀 Your profile is pending approval. It will be live soon.
     </p>
   );
+  const ProfileCaution = () => (
+    <p className="px-4 py-3 text-xl font-medium text-center text-red-500 rounded-md shadow-md bg-yellow-50">
+      ℹ️ If you are a new user and created your account using a email and
+      password, please connect the wallet too. We are still working on some
+      features to make it easier for you to save your profile. Thanks! 😄
+    </p>
+  );
 
   const PendingRecruiterApprovalMessage = () => (
     <p className="px-4 py-3 text-xl font-medium text-center text-red-500 rounded-md shadow-md bg-yellow-50">
@@ -375,6 +382,7 @@ export default function MyProfile() {
       <h1 className="my-5 text-2xl border-b-[1px] border-slate-300 pb-2">
         My Profile
       </h1>
+      <ProfileCaution />
 
       {/* Showing Connect Wallet Message If Not */}
       {!walletAddress ||
