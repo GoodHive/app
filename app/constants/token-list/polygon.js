@@ -7088,5 +7088,17 @@ export const polygonMainnetTokens = [
   {
     value: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
     label: "USDC Token | USDC",
+  },
+  {
+    value: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+    label: "Dai - PoS | DAI (0x8f3c...a063)",
+  },
+  {
+    value: "0xE0B52e49357Fd4DAf2c15e02058DCE6BC0057db4",
+    label: "agEUR | agEUR (0xE0B5...7db4)",
+  },
+  {
+    value: "0x4d0B6356605e6FA95c025a6f6092ECcf0Cf4317b",
+    label: "Euro Token | EUR (0x4d0B...4317b)",
   }
 ]
