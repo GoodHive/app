@@ -2,8 +2,38 @@
 
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50/20 via-white to-yellow-50/15">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 relative overflow-hidden">
+      {/* Honeycomb Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.4'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '60px 60px'
+        }}></div>
+      </div>
+      
+      {/* Floating Hexagon Decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-8 h-8 rotate-12 opacity-20">
+          <div className="w-full h-full bg-amber-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+        <div className="absolute top-40 right-20 w-6 h-6 rotate-45 opacity-15">
+          <div className="w-full h-full bg-yellow-500 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+        <div className="absolute bottom-32 left-1/4 w-10 h-10 rotate-12 opacity-10">
+          <div className="w-full h-full bg-orange-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+        <div className="absolute top-1/3 right-10 w-4 h-4 rotate-90 opacity-25">
+          <div className="w-full h-full bg-amber-300 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+        <div className="absolute top-60 left-20 w-5 h-5 rotate-30 opacity-15">
+          <div className="w-full h-full bg-yellow-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+        <div className="absolute bottom-20 right-1/3 w-7 h-7 rotate-60 opacity-20">
+          <div className="w-full h-full bg-amber-500 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header Section Skeleton */}
         <div className="text-center mb-12">
           <div className="w-16 h-16 bg-gray-200 rounded-2xl mb-6 mx-auto animate-pulse"></div>

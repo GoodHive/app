@@ -9,6 +9,7 @@ import { SkillsSuggestionMulti } from "../skills-suggestor/skills-suggestor-mult
 import { ToggleSwitch } from "../toggle-switch/toggle-switch";
 import { TRANSLATIONS } from "./search-filters.constants";
 import type { SearchFiltersProps } from "./search-filters.types";
+import { Users, Briefcase, FolderOpen, Sparkles, Target } from "lucide-react";
 
 export const SearchFilters: FC<SearchFiltersProps> = (props) => {
   const router = useRouter();
@@ -194,7 +195,11 @@ export const SearchFilters: FC<SearchFiltersProps> = (props) => {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-2xl mb-6 shadow-lg">
-              <span className="text-2xl">{isSearchTalent ? "👥" : "💼"}</span>
+              {isSearchTalent ? (
+                <Users className="w-8 h-8 text-white" />
+              ) : (
+                <Briefcase className="w-8 h-8 text-white" />
+              )}
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 leading-tight">
               {title}
@@ -359,12 +364,12 @@ export const SearchFilters: FC<SearchFiltersProps> = (props) => {
               <div className="flex flex-wrap items-center gap-3">
                 <LinkButton
                   href="#"
-                  icon={false as any}
+                  icon={<FolderOpen className="w-4 h-4" />}
                   iconSize="medium"
                   variant="secondary"
                   onClick={handleClearFilters}
                 >
-                  🗂️ Clear Filters
+                  Clear Filters
                 </LinkButton>
               </div>
 
@@ -374,10 +379,11 @@ export const SearchFilters: FC<SearchFiltersProps> = (props) => {
                     ? "/companies/create-job"
                     : "/talents/my-profile"
                 }
+                icon={isSearchTalent ? <Sparkles className="w-4 h-4" /> : <Target className="w-4 h-4" />}
                 iconSize="medium"
                 variant="primary"
               >
-                {isSearchTalent ? "✨ Create Job" : "🎯 My Profile"}
+                {isSearchTalent ? "Create Job" : "My Profile"}
               </LinkButton>
             </div>
           </div>
