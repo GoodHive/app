@@ -22,6 +22,8 @@ const PUBLIC_PATHS = [
   "/api/auth/verify",
   "/api/auth/verify-wallet",
   "/api/auth/check-wallet",
+  "/api/auth/check-account",
+  "/api/auth/thirdweb-verify",
   "/api/auth/logout",
   "/api/auth/me",
 ];

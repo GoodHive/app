@@ -1,8 +1,8 @@
-import React, { useState, useRef, useCallback, memo } from "react";
-import Image from "next/image";
 import { uploadFileToBucket } from "@/app/utils/upload-file-bucket";
-import Modal from "./modal";
+import Image from "next/image";
+import React, { memo, useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+import Modal from "./modal";
 
 interface ProfileImageUploadProps {
   currentImage?: string | null;
@@ -27,7 +27,10 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+  const validTypes = useMemo(
+    () => ["image/jpeg", "image/jpg", "image/png"],
+    [],
+  );
   const MAX_FILE_SIZE_MB = 10; // 10MB
 
   const handleFileChange = useCallback(
@@ -84,7 +87,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         setIsLoading(false);
       }
     },
-    [selectedFile, variant, onImageUpdate],
+    [selectedFile, variant, onImageUpdate, handleClose],
   );
 
   const openModal = useCallback((e: React.MouseEvent) => {

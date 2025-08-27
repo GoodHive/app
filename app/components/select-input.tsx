@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import LabelOption from "@interfaces/label-option";
 
@@ -24,20 +24,20 @@ export const SelectInput: FC<Props> = ({
 }) => {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<LabelOption | null>(
-    defaultValue || null
+    defaultValue || null,
   );
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleInputClickAndCloseOptions = (option: LabelOption) => {
     setInputValue(option);
     setIsOptionsOpen(false);
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   // Filter options based on search term
-  const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const renderOptions = filteredOptions.map((option) => (
@@ -61,23 +61,26 @@ export const SelectInput: FC<Props> = ({
     if (defaultValue) {
       setInputValue(defaultValue);
     }
-  }, [defaultValue]);
+  }, [defaultValue, setInputValue]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOptionsOpen(false);
-        setSearchTerm('');
+        setSearchTerm("");
       }
     };
 
     if (isOptionsOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOptionsOpen]);
 
@@ -89,7 +92,7 @@ export const SelectInput: FC<Props> = ({
       </label>
       <div className="flex items-center">
         <p
-          className={`${selectStyle} ${isOptionsOpen ? 'border-amber-500' : ''}`}
+          className={`${selectStyle} ${isOptionsOpen ? "border-amber-500" : ""}`}
           onClick={() => setIsOptionsOpen(() => !isOptionsOpen)}
           style={{
             color:
@@ -125,19 +128,19 @@ export const SelectInput: FC<Props> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && filteredOptions.length > 0) {
+                if (e.key === "Enter" && filteredOptions.length > 0) {
                   handleInputClickAndCloseOptions(filteredOptions[0]);
                 }
-                if (e.key === 'Escape') {
+                if (e.key === "Escape") {
                   setIsOptionsOpen(false);
-                  setSearchTerm('');
+                  setSearchTerm("");
                 }
               }}
               className="w-full px-3 py-2 text-sm border border-amber-200 rounded-lg focus:border-amber-500 focus:outline-none"
               autoFocus
             />
           </div>
-          
+
           {/* Options List */}
           <div className="overflow-y-auto max-h-64">
             {filteredOptions.length > 0 ? (

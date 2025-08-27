@@ -10,7 +10,7 @@ import {
 import { BigNumber, ethers } from "ethers";
 import Cookies from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { AuthLayout } from "@/app/components/AuthLayout/AuthLayout";
@@ -143,7 +143,6 @@ export default function CreateJob() {
     fetchUserWallet();
   }, [oktoClient]);
 
-
   useEffect(() => {
     const fetchUserPortfolio = async () => {
       if (!oktoClient) return;
@@ -181,9 +180,12 @@ export default function CreateJob() {
 
     // Add timeout for the entire operation
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new Error("Operation timed out after 5 minutes"));
-      }, 5 * 60 * 1000); // 5 minutes timeout
+      setTimeout(
+        () => {
+          reject(new Error("Operation timed out after 5 minutes"));
+        },
+        5 * 60 * 1000,
+      ); // 5 minutes timeout
     });
 
     // Add cancellation promise
@@ -202,7 +204,7 @@ export default function CreateJob() {
       return await Promise.race([
         performCreateJob(contractJobId, amount),
         timeoutPromise,
-        cancellationPromise
+        cancellationPromise,
       ]);
     } catch (error: any) {
       console.error("Transaction failed:", error);
@@ -324,7 +326,9 @@ export default function CreateJob() {
 
           // If we have too many consecutive errors, break the loop
           if (consecutiveErrors >= maxConsecutiveErrors) {
-            throw new Error(`Failed to confirm approval after ${maxConsecutiveErrors} consecutive errors: ${error.message}`);
+            throw new Error(
+              `Failed to confirm approval after ${maxConsecutiveErrors} consecutive errors: ${error.message}`,
+            );
           }
 
           // For API errors, continue trying but increment retries
@@ -334,7 +338,9 @@ export default function CreateJob() {
       }
 
       if (!approvalConfirmed) {
-        throw new Error(`Approval transaction timed out after ${maxRetries} seconds`);
+        throw new Error(
+          `Approval transaction timed out after ${maxRetries} seconds`,
+        );
       }
 
       // --- 3. Create Job Transaction ---
@@ -441,11 +447,11 @@ export default function CreateJob() {
     }
   };
 
-  const handlePopupModal = (type: string) => {
+  const handlePopupModal = useCallback((type: string) => {
     handleManageFundsModalClose();
     setPopupModalType(type);
     setIsPopupModalOpen(true);
-  };
+  }, []);
 
   const handleManageFundsModalClose = () => {
     setIsManageFundsModalOpen(false);
@@ -520,7 +526,7 @@ export default function CreateJob() {
     }
   };
 
-  const fetchCompanyData = async () => {
+  const fetchCompanyData = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -532,9 +538,9 @@ export default function CreateJob() {
     } catch (error) {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
-  const fetchJobData = async () => {
+  const fetchJobData = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/companies/job-data?id=${id}`);
@@ -551,13 +557,13 @@ export default function CreateJob() {
       setDescription(data.description || "");
       setSelectedChain(
         chains[chains.findIndex((chain) => chain.value === data.chain)] ||
-        chains[0],
+          chains[0],
       );
       setSelectedCurrency(
         polygonMainnetTokens[
-        polygonMainnetTokens.findIndex(
-          (token) => token.value === data.currency,
-        )
+          polygonMainnetTokens.findIndex(
+            (token) => token.value === data.currency,
+          )
         ],
       );
     } catch (error) {
@@ -565,9 +571,18 @@ export default function CreateJob() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    id,
+    setJobServices,
+    setSelectedSkills,
+    setBudget,
+    setJobImage,
+    setDescription,
+    setSelectedChain,
+    setSelectedCurrency,
+  ]);
 
-  const fetchJobBalance = async () => {
+  const fetchJobBalance = useCallback(async () => {
     console.log(jobData, "jobData");
     if (!id || !jobData?.id) return;
 
@@ -578,7 +593,7 @@ export default function CreateJob() {
       console.error("Error fetching balance:", error);
       setBlockchainBalance(0);
     }
-  };
+  }, [id, jobData?.id, jobData?.block_id]);
 
   useEffect(() => {
     if (!userId) {
@@ -586,7 +601,7 @@ export default function CreateJob() {
     } else {
       fetchCompanyData();
     }
-  }, [userId, router]);
+  }, [userId, router, fetchCompanyData]);
 
   useEffect(() => {
     if (id) {
@@ -595,14 +610,14 @@ export default function CreateJob() {
     if (id && addFunds === "true") {
       handlePopupModal("addFunds");
     }
-  }, [id, addFunds]);
+  }, [id, addFunds, fetchJobData, handlePopupModal]);
 
   useEffect(() => {
     if (jobData?.id) {
       console.log("fetching job balance", jobData.id);
       fetchJobBalance();
     }
-  }, [jobData?.id]);
+  }, [jobData?.id, fetchJobBalance]);
 
   if (isLoading) {
     return (
@@ -694,9 +709,7 @@ export default function CreateJob() {
         {transactionStatus && (
           <div className="fixed top-0 left-0 right-0 bg-blue-500 text-white p-4 text-center z-50">
             <div className="flex items-center justify-between max-w-4xl mx-auto">
-              <div className="flex-1">
-                {transactionStatus}
-              </div>
+              <div className="flex-1">{transactionStatus}</div>
               <button
                 onClick={handleCancelTransaction}
                 className="ml-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded text-sm font-medium transition-colors"

@@ -10,7 +10,6 @@ import { createJobServices } from "@/app/constants/common";
 import { countries } from "@/app/constants/countries";
 import { skills } from "@/app/constants/skills";
 import { uploadFileToBucket } from "@/app/utils/upload-file-bucket";
-import { useOkto } from "@okto_web3/react-sdk";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -127,7 +126,6 @@ function decodeBase64HtmlWrappedInPTags(str: string) {
 }
 
 export default function ProfilePage() {
-  const oktoClient = useOkto();
   // Static references
   const imageInputRef = useRef(null);
   const isInitialMount = useRef(true);
