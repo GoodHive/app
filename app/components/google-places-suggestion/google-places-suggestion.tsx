@@ -71,7 +71,7 @@ export const GooglePlaceSuggestion: FC<GooglePlaceSuggestionProps> = (
 
   useEffect(() => {
     initMapScript().then(() => initAutocomplete());
-  }, []);
+  }, [initAutocomplete]);
 
   return (
     <div>

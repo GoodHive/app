@@ -7,12 +7,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Only apply CORS headers in development
+        // Only apply CORS headers in development - NO COOP/COEP to allow popups
         source: process.env.NODE_ENV === "development" ? "/(.*)" : "/dev-only-route-that-never-exists",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "http://localhost:3000",
+            value: "*",
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -21,6 +21,10 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Headers",
             value: "Content-Type, Authorization",
+          },
+          {
+            key: "Access-Control-Allow-Credentials",
+            value: "true",
           },
         ],
       },

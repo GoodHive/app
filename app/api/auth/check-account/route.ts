@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   try {
     // Check if user exists and get their login method
     const users = await sql`
-      SELECT login_method, userid, email, wallet_address, okto_wallet_address
+      SELECT login_method, userid, email, wallet_address, thirdweb_wallet_address
       FROM goodhive.users
       WHERE email = ${email}
     `;
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       user_id: users[0]?.userid,
       email: users[0]?.email,
       wallet_address: users[0]?.wallet_address,
-      okto_wallet_address: users[0]?.okto_wallet_address,
+      thirdweb_wallet_address: users[0]?.thirdweb_wallet_address,
     });
   } catch (error) {
     console.error("Error checking account:", error);

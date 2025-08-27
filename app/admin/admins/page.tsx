@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/app/components/button";
 import { Dialog } from "@headlessui/react";
-import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 // Update the Spinner component
 const Spinner = () => (
@@ -37,7 +37,7 @@ export default function AdminsPage() {
 
   useEffect(() => {
     fetchAdmins();
-  }, []);
+  }, [fetchAdmins]);
 
   const getAuthHeaders = () => {
     const token = Cookies.get("admin_token");
@@ -51,7 +51,7 @@ export default function AdminsPage() {
     };
   };
 
-  const fetchAdmins = async () => {
+  const fetchAdmins = useCallback(async () => {
     setLoading(true); // Set loading to true when fetching starts
     try {
       const headers = getAuthHeaders();
@@ -75,7 +75,7 @@ export default function AdminsPage() {
     } finally {
       setLoading(false); // Set loading to false when fetching ends
     }
-  };
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

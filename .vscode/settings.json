@@ -91,5 +91,6 @@
     "**/out": true
   },
   // Cursor-specific AI tooling
-  "cursor.experimental.devtoolsEnabled": true
+  "cursor.experimental.devtoolsEnabled": true,
+  "cSpell.words": ["Thirdweb"]
 }

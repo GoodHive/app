@@ -9,7 +9,14 @@
     "build-no-check": "NODE_OPTIONS='--max-old-space-size=4096' next build --no-lint",
     "vercel-build": "NODE_OPTIONS='--max-old-space-size=4096' NEXT_TELEMETRY_DISABLED=1 next build",
     "lint": "next lint",
-    "migrate": "tsx app/db/run-migration.ts"
+    "migrate": "tsx app/db/run-migration.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:migration": "vitest tests/integration/migration-flow.test.ts",
+    "test:components": "vitest tests/components/",
+    "test:api": "vitest tests/api/"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.327.0",
@@ -20,7 +27,6 @@
     "@hookform/resolvers": "^3.9.1",
     "@nextui-org/theme": "^2.2.9",
     "@nextui-org/tooltip": "^2.0.29",
-    "@okto_web3/react-sdk": "^1.1.0",
     "@portabletext/react": "^3.1.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.4",
@@ -32,7 +38,6 @@
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
-    "@rainbow-me/rainbowkit": "^1.0.1",
     "@react-oauth/google": "^0.12.2",
     "@sanity/asset-utils": "^2.0.6",
     "@sanity/client": "^6.22.0",
@@ -101,16 +106,20 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
+    "thirdweb": "5.42.0",
     "typescript": "5.0.4",
     "utf-8-validate": "^6.0.4",
     "uuid": "^9.0.0",
-    "wagmi": "^1.0.9",
     "web3": "^4.3.0",
     "yup": "^1.6.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@thirdweb-dev/cli": "^0.14.12",
     "@types/bcrypt": "^5.0.2",
     "@types/js-cookie": "^3.0.6",
     "@types/pdf-parse": "^1.1.5",
@@ -119,8 +128,11 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-modal": "^3.16.3",
     "@types/uuid": "^9.0.1",
+    "@vitest/ui": "^3.2.4",
     "eslint-config-prettier": "^8.8.0",
-    "tsx": "^4.19.4"
+    "jsdom": "^26.1.0",
+    "tsx": "^4.19.4",
+    "vitest": "^3.2.4"
   },
   "browser": {
     "tls": false,

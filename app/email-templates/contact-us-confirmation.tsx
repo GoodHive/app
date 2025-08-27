@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface ContactUsConfirmationTemplateProps {
   name: string;
   email: string;
@@ -14,9 +16,11 @@ export default function ContactUsConfirmationTemplate({
       <div style={container}>
         {/* Header */}
         <div style={header}>
-          <img
+          <Image
             src="https://goodhive.io/img/goodhive_logo.png"
             alt="GoodHive Logo"
+            width={200}
+            height={60}
             style={logo}
           />
         </div>

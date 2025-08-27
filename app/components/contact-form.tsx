@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
 import { useForm, ValidationError } from "@formspree/react";
-import { Send, CheckCircle } from "lucide-react";
+import { CheckCircle, Send } from "lucide-react";
 
 const formId = process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID;
 
 export default function ContactForm() {
-  
   const [state, handleSubmit] = useForm(formId || "placeholder");
 
   if (!formId) {
@@ -16,9 +14,12 @@ export default function ContactForm() {
         <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
           <Send className="w-8 h-8 text-white" />
         </div>
-        <h3 className="text-xl font-bold text-amber-800 mb-2">Contact Form Configuration Required</h3>
+        <h3 className="text-xl font-bold text-amber-800 mb-2">
+          Contact Form Configuration Required
+        </h3>
         <p className="text-amber-600">
-          The contact form is currently not configured. Please add the NEXT_PUBLIC_FORMSPREE_FORM_ID environment variable.
+          The contact form is currently not configured. Please add the
+          NEXT_PUBLIC_FORMSPREE_FORM_ID environment variable.
         </p>
       </div>
     );
@@ -30,7 +31,9 @@ export default function ContactForm() {
         <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-white" />
         </div>
-        <h3 className="text-xl font-bold text-green-800 mb-2">Message Sent Successfully! 🐝</h3>
+        <h3 className="text-xl font-bold text-green-800 mb-2">
+          Message Sent Successfully! 🐝
+        </h3>
         <p className="text-green-600">
           Thanks for reaching out! We&apos;ve received your message and our team
           will get back to you within 24 hours.
@@ -38,7 +41,7 @@ export default function ContactForm() {
       </div>
     );
   }
-  
+
   return (
     <div>
       <form className="space-y-6" onSubmit={handleSubmit}>
@@ -76,7 +79,7 @@ export default function ContactForm() {
           />
           <ValidationError prefix="Email" field="email" errors={state.errors} />
         </div>
-        
+
         <div>
           <label
             htmlFor="subject"
@@ -92,7 +95,7 @@ export default function ContactForm() {
             placeholder="What can we help you with?"
           />
         </div>
-        
+
         <div>
           <label
             htmlFor="message"
@@ -114,7 +117,7 @@ export default function ContactForm() {
             errors={state.errors}
           />
         </div>
-        
+
         <button
           type="submit"
           disabled={state.submitting}

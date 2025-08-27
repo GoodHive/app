@@ -1,6 +1,12 @@
 "use client";
 
+import { ConfirmationPopup } from "@/app/components/ConfirmationPopup/ConfirmationPopup";
+import Spinner from "@/app/components/Spinner/Spinner";
+import { generateCountryFlag } from "@/app/utils/generate-country-flag";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,28 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  Copy,
-  Download,
-  PenSquare,
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Trash2,
-  Check,
-  X,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { ChevronLeft, ChevronRight, Search, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "@/app/components/Spinner/Spinner";
-import Image from "next/image";
-import ApprovalPopup from "../talent-approval/components/ApprovalPopup";
-import { ConfirmationPopup } from "@/app/components/ConfirmationPopup/ConfirmationPopup";
-import { generateCountryFlag } from "@/app/utils/generate-country-flag";
 
 interface Company {
   address: string;
@@ -239,7 +227,7 @@ export default function AdminManageCompanies() {
                     <div className="flex flex-col">
                       <span>{company.city}</span>
                       <span className="text-sm text-muted-foreground">
-                        <img
+                        <Image
                           src={generateCountryFlag(company.country)}
                           alt={company.country}
                           height={20}

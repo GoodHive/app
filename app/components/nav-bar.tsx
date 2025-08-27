@@ -1,17 +1,23 @@
 "use client";
 
-import { getAccount, useOkto } from "@okto_web3/react-sdk";
 import { googleLogout } from "@react-oauth/google";
 import Cookies from "js-cookie";
-import { CircleUserRound, Wallet } from "lucide-react";
+import { CircleUserRound, LogOut } from "lucide-react";
 import { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount, useDisconnect } from "wagmi";
-import { WalletPopup } from "./WalletConnect/WalletPopup";
+import { useActiveAccount } from "thirdweb/react";
+import { FEATURES } from "@/lib/thirdweb/config";
+
+// Dynamic import to avoid SSR issues
+const SimpleConnectButton = React.lazy(() => 
+  import("./ThirdwebConnect/SimpleConnectButton").then(mod => ({ 
+    default: mod.SimpleConnectButton 
+  }))
+);
 
 const commonLinks = [
   { href: "/talents/job-search", label: "Find a Job" },
@@ -28,271 +34,237 @@ const companiesLinks = [
   { href: "/companies/my-profile", label: "My Company Profile" },
 ];
 
-// Add usePrevious hook
-function usePrevious<T>(value: T): T | undefined {
-  const ref = React.useRef<T>();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-}
-
 export const NavBar = () => {
-  const { disconnect } = useDisconnect();
-  const oktoClient = useOkto();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
-  const [isOpenWalletPopup, setIsOpenWalletPopup] = useState(false);
-  const [oktoWalletAddress, setOktoWalletAddress] = useState<string | null>(
-    null,
-  );
-  const walletButtonRef = useRef<HTMLDivElement>(null);
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { address: wagmiAddress, isConnected } = useAccount();
-  const prevIsConnected = usePrevious(isConnected);
+  
+  // Thirdweb account
+  const account = useActiveAccount();
+  const loggedInUserId = Cookies.get("user_id");
+  const userEmail = Cookies.get("user_email");
 
-  const loggedIn_user_id = Cookies.get("user_id");
-
-  const POLYGON_CAIP2_ID = "eip155:137";
-
-  // Fetch Okto wallet address
-  useEffect(() => {
-    const fetchUserWallet = async () => {
-      if (!oktoClient || !loggedIn_user_id) {
-        setOktoWalletAddress(null);
-        return;
-      }
-
-      try {
-        const accounts = await getAccount(oktoClient);
-        console.log(accounts, "accounts...goodhive");
-        const polygonAccount = accounts.find(
-          (account: any) => account.caipId === POLYGON_CAIP2_ID,
-        );
-        if (polygonAccount) {
-          setOktoWalletAddress(polygonAccount?.address);
-        } else {
-          setOktoWalletAddress(null);
-        }
-      } catch (error: any) {
-        console.error("Error fetching user wallet:", error);
-        setOktoWalletAddress(null);
-      }
-    };
-
-    fetchUserWallet();
-  }, [oktoClient, loggedIn_user_id]);
-
-  // Close wallet popup when clicking outside
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        walletButtonRef.current &&
-        !walletButtonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpenWalletPopup(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsOpenUserMenu(false);
       }
     };
 
-    if (isOpenWalletPopup) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpenWalletPopup]);
-
-  // Ensure WalletPopup stays open after wallet connect
-  /* useEffect(() => {
-    if (!prevIsConnected && isConnected) {
-      setIsOpenWalletPopup(true);
-    }
-  }, [isConnected, prevIsConnected]); */
-
-  const links = pathname.startsWith("/talents")
-    ? talentsLinks
-    : pathname.startsWith("/companies")
-      ? companiesLinks
-      : commonLinks;
-
+  // Handle user logout
   const handleLogout = async () => {
     try {
-      googleLogout();
-      oktoClient.sessionClear();
-
+      // Clear cookies
       Cookies.remove("user_id");
-      Cookies.remove("loggedIn_user");
-
-      disconnect();
-
-      toast.success("Successfully logged out");
-      window.location.href = "/auth/login";
+      Cookies.remove("user_email");
+      Cookies.remove("user_address");
+      Cookies.remove("smart_account");
+      Cookies.remove("session_token");
+      
+      // Clear localStorage
+      localStorage.clear();
+      
+      // Google logout
+      googleLogout();
+      
+      toast.success("🐝 Logged out successfully");
+      
+      // Redirect to home
+      router.push("/");
+      
     } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Failed to logout. Please try again.");
+      console.error("Logout error:", error);
+      toast.error("Error logging out. Please refresh the page.");
     }
   };
 
+  // Get navigation links based on current path
+  const getNavLinks = () => {
+    if (pathname.startsWith("/talents")) return talentsLinks;
+    if (pathname.startsWith("/companies")) return companiesLinks;
+    return commonLinks;
+  };
+
   return (
-    <header
-      aria-label="Site Header"
-      className="bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 shadow-lg border-b border-amber-200 backdrop-blur-sm"
-    >
-      <div className="flex items-center h-16 gap-8 px-8 mx-auto sm:px-6">
-        <Link className="block group" href="/">
-          <span className="sr-only">Home</span>
-          {/* Enhanced Logo with same styling as hero section */}
-          <div className="relative">
-            <div className="relative z-10 group-hover:scale-105 transition-transform duration-300">
+    <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center">
               <Image
-                className="block sm:hidden drop-shadow-lg object-contain"
-                src="/img/goodhive-logo.png"
-                alt="GoodHive Logo"
-                width={160}
-                height={39}
+                src="/img/goodhive_light_logo.png"
+                alt="GoodHive"
+                width={150}
+                height={40}
+                priority
+                className="h-8 w-auto"
               />
-              <Image
-                className="sm:block hidden drop-shadow-lg object-contain"
-                src="/img/goodhive-logo.png"
-                alt="GoodHive Logo"
-                width={120}
-                height={29}
-              />
-            </div>
-            {/* Logo enhancement particles - smaller for navbar */}
-            <div
-              className="absolute -top-1 -left-1 w-2 h-2 bg-amber-400 rounded-full opacity-60 animate-bounce group-hover:animate-ping"
-              style={{ animationDelay: "0s" }}
-            ></div>
-            <div
-              className="absolute -top-0.5 -right-1 w-1.5 h-1.5 bg-yellow-400 rounded-full opacity-50 animate-bounce group-hover:animate-ping"
-              style={{ animationDelay: "1s" }}
-            ></div>
+            </Link>
           </div>
-        </Link>
 
-        <div className="flex items-center sm:justify-end flex-1 justify-between">
-          <nav aria-label="Site Nav" className="block sm:hidden">
-            <ul className="flex items-center gap-6 text-sm">
-              {links.map(({ href, label }) => (
-                <li key={`${href}${label}`}>
-                  <Link
-                    href={href as Route}
-                    className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-8">
+            {getNavLinks().map((link) => (
+              <Link
+                key={link.href}
+                href={link.href as Route}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === link.href
+                    ? "text-yellow-600 bg-yellow-50"
+                    : "text-gray-700 hover:text-yellow-600 hover:bg-yellow-50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right side - Auth */}
+          <div className="flex items-center space-x-4">
+            {loggedInUserId ? (
+              // Logged in state
+              <div className="flex items-center space-x-3">
+                {/* Thirdweb Wallet Connect - Simplified */}
+                {FEATURES.USE_THIRDWEB && (
+                  <React.Suspense fallback={<div className="w-32 h-10 bg-gray-200 animate-pulse rounded" />}>
+                    <SimpleConnectButton
+                      label="🐝 Wallet"
+                    />
+                  </React.Suspense>
+                )}
+                
+                {/* User Menu */}
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setIsOpenUserMenu(!isOpenUserMenu)}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50 transition-colors"
                   >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                    <CircleUserRound size={20} />
+                    <span className="hidden sm:block">
+                      {userEmail ? userEmail.split('@')[0] : 'Profile'}
+                    </span>
+                  </button>
 
-          <div className="flex items-center gap-5">
-            {loggedIn_user_id ? (
-              <button
-                className="my-2 text-base font-semibold bg-[#FFC905] h-10 w-40 rounded-full hover:bg-opacity-80 active:shadow-md transition duration-150 ease-in-out"
-                type="submit"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
+                  {/* User Dropdown */}
+                  {isOpenUserMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                      <Link
+                        href="/talents/my-profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-600"
+                        onClick={() => setIsOpenUserMenu(false)}
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        href="/user-profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-600"
+                        onClick={() => setIsOpenUserMenu(false)}
+                      >
+                        Account Settings
+                      </Link>
+                      <hr className="my-1" />
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+                      >
+                        <LogOut size={16} />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             ) : (
-              <button
-                className="my-2 text-base font-semibold bg-[#FFC905] h-10 w-40 rounded-full hover:bg-opacity-80 active:shadow-md transition duration-150 ease-in-out"
-                type="submit"
-                onClick={() => router.push("/auth/login")}
-              >
-                Login
-              </button>
-            )}
-
-            {/* Wallet Button - Only show when logged in */}
-            {loggedIn_user_id && (
-              <div className="relative" ref={walletButtonRef}>
-                <button
-                  className="relative group flex items-center justify-center px-6 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-full hover:from-amber-600 hover:to-yellow-600 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-amber-500/25 h-10"
-                  onClick={() => setIsOpenWalletPopup(!isOpenWalletPopup)}
+              // Not logged in state
+              <div className="flex items-center space-x-3">
+                <Link
+                  href="/auth/login"
+                  className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 rounded-md transition-colors"
                 >
-                  <Wallet
-                    size={20}
-                    className="mr-2 transition-all duration-300 group-hover:rotate-12"
-                  />
-                  <span className="font-semibold text-sm sm:text-base">
-                    Wallet
-                  </span>
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
-                </button>
-                {/* Wallet Popup (refactored) */}
-                <WalletPopup
-                  isOpen={isOpenWalletPopup}
-                  anchorRef={walletButtonRef}
-                  onClose={() => setIsOpenWalletPopup(false)}
-                  oktoWalletAddress={oktoWalletAddress}
-                />
+                  🐝 Connect to Hive
+                </Link>
               </div>
             )}
 
-            {loggedIn_user_id && (
-              <Link href="/user-profile" className="group">
-                <CircleUserRound
-                  size={36}
-                  className="cursor-pointer text-gray-600 hover:text-amber-700 transition-all duration-300 group-hover:scale-110"
-                />
-              </Link>
-            )}
-
+            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpenMobileMenu(!isOpenMobileMenu)}
-              className="hidden sm:block rounded-lg bg-amber-200 border border-amber-300 p-2.5 text-amber-800 transition hover:bg-amber-300 hover:text-amber-900 hover:scale-105 active:scale-95"
+              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              aria-expanded="false"
             >
-              <span className="sr-only">Toggle menu</span>
+              <span className="sr-only">Open main menu</span>
+              {/* Hamburger icon */}
               <svg
+                className="block h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth="2"
+                aria-hidden="true"
               >
-                {isOpenMobileMenu ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile menu */}
       {isOpenMobileMenu && (
-        <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-t border-amber-200 shadow-inner">
-          <nav aria-label="Site Nav" className="hidden sm:block">
-            <ul className="flex flex-col items-center justify-center gap-4 py-4 text-sm">
-              {links.map(({ href, label }) => (
-                <li key={`${href}${label}`}>
-                  <Link
-                    href={href as Route}
-                    className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+            {getNavLinks().map((link) => (
+              <Link
+                key={link.href}
+                href={link.href as Route}
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                  pathname === link.href
+                    ? "text-yellow-600 bg-yellow-50"
+                    : "text-gray-700 hover:text-yellow-600 hover:bg-yellow-50"
+                }`}
+                onClick={() => setIsOpenMobileMenu(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            
+            {/* Mobile auth section */}
+            {loggedInUserId && (
+              <div className="pt-4 border-t border-gray-200">
+                <Link
+                  href="/talents/my-profile"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-yellow-600 hover:bg-yellow-50"
+                  onClick={() => setIsOpenMobileMenu(false)}
+                >
+                  My Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsOpenMobileMenu(false);
+                    handleLogout();
+                  }}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 };
