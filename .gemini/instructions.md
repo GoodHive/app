@@ -35,3 +35,26 @@ Based on `package.json`, the primary package manager is `pnpm`.
 3.  **Implement:** Write or modify code.
 4.  **Verify:** Run `pnpm lint` and `npx tsc` to ensure code quality and type safety.
 5.  **Commit:** Prepare a clear and descriptive commit message for review.
+
+---
+
+### **Git Commit Guidelines**
+
+When committing changes to the repository:
+
+-   **DO NOT mention AI assistance (Gemini, Claude, etc.) in commit messages**
+-   Keep commit messages professional and concise
+-   Follow conventional commit format: `type: description`
+-   Focus on what changed and why, not who made the change
+
+**Example Good Commit Messages:**
+
+✅ `feat: add dynamic loading text to spinner component`
+✅ `refactor: simplify user profile layout`
+✅ `fix: resolve authentication redirect issue`
+
+**Example Bad Commit Messages:**
+
+❌ `feat: add feature with AI help`
+❌ `update: changes made by assistant`
+❌ `🤖 Generated with AI`

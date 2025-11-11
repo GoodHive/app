@@ -1,0 +1,246 @@
+// Company Profile Page Styles
+.companyProfileMain {
+  min-height: 100vh;
+  position: relative;
+  background: #fafafa; // Clean, simple background like WttJ
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+
+    @media (min-width: 768px) {
+      padding: 1.5rem 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 2rem 3rem;
+      max-width: 1200px; // Reduced from 1400px for better content density
+    }
+  }
+}
+
+// Two Column Grid Layout
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  opacity: 0;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 2fr 1fr; // Changed to 2fr 1fr for better proportions
+    gap: 3rem; // Increased gap for better spacing
+  }
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (max-width: 1023px) {
+    order: -1;
+  }
+}
+
+// About Section - Clean Minimal Design
+.aboutSection {
+  .sectionHeader {
+    margin-bottom: 1.5rem;
+
+    .titlePill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #d1d5db;
+      }
+
+      .icon {
+        width: 1rem;
+        height: 1rem;
+        color: #6b7280;
+      }
+    }
+  }
+
+  .bioContent {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #374151;
+  }
+}
+
+// Connect Section - Clean Sidebar Design
+.connectSection {
+  .sectionHeader {
+    margin-bottom: 1rem;
+
+    .titlePill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #111827;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #d1d5db;
+      }
+
+      .icon {
+        width: 1rem;
+        height: 1rem;
+        color: #6b7280;
+      }
+    }
+  }
+
+  .connectContent {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+// Job Section
+.jobSection {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+// Simple Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Loading States
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+// Responsive Design
+@media (max-width: 1023px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sideColumn {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .companyProfileMain .container {
+    padding: 0.75rem;
+  }
+
+  .contentGrid {
+    gap: 1rem;
+  }
+
+  .aboutSection {
+    .sectionHeader .titlePill {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+
+      .icon {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+
+    .bioContent {
+      padding: 1.5rem;
+      border-radius: 1rem;
+    }
+  }
+
+  .connectSection {
+    .sectionHeader .titlePill {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+
+      .icon {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+
+    .connectContent {
+      padding: 1rem;
+      border-radius: 1rem;
+    }
+  }
+
+  .jobSection {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+}
+
+// Removed dark mode - keeping only light theme for consistency
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .contentGrid,
+  .jobSection {
+    animation: none;
+    opacity: 1;
+  }
+
+  .aboutSection,
+  .contactSection {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// Removed floating decorative elements for cleaner design

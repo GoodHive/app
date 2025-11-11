@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - November 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+            color: #333;
+        }
+
+        .header {
+            text-align: right;
+            margin-bottom: 40px;
+        }
+
+        .invoice-title {
+            font-size: 48px;
+            font-weight: normal;
+            letter-spacing: 8px;
+            color: #666;
+            margin: 0;
+        }
+
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .left-column, .right-column {
+            width: 48%;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .company-info {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .date-section {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+        }
+
+        .items-table th {
+            text-align: left;
+            padding: 15px 10px;
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .items-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        .description {
+            font-weight: bold;
+        }
+
+        .description-detail {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+            margin-top: 4px;
+        }
+
+        .hours, .rate, .total {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .subtotal-row {
+            border-top: 2px solid #333;
+            border-bottom: none;
+        }
+
+        .subtotal-row td {
+            padding: 20px 10px 10px;
+            border-bottom: none;
+            font-weight: bold;
+        }
+
+        .total-hours {
+            text-align: right;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .final-total {
+            font-size: 18px;
+        }
+
+        .separator-line {
+            height: 2px;
+            background-color: #333;
+            margin: 30px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="invoice-title">INVOICE</h1>
+    </div>
+
+    <div class="invoice-info">
+        <div class="left-column">
+            <div class="section-title">ISSUED BY:</div>
+            <div class="company-info">
+                Jubayer Juhan<br>
+                347/2. Nahar Niloy, Dhanmondi<br>
+                Dhaka 1207
+            </div>
+
+            <div class="section-title">BILL TO:</div>
+            <div class="company-info">
+                IT Unchained SAS<br>
+                39 rue de l'Arrivée<br>
+                95880 Enghien les Bains
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="date-section">
+                <div class="section-title">DATE:</div>
+                <div style="margin-bottom: 20px;">NOV 6, 2025</div>
+            </div>
+
+            <div class="section-title">PAY TO:</div>
+            <div class="company-info">
+                Bank: Banking Circle S.A.<br>
+                IBAN: LU4940800000978678 81<br>
+                BIC: BCIRLULL<br>
+                Beneficiary: Jubayer Hossain
+            </div>
+        </div>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">DESCRIPTION</th>
+                <th style="width: 15%;">HOURS</th>
+                <th style="width: 15%;">RATE</th>
+                <th style="width: 20%;">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="description">Dynamic job sections feature development</div>
+                    <div class="description-detail">(rich text editing, drag-drop, templates, API integration)</div>
+                </td>
+                <td class="hours">14</td>
+                <td class="rate">$13</td>
+                <td class="total">$182</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Search & filtering system enhancements</div>
+                    <div class="description-detail">(location search improvements, skills to keyword search migration, UI overlapping fixes)</div>
+                </td>
+                <td class="hours">8</td>
+                <td class="rate">$13</td>
+                <td class="total">$104</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">User onboarding & experience optimization</div>
+                    <div class="description-detail">(new user popup modals, compact modal redesign, SCSS modularization, enhanced UX flows)</div>
+                </td>
+                <td class="hours">8</td>
+                <td class="rate">$13</td>
+                <td class="total">$104</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Analytics & tracking implementation</div>
+                    <div class="description-detail">(Google Analytics refactoring, proper pageview tracking, metadata improvements)</div>
+                </td>
+                <td class="hours">5</td>
+                <td class="rate">$13</td>
+                <td class="total">$65</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Professional About Us page development</div>
+                    <div class="description-detail">(complete page creation, team section, layout design, styling consistency, content extraction)</div>
+                </td>
+                <td class="hours">7</td>
+                <td class="rate">$13</td>
+                <td class="total">$91</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Talent management system improvements</div>
+                    <div class="description-detail">(availability system fixes, profile optimization, currency display enhancements)</div>
+                </td>
+                <td class="hours">6</td>
+                <td class="rate">$13</td>
+                <td class="total">$78</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Enhanced thirdweb integration & blockchain</div>
+                    <div class="description-detail">(multi-chain support improvements, fund management optimization, job application theming)</div>
+                </td>
+                <td class="hours">8</td>
+                <td class="rate">$13</td>
+                <td class="total">$104</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Homepage & UI refinements</div>
+                    <div class="description-detail">(hero section centering, layout updates, button design optimization, loading spinner flexibility)</div>
+                </td>
+                <td class="hours">6</td>
+                <td class="rate">$13</td>
+                <td class="total">$78</td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="description">Bug fixes & development optimization</div>
+                    <div class="description-detail">(company profile loops, auth redirects, template fixes, dev shell optimization)</div>
+                </td>
+                <td class="hours">6</td>
+                <td class="rate">$13</td>
+                <td class="total">$78</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="separator-line"></div>
+
+    <table class="items-table">
+        <tbody>
+            <tr>
+                <td style="width: 50%;"></td>
+                <td style="width: 15%; text-align: right;" class="total-hours">Hours: 64</td>
+                <td style="width: 15%;"></td>
+                <td style="width: 20%; text-align: right; font-weight: bold;">$832</td>
+            </tr>
+            <tr class="subtotal-row">
+                <td style="width: 65%;"></td>
+                <td style="width: 15%; text-align: right;">SUBTOTAL</td>
+                <td style="width: 10%; text-align: right;">Tax</td>
+                <td style="width: 10%; text-align: right;">0%</td>
+            </tr>
+            <tr>
+                <td style="width: 65%;"></td>
+                <td style="width: 15%;"></td>
+                <td style="width: 10%; text-align: right; font-weight: bold;" class="final-total">TOTAL</td>
+                <td style="width: 10%; text-align: right; font-weight: bold;" class="final-total">$832</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -13,17 +13,22 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
     "style-src 'self' 'unsafe-inline' https://accounts.google.com",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    // Allow localhost in development for connect-src and add WalletConnect domains and Infura
+    // Allow localhost in development for connect-src and add WalletConnect domains, Infura, and Thirdweb
     isDevelopment
-      ? "connect-src 'self'  http://localhost:* https://*.okto.tech https://api.goodhive.io https://accounts.google.com https://explorer-api.walletconnect.com https://*.infura.io ws://localhost:* wss://relay.walletconnect.com wss://relay.walletconnect.org https://api.coingecko.com https://polygon-rpc.com https://goodhive-production.vercel.app"
-      : "connect-src 'self' https://*.okto.tech https://api.goodhive-production.vercel.app https://api.goodhive.io https://accounts.google.com https://explorer-api.walletconnect.com https://*.infura.io wss://relay.walletconnect.com wss://relay.walletconnect.org https://api.coingecko.com https://polygon-rpc.com https://goodhive-production.vercel.app",
-    // Add YouTube to frame-src
-    "frame-src 'self' https://accounts.google.com https://verify.walletconnect.com https://www.youtube.com https://www.youtube-nocookie.com",
+      ? "connect-src 'self'  http://localhost:* https://*.okto.tech https://api.goodhive.io https://accounts.google.com https://explorer-api.walletconnect.com https://*.infura.io ws://localhost:* wss://relay.walletconnect.com wss://relay.walletconnect.org https://api.coingecko.com https://polygon-rpc.com https://goodhive-production.vercel.app https://embedded-wallet.thirdweb.com https://*.thirdweb.com https://ipfs.io"
+      : "connect-src 'self' https://*.okto.tech https://api.goodhive-production.vercel.app https://api.goodhive.io https://accounts.google.com https://explorer-api.walletconnect.com https://*.infura.io wss://relay.walletconnect.com wss://relay.walletconnect.org https://api.coingecko.com https://polygon-rpc.com https://goodhive-production.vercel.app https://embedded-wallet.thirdweb.com https://*.thirdweb.com https://ipfs.io",
+    // Add YouTube and Thirdweb to frame-src
+    "frame-src 'self' https://accounts.google.com https://verify.walletconnect.com https://www.youtube.com https://www.youtube-nocookie.com https://*.thirdweb.com https://embedded-wallet.thirdweb.com",
     "base-uri 'self'",
     "form-action 'self'",
   ].join("; ");
 
   response.headers.set("Content-Security-Policy", cspDirectives);
+
+  // Cross-Origin-Opener-Policy (allow popups for OAuth in development)
+  if (isDevelopment) {
+    response.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  }
 
   // Prevent clickjacking
 

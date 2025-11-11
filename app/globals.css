@@ -149,6 +149,29 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    /* GoodHive brand variables (moved from CSS Module) */
+    --gh-amber-50: #fef3c7;
+    --gh-amber-100: #fde68a;
+    --gh-amber-200: #fcd34d;
+    --gh-amber-400: #f59e0b;
+    --gh-amber-500: #f97316;
+    --gh-yellow-500: #fbbf24;
+    --gh-sky-100: #dbeafe;
+    --gh-sky-200: #bfdbfe;
+    --gh-emerald-100: #d1fae5;
+    --gh-emerald-200: #a7f3d0;
+    --gh-slate-100: #e2e8f0;
+    --gh-slate-200: #cbd5f5;
+    --gh-gray-50: #f9fafb;
+    --gh-gray-100: #f3f4f6;
+    --gh-gray-200: #e5e7eb;
+    --gh-gray-300: #d1d5db;
+    --gh-gray-400: #9ca3af;
+    --gh-gray-500: #6b7280;
+    --gh-gray-600: #4b5563;
+    --gh-gray-700: #374151;
+    --gh-gray-900: #111827;
   }
   .dark {
     --background: 240 10% 3.9%;

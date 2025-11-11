@@ -25,6 +25,7 @@ export async function GET() {
       user_id: payload.user_id,
       email: payload.email,
       wallet_address: payload.wallet_address,
+      auth_method: payload.auth_method || "email",
       iat: payload.iat,
       exp: payload.exp,
     });

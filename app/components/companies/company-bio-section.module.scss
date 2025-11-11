@@ -1,0 +1,270 @@
+// Company Bio Section Styles
+.bioContainer {
+  width: 100%;
+  transition: all 0.5s ease;
+
+  &.visible {
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  &.hidden {
+    opacity: 0;
+  }
+}
+
+.bioCard {
+  position: relative;
+  background: transparent;
+
+  &:hover {
+    .decorativeBee {
+      opacity: 0.3;
+    }
+  }
+}
+
+.contentContainer {
+  position: relative;
+  z-index: 10;
+
+  .bioText {
+    color: #374151;
+    line-height: 1.7;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    background: transparent !important;
+
+    &.expanded {
+      max-height: none;
+      overflow: visible;
+    }
+
+    &.collapsed {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 1.125rem;
+    }
+
+    // Override any dark backgrounds from rich text content
+    :global(*) {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    // Rich text styles with honey theme
+    :global(p) {
+      margin-bottom: 0.75rem;
+      background: transparent !important;
+      color: #374151 !important;
+    }
+
+    :global(strong) {
+      color: #1f2937 !important;
+      font-weight: 600;
+      background: transparent !important;
+    }
+
+    :global(em) {
+      color: #6b7280 !important;
+      background: transparent !important;
+    }
+
+    :global(a) {
+      color: #f59e0b !important;
+      text-decoration: underline;
+      transition: color 0.2s ease;
+      background: transparent !important;
+
+      &:hover {
+        color: #d97706 !important;
+      }
+    }
+
+    :global(ul, ol) {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      background: transparent !important;
+    }
+
+    :global(li) {
+      margin-bottom: 0.25rem;
+      background: transparent !important;
+      color: #374151 !important;
+    }
+
+    // Override blockquote styles that might be causing dark background
+    :global(blockquote) {
+      background: linear-gradient(
+        135deg,
+        rgba(254, 243, 199, 0.3) 0%,
+        rgba(251, 191, 36, 0.1) 100%
+      ) !important;
+      border-left: 4px solid #fbbf24 !important;
+      margin: 1rem 0 !important;
+      padding: 1rem 1.5rem !important;
+      border-radius: 0.5rem !important;
+      color: #374151 !important;
+      font-style: italic;
+    }
+
+    // Override any div or span that might have dark backgrounds
+    :global(div, span) {
+      background: transparent !important;
+      background-color: transparent !important;
+      color: inherit !important;
+    }
+
+    // Override pre and code elements
+    :global(pre) {
+      background: rgba(254, 243, 199, 0.2) !important;
+      border: 1px solid rgba(251, 191, 36, 0.2) !important;
+      border-radius: 0.5rem !important;
+      padding: 1rem !important;
+      color: #374151 !important;
+    }
+
+    :global(code) {
+      background: rgba(254, 243, 199, 0.3) !important;
+      color: #92400e !important;
+      padding: 0.2rem 0.4rem !important;
+      border-radius: 0.25rem !important;
+      font-family: monospace;
+    }
+  }
+
+  .toggleButtonContainer {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+
+    .toggleButton {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: #374151;
+      font-weight: 500;
+      border-radius: 100px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        background: rgba(251, 191, 36, 0.1);
+        border-color: rgba(251, 191, 36, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+      }
+
+      .buttonText {
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .buttonIcon {
+        width: 1rem;
+        height: 1rem;
+        transition: transform 0.3s ease;
+
+        &.bounce {
+          animation: bounce 0.6s ease-in-out;
+        }
+      }
+    }
+  }
+}
+
+.decorativeBee {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0.1;
+  transition: all 0.3s ease;
+
+  .beeIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+// Simple Animations
+@keyframes bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40%,
+  43% {
+    transform: translateY(-2px);
+  }
+  70% {
+    transform: translateY(-1px);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .bioCard {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .contentContainer .bioText {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .contentContainer .toggleButtonContainer .toggleButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+
+    .buttonIcon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  }
+
+  .decorativeBee {
+    top: 0.75rem;
+    right: 0.75rem;
+
+    .beeIcon {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .bioContainer.visible {
+    animation: none;
+    opacity: 1;
+  }
+
+  .decorativeBee .beeIcon,
+  .floatingParticle .particle {
+    animation: none;
+  }
+
+  .storyIndicator .indicatorContent .indicatorDot {
+    animation: none;
+  }
+
+  .contentContainer .toggleButtonContainer .toggleButton:hover {
+    transform: none;
+  }
+}

@@ -1,10 +1,10 @@
 "use client";
 
-import { Sparkles, Star, Zap } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { GoodhiveQuestLink } from "@/app/constants/common";
+import styles from "./hero.module.scss";
 
 export const Hero = () => {
   const router = useRouter();
@@ -24,261 +24,644 @@ export const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[700px] w-full bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100 overflow-hidden">
-      {/* Enhanced Background Elements */}
-      <div className="absolute inset-0">
-        {/* Floating Honeycomb Pattern */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-5">
-          <div className="grid grid-cols-12 gap-4 transform rotate-12 scale-150 -translate-x-8 -translate-y-8">
-            {Array.from({ length: 144 }, (_, i) => (
-              <div
-                key={i}
-                className="w-8 h-8 border-2 border-amber-300 transform rotate-45"
-              ></div>
-            ))}
-          </div>
-        </div>
+    <section className={styles.hero}>
+      {/* Minimalist Background with Subtle Gradient */}
+      <div className={styles.background} />
 
-        {/* Animated Bee Swarm */}
-        <div className="absolute top-1/4 left-1/4 w-12 h-12 opacity-80">
-          <div
-            className="relative animate-bounce"
-            style={{ animationDelay: "0s", animationDuration: "3s" }}
-          >
-            <span className="text-4xl">🐝</span>
-          </div>
-          <div className="absolute top-0 left-0 w-full h-full animate-ping opacity-20">
-            <div className="w-full h-full bg-amber-400 rounded-full"></div>
-          </div>
-        </div>
+      {/* Subtle Honeycomb Pattern Overlay */}
+      <div className={styles.honeycombPattern} />
 
-        <div className="absolute top-1/3 right-1/3 w-10 h-10 opacity-70">
-          <div
-            className="relative animate-bounce"
-            style={{ animationDelay: "1.5s", animationDuration: "4s" }}
-          >
-            <span className="text-3xl">🐝</span>
-          </div>
-          <div className="absolute top-0 left-0 w-full h-full animate-ping opacity-15">
-            <div className="w-full h-full bg-amber-400 rounded-full"></div>
-          </div>
-        </div>
+      {/* Top-Left Hexagon Cluster - Modern Design */}
+      <div className={styles.topLeftCluster}>
+        <svg className="w-[450px] h-[450px]" viewBox="0 0 450 450">
+          <defs>
+            <linearGradient
+              id="hexGradient1"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+            </linearGradient>
+            <linearGradient
+              id="hexGradient2"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#d97706" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.05" />
+            </linearGradient>
+          </defs>
 
-        <div className="absolute bottom-1/4 left-1/2 w-8 h-8 opacity-60">
-          <div
-            className="relative animate-bounce"
-            style={{ animationDelay: "3s", animationDuration: "5s" }}
-          >
-            <span className="text-2xl">🐝</span>
-          </div>
-        </div>
+          {/* Large main hexagon - outlined */}
+          <polygon
+            points="200,80 280,125 280,215 200,260 120,215 120,125"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="2.5"
+            opacity="0.3"
+            strokeDasharray="5 3"
+          />
 
-        {/* Floating Pollen Particles */}
-        <div className="absolute top-20 left-20 w-2 h-2 bg-yellow-300 rounded-full animate-ping opacity-40"></div>
-        <div
-          className="absolute top-32 right-32 w-1 h-1 bg-amber-400 rounded-full animate-ping opacity-30"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute bottom-32 left-32 w-1.5 h-1.5 bg-orange-300 rounded-full animate-ping opacity-25"
-          style={{ animationDelay: "2.5s" }}
-        ></div>
+          {/* Large filled hexagon with gradient */}
+          <polygon
+            points="150,150 210,185 210,255 150,290 90,255 90,185"
+            fill="url(#hexGradient1)"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+            opacity="0.25"
+          />
+
+          {/* Medium hexagon - top */}
+          <polygon
+            points="280,60 320,82 320,126 280,148 240,126 240,82"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="2"
+            opacity="0.35"
+          />
+
+          {/* Medium hexagon - center right */}
+          <polygon
+            points="320,180 360,202 360,246 320,268 280,246 280,202"
+            fill="url(#hexGradient2)"
+            stroke="#d97706"
+            strokeWidth="1.8"
+            opacity="0.2"
+          />
+
+          {/* Small accent hexagons */}
+          <polygon
+            points="100,100 125,113 125,139 100,152 75,139 75,113"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+            opacity="0.4"
+            strokeDasharray="3 2"
+          />
+
+          <polygon
+            points="240,280 265,293 265,319 240,332 215,319 215,293"
+            fill="#fbbf24"
+            fillOpacity="0.1"
+            stroke="#d97706"
+            strokeWidth="1.2"
+            opacity="0.3"
+          />
+
+          {/* Tiny floating hexagons */}
+          <polygon
+            points="350,120 365,128 365,144 350,152 335,144 335,128"
+            fill="none"
+            stroke="#fcd34d"
+            strokeWidth="1"
+            opacity="0.5"
+          />
+
+          <polygon
+            points="60,240 75,248 75,264 60,272 45,264 45,248"
+            fill="#f59e0b"
+            fillOpacity="0.15"
+            opacity="0.35"
+          />
+
+          <polygon
+            points="180,350 195,358 195,374 180,382 165,374 165,358"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="0.8"
+            opacity="0.3"
+            strokeDasharray="2 2"
+          />
+        </svg>
       </div>
 
-      <div className="relative container mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[700px]">
-        {/* Decorative Bees and Swarm - Enhanced with Animations */}
-        <div className="absolute left-4 top-12 w-[300px] h-[315px] sm:top-2.5 sm:left-0 sm:w-24 sm:h-24 md:left-0 md:w-44 md:h-44 lg:top-2.5 lg:left-12 lg:w-[250px] lg:h-[255px] xl:left-1 xl:top-4 z-10 opacity-90">
-          <div
-            className="group relative w-full h-full animate-bounce"
-            style={{ animationDuration: "3s", animationDelay: "0.5s" }}
-          >
-            <Image
-              alt="client bee"
-              src="/img/client-bee.png"
-              fill={true}
-              className="drop-shadow-lg group-hover:scale-110 transition-transform duration-500 ease-out"
-            />
-            {/* Floating glow effect */}
-            <div className="absolute inset-0 bg-amber-200 rounded-full opacity-0 group-hover:opacity-5 blur-3xl animate-pulse pointer-events-none"></div>
-            {/* Bee trail effect */}
-            <div
-              className="absolute top-1/2 left-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-60"
-              style={{ animationDelay: "2s" }}
-            ></div>
-          </div>
-        </div>
+      {/* Top-Right Hexagon Cluster - Bigger Design */}
+      <div className={styles.topRightCluster}>
+        <svg className="w-[400px] h-[400px]" viewBox="0 0 400 400">
+          <defs>
+            <linearGradient
+              id="hexGradient5"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+            </linearGradient>
+            <linearGradient
+              id="hexGradient6"
+              x1="100%"
+              y1="100%"
+              x2="0%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#d97706" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.03" />
+            </linearGradient>
+          </defs>
 
-        <div className="absolute right-10 top-24 w-[350px] h-[236px] z-20 sm:top-3 sm:right-0 sm:w-[134px] sm:h-[91px] md:right-[-3px] md:top-12 md:w-48 md:h-[135px] lg:w-[250px] lg:h-[168px] xl:w-[250px] xl:h-[168px] opacity-90">
-          <div
-            className="group relative w-full h-full animate-bounce"
-            style={{ animationDuration: "4s", animationDelay: "1s" }}
-          >
-            <Image
-              alt="swarm"
-              src="/img/swarm.png"
-              fill={true}
-              className="drop-shadow-lg group-hover:scale-105 group-hover:rotate-2 transition-all duration-700 ease-out"
-            />
-            {/* Swarm glow effect */}
-            <div className="absolute inset-0 bg-orange-200 rounded-full opacity-0 group-hover:opacity-5 blur-3xl animate-pulse pointer-events-none"></div>
-            {/* Multiple bee particles */}
-            <div
-              className="absolute top-1/4 left-1/4 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping opacity-50"
-              style={{ animationDelay: "1.5s" }}
-            ></div>
-            <div
-              className="absolute top-3/4 right-1/4 w-1 h-1 bg-yellow-400 rounded-full animate-ping opacity-40"
-              style={{ animationDelay: "3s" }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Preserved Rectangular Honeycomb Frame */}
-        <div className="absolute right-0 bottom-0 w-[400px] h-[494px] z-10 sm:top-[-75px] sm:right-[-20px] sm:w-[147px] sm:h-48 md:right[-10px] md:top-0 md:w-[180px] md:h-[221px] lg:top-0 lg:right-[-10px] lg:w-[250px] lg:h-[308px] xl:w-[250px] xl:h-[308px] xl:top-0 xl:right-[-10px] opacity-80">
-          <Image
-            alt="honeycomb"
-            src="/img/polygons-frame.png"
-            fill={true}
-            className="drop-shadow-md"
+          {/* Large hexagon - top right */}
+          <polygon
+            points="260,70 320,100 320,180 260,210 200,180 200,100"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="2.5"
+            opacity="0.25"
+            strokeDasharray="5 3"
           />
+
+          {/* Large filled hexagon */}
+          <polygon
+            points="200,130 260,160 260,240 200,270 140,240 140,160"
+            fill="url(#hexGradient5)"
+            stroke="#d97706"
+            strokeWidth="1.8"
+            opacity="0.2"
+          />
+
+          {/* Medium hexagon - center */}
+          <polygon
+            points="300,200 340,220 340,280 300,300 260,280 260,220"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="2"
+            opacity="0.3"
+          />
+
+          {/* Medium filled hexagon */}
+          <polygon
+            points="160,240 200,260 200,320 160,340 120,320 120,260"
+            fill="url(#hexGradient6)"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+            opacity="0.18"
+          />
+
+          {/* Small accent hexagons */}
+          <polygon
+            points="100,160 140,180 140,220 100,240 60,220 60,180"
+            fill="none"
+            stroke="#fcd34d"
+            strokeWidth="1.2"
+            opacity="0.4"
+            strokeDasharray="3 2"
+          />
+
+          <polygon
+            points="320,120 360,140 360,180 320,200 280,180 280,140"
+            fill="#f59e0b"
+            fillOpacity="0.08"
+            stroke="#d97706"
+            strokeWidth="1.2"
+            opacity="0.25"
+          />
+
+          {/* Extra small hexagons */}
+          <polygon
+            points="240,300 260,310 260,330 240,340 220,330 220,310"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="1"
+            opacity="0.3"
+          />
+
+          <polygon
+            points="80,280 100,290 100,310 80,320 60,310 60,290"
+            fill="#fcd34d"
+            fillOpacity="0.1"
+            opacity="0.2"
+          />
+
+          {/* Tiny floating hexagons */}
+          <polygon
+            points="340,60 360,70 360,90 340,100 320,90 320,70"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="0.8"
+            opacity="0.35"
+          />
+
+          <polygon
+            points="60,120 80,130 80,150 60,160 40,150 40,130"
+            fill="#fbbf24"
+            fillOpacity="0.06"
+            opacity="0.25"
+          />
+        </svg>
+      </div>
+
+      {/* Bottom-Left Hexagon Cluster - Medium Design */}
+      <div className={styles.bottomLeftCluster}>
+        <svg className="w-[350px] h-[350px]" viewBox="0 0 350 350">
+          <defs>
+            <linearGradient
+              id="hexGradient7"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#d97706" stopOpacity="0.04" />
+            </linearGradient>
+            <linearGradient
+              id="hexGradient8"
+              x1="100%"
+              y1="100%"
+              x2="0%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#fcd34d" stopOpacity="0.03" />
+            </linearGradient>
+          </defs>
+
+          {/* Large hexagon - bottom left */}
+          <polygon
+            points="200,280 260,310 260,390 200,420 140,390 140,310"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="2.2"
+            opacity="0.22"
+            strokeDasharray="4 3"
+          />
+
+          {/* Large filled hexagon */}
+          <polygon
+            points="150,200 210,230 210,310 150,340 90,310 90,230"
+            fill="url(#hexGradient7)"
+            stroke="#f59e0b"
+            strokeWidth="1.6"
+            opacity="0.18"
+          />
+
+          {/* Medium hexagon - center */}
+          <polygon
+            points="250,150 290,170 290,230 250,250 210,230 210,170"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="1.8"
+            opacity="0.28"
+          />
+
+          {/* Medium filled hexagon */}
+          <polygon
+            points="100,250 140,270 140,330 100,350 60,330 60,270"
+            fill="url(#hexGradient8)"
+            stroke="#d97706"
+            strokeWidth="1.4"
+            opacity="0.16"
+          />
+
+          {/* Small accent hexagons */}
+          <polygon
+            points="80,180 120,200 120,260 80,280 40,260 40,200"
+            fill="none"
+            stroke="#fcd34d"
+            strokeWidth="1.2"
+            opacity="0.35"
+            strokeDasharray="3 2"
+          />
+
+          <polygon
+            points="280,280 320,300 320,360 280,380 240,360 240,300"
+            fill="#f59e0b"
+            fillOpacity="0.06"
+            stroke="#fbbf24"
+            strokeWidth="1.1"
+            opacity="0.22"
+          />
+
+          {/* Extra small hexagons */}
+          <polygon
+            points="200,120 220,130 220,150 200,160 180,150 180,130"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="1"
+            opacity="0.3"
+          />
+
+          <polygon
+            points="60,320 80,330 80,350 60,360 40,350 40,330"
+            fill="#fbbf24"
+            fillOpacity="0.08"
+            opacity="0.2"
+          />
+
+          {/* Tiny floating hexagons */}
+          <polygon
+            points="300,80 320,90 320,110 300,120 280,110 280,90"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="0.8"
+            opacity="0.32"
+          />
+
+          <polygon
+            points="40,140 60,150 60,170 40,180 20,170 20,150"
+            fill="#fcd34d"
+            fillOpacity="0.05"
+            opacity="0.18"
+          />
+        </svg>
+      </div>
+
+      {/* Bottom-Right Hexagon Cluster - Modern Design */}
+      <div className={styles.bottomRightCluster}>
+        <svg className="w-[500px] h-[500px]" viewBox="0 0 500 500">
+          <defs>
+            <linearGradient
+              id="hexGradient3"
+              x1="100%"
+              y1="100%"
+              x2="0%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+            </linearGradient>
+            <linearGradient
+              id="hexGradient4"
+              x1="100%"
+              y1="100%"
+              x2="0%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#d97706" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.03" />
+            </linearGradient>
+          </defs>
+
+          {/* Large main hexagon - outlined with dash */}
+          <polygon
+            points="300,240 380,285 380,375 300,420 220,375 220,285"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="2.5"
+            opacity="0.3"
+            strokeDasharray="6 4"
+          />
+
+          {/* Large filled hexagon with gradient */}
+          <polygon
+            points="350,170 410,205 410,275 350,310 290,275 290,205"
+            fill="url(#hexGradient3)"
+            stroke="#d97706"
+            strokeWidth="1.8"
+            opacity="0.22"
+          />
+
+          {/* Medium hexagon - bottom */}
+          <polygon
+            points="220,380 260,402 260,446 220,468 180,446 180,402"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="2"
+            opacity="0.35"
+          />
+
+          {/* Medium hexagon - center left */}
+          <polygon
+            points="180,250 220,272 220,316 180,338 140,316 140,272"
+            fill="url(#hexGradient4)"
+            stroke="#f59e0b"
+            strokeWidth="1.5"
+            opacity="0.25"
+          />
+
+          {/* Small accent hexagons */}
+          <polygon
+            points="400,350 425,363 425,389 400,402 375,389 375,363"
+            fill="none"
+            stroke="#d97706"
+            strokeWidth="1.5"
+            opacity="0.4"
+            strokeDasharray="3 2"
+          />
+
+          <polygon
+            points="260,180 285,193 285,219 260,232 235,219 235,193"
+            fill="#fcd34d"
+            fillOpacity="0.12"
+            stroke="#f59e0b"
+            strokeWidth="1.2"
+            opacity="0.3"
+          />
+
+          {/* Tiny floating hexagons */}
+          <polygon
+            points="150,380 165,388 165,404 150,412 135,404 135,388"
+            fill="none"
+            stroke="#fbbf24"
+            strokeWidth="1"
+            opacity="0.45"
+          />
+
+          <polygon
+            points="440,260 455,268 455,284 440,292 425,284 425,268"
+            fill="#d97706"
+            fillOpacity="0.1"
+            opacity="0.35"
+          />
+
+          <polygon
+            points="320,120 335,128 335,144 320,152 305,144 305,128"
+            fill="none"
+            stroke="#fcd34d"
+            strokeWidth="0.8"
+            opacity="0.3"
+            strokeDasharray="2 2"
+          />
+
+          {/* Extra small hexagon */}
+          <polygon
+            points="380,440 390,445 390,455 380,460 370,455 370,445"
+            fill="#f59e0b"
+            fillOpacity="0.2"
+            opacity="0.4"
+          />
+        </svg>
+      </div>
+
+      {/* Additional scattered hexagons for depth */}
+      <div className={styles.scatteredHexagons}>
+        {/* Top center floating hexagon */}
+        <div className={styles.topCenterHex}>
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <polygon
+              points="30,8 46,17 46,33 30,42 14,33 14,17"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="1.5"
+              opacity="0.2"
+              strokeDasharray="4 3"
+            />
+          </svg>
         </div>
 
-        {/* Enhanced Logo with Hive Glow */}
-        <div className="relative mb-8 group">
-          <div className="h-20 w-80 relative z-10 sm:h-16 sm:w-64 md:h-18 md:w-72 group-hover:scale-105 transition-transform duration-1000">
+        {/* Mid-left floating hexagon */}
+        <div className={styles.midLeftHex}>
+          <svg width="45" height="45" viewBox="0 0 45 45">
+            <polygon
+              points="22.5,6 36,13.5 36,27 22.5,34.5 9,27 9,13.5"
+              fill="#fbbf24"
+              fillOpacity="0.08"
+              stroke="#d97706"
+              strokeWidth="1.2"
+              opacity="0.25"
+            />
+          </svg>
+        </div>
+
+        {/* Mid-right floating hexagon */}
+        <div className={styles.midRightHex}>
+          <svg width="50" height="50" viewBox="0 0 50 50">
+            <polygon
+              points="25,7 40,15.5 40,31 25,39.5 10,31 10,15.5"
+              fill="none"
+              stroke="#fcd34d"
+              strokeWidth="1.8"
+              opacity="0.18"
+              strokeDasharray="3 2"
+            />
+          </svg>
+        </div>
+
+        {/* Bottom center hexagon */}
+        <div className={styles.bottomCenterHex}>
+          <svg width="55" height="55" viewBox="0 0 55 55">
+            <polygon
+              points="27.5,8 42.5,16.5 42.5,32 27.5,40.5 12.5,32 12.5,16.5"
+              fill="#f59e0b"
+              fillOpacity="0.06"
+              stroke="#fbbf24"
+              strokeWidth="1.5"
+              opacity="0.3"
+            />
+          </svg>
+        </div>
+
+        {/* Small accent hexagon - top right */}
+        <div className={styles.topRightHex}>
+          <svg width="35" height="35" viewBox="0 0 35 35">
+            <polygon
+              points="17.5,5 27.5,10.5 27.5,20.5 17.5,26 7.5,20.5 7.5,10.5"
+              fill="none"
+              stroke="#d97706"
+              strokeWidth="1"
+              opacity="0.35"
+            />
+          </svg>
+        </div>
+
+        {/* Tiny hexagon - center */}
+        <div className={styles.centerHex}>
+          <svg width="30" height="30" viewBox="0 0 30 30">
+            <polygon
+              points="15,4 24,8.5 24,17.5 15,22 6,17.5 6,8.5"
+              fill="#fcd34d"
+              fillOpacity="0.1"
+              opacity="0.25"
+            />
+          </svg>
+        </div>
+
+        {/* Extra tiny hexagon - bottom left */}
+        <div className={styles.bottomLeftHex}>
+          <svg width="25" height="25" viewBox="0 0 25 25">
+            <polygon
+              points="12.5,3 20,7 20,14 12.5,18 5,14 5,7"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="0.8"
+              opacity="0.2"
+              strokeDasharray="2 1"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Main Hero Content - Takes up 100vh */}
+      <div className={styles.content}>
+        {/* Clean Logo */}
+        <div className={styles.logo}>
+          <div className={styles.logoContainer}>
             <Image
               alt="logo"
               src="/img/goodhive-logo.png"
               fill={true}
-              className="drop-shadow-xl object-contain"
+              className="object-contain"
             />
           </div>
-          {/* Logo enhancement particles */}
-          <div
-            className="absolute -top-2 -left-2 w-4 h-4 bg-amber-400 rounded-full opacity-60 animate-bounce group-hover:animate-ping"
-            style={{ animationDelay: "0s" }}
-          ></div>
-          <div
-            className="absolute -top-1 -right-3 w-3 h-3 bg-yellow-400 rounded-full opacity-50 animate-bounce group-hover:animate-ping"
-            style={{ animationDelay: "1s" }}
-          ></div>
-          <div
-            className="absolute -bottom-2 left-1/4 w-2 h-2 bg-orange-400 rounded-full opacity-40 animate-bounce group-hover:animate-ping"
-            style={{ animationDelay: "2s" }}
-          ></div>
         </div>
 
-        {/* Enhanced Title with Gradient */}
-        <div className="text-center mb-6 z-20 relative">
-          <div className="inline-flex items-center bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <Sparkles className="w-4 h-4 mr-2" />
+        {/* Typography-First Title */}
+        <div className={styles.typography}>
+          <div className={styles.badge}>
+            <span className={styles.icon}>✦</span>
             Buzzing with Innovation
           </div>
-          <h1 className="text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-            <span className="text-gray-900">The Collaborative</span>
+          <h1 className={styles.title}>
+            <span className={styles.textGray}>The Collaborative</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500 animate-pulse">
-              Recruitment Hive
-            </span>
+            <span className={styles.textGradient}>Recruitment Hive</span>
             <br />
-            <span className="text-gray-900">for Web3 Devs</span>
+            <span className={styles.textGray}>for Web3 Devs</span>
           </h1>
-          <h4 className="text-xl text-gray-700 font-medium mb-8 max-w-2xl mx-auto leading-relaxed">
-            More collaborative, more transparent and fairer than ever. <br />
-            <span className="text-amber-600 font-semibold">
-              Join the sweetest recruitment revolution! 🍯
+          <p className={styles.subtitle}>
+            More collaborative, more transparent and fairer than ever.
+            <br />
+            <span className={styles.highlight}>
+              Join the recruitment revolution where value returns to the people
+              who create it.
             </span>
-          </h4>
+          </p>
         </div>
 
-        {/* Enhanced Action Buttons */}
-        <div className="flex gap-6 mb-12 z-20 relative sm:flex-col sm:gap-4 sm:w-full sm:max-w-xs">
-          <button
-            onClick={onFindJobBtnClick}
-            className="group relative px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center justify-center">
-              <Star className="w-5 h-5 mr-2" />
-              Find Sweet Jobs
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {/* Simplified Action Buttons */}
+        <div className={styles.actionButtons}>
+          <button onClick={onFindJobBtnClick} className={styles.primaryButton}>
+            Find Web3 Jobs
           </button>
 
           <button
             onClick={onFindTalentBtnClick}
-            className="group px-8 py-4 bg-white text-amber-600 font-semibold rounded-2xl border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
+            className={styles.secondaryButton}
           >
-            <span className="flex items-center justify-center">
-              <Zap className="w-5 h-5 mr-2" />
-              Find Top Talent
-            </span>
+            Hire Top Talent
           </button>
-        </div>
-
-        {/* Enhanced Quest Section */}
-        <div className="max-w-2xl flex flex-col items-center mb-12 z-20 relative">
-          <div className="bg-white bg-opacity-80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-amber-200">
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-amber-400 to-yellow-400 rounded-full flex items-center justify-center mr-4">
-                <span className="text-2xl">🏆</span>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900">
-                Exclusive Hive Rewards
-              </h3>
-            </div>
-            <p className="text-center text-gray-700 mb-6 leading-relaxed">
-              Unlock exclusive referral rewards and gain governance power. Enjoy
-              privileged access to
-              <span className="font-semibold text-amber-600">
-                {" "}
-                Airdrops and Whitelists
-              </span>
-              , and become an esteemed holder of our{" "}
-              <span className="font-semibold text-amber-600">
-                Scout and Pioneer NFTs
-              </span>
-              .
-            </p>
-            <button
-              onClick={onJoinQuestsClickHandler}
-              className="group relative px-6 py-3 bg-gradient-to-r from-orange-400 to-amber-400 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 overflow-hidden mx-auto block"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Join the Hive Quest
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
-          </div>
-        </div>
-
-        {/* Bottom Decorative Elements */}
-        <div className="absolute left-[-10px] bottom-[-162px] w-[300px] h-[397px] sm:w-[150px] sm:h-48 sm:left-[-19px] sm:bottom-[-47px] opacity-60">
-          <Image
-            alt="honeycomb-footer"
-            src="/img/grey-polygons.png"
-            fill={true}
-          />
         </div>
       </div>
 
-      {/* Bottom Wave Decoration */}
-      <div className="absolute bottom-[-20px] left-0 w-full">
-        <svg
-          className="w-full h-16 fill-current text-amber-100"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-            opacity=".25"
-          ></path>
-          <path
-            d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-            opacity=".5"
-          ></path>
-          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
-        </svg>
+      {/* Rewards Section - Appears after 100vh */}
+      <div className={styles.rewardsSection}>
+        <div className={styles.rewardsCard}>
+          <div className={styles.header}>
+            <div className={styles.icon}>
+              <span>🏆</span>
+            </div>
+            <h3 className={styles.title}>Exclusive Hive Rewards</h3>
+          </div>
+          <p className={styles.description}>
+            Unlock exclusive referral rewards and gain governance power. Enjoy
+            privileged access to
+            <span className={styles.highlight}> Airdrops and Whitelists</span>,
+            and become an esteemed holder of our{" "}
+            <span className={styles.highlight}>Scout and Pioneer NFTs</span>.
+          </p>
+          <button
+            onClick={onJoinQuestsClickHandler}
+            className={styles.questButton}
+          >
+            Join the Hive Quest
+          </button>
+        </div>
       </div>
     </section>
   );

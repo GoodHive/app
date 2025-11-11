@@ -11,7 +11,7 @@ interface CompanyLoadingSpinnerProps {
 export const CompanyLoadingSpinner = ({
   size = "medium",
   message = "Loading company profile...",
-  subMessage = "Gathering the sweetest details 🍯",
+  subMessage = "Gathering the latest details 🍯",
 }: CompanyLoadingSpinnerProps) => {
   const [animationPhase, setAnimationPhase] = useState(0);
 

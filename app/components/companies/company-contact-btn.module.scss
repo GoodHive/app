@@ -1,0 +1,306 @@
+// Company Contact Button Styles
+.contactSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 0;
+  animation: slideInUp 0.6s ease-out 0.3s forwards;
+}
+
+.buttonContainer {
+  position: relative;
+
+  .contactButton {
+    position: relative;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #eab308 100%);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.125rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(245, 158, 11, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    // Background animation layer
+    .backgroundAnimation {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #ea580c 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .backgroundAnimation {
+      opacity: 1;
+    }
+
+    // Honey drip effect
+    .honeyDrip {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(245, 158, 11, 0.2) 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      animation: honeyDrip 2s ease-in-out infinite;
+    }
+
+    &:hover .honeyDrip {
+      opacity: 1;
+    }
+
+    // Button content
+    .buttonContent {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+
+      .loadingSpinner {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .icon {
+        transition: transform 0.3s ease;
+      }
+
+      .text {
+        font-size: 1.125rem;
+        font-weight: 700;
+      }
+
+      .sparkles {
+        transition: transform 0.3s ease;
+      }
+    }
+
+    &:hover .buttonContent {
+      .icon {
+        animation: bounce 0.6s ease-in-out;
+      }
+
+      .sparkles {
+        animation: pulse 0.8s ease-in-out;
+      }
+    }
+
+    // Floating bees
+    .floatingBee {
+      position: absolute;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      &.bee1 {
+        top: -0.25rem;
+        right: -0.25rem;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      &.bee2 {
+        bottom: -0.25rem;
+        left: -0.25rem;
+        animation: floatSlow 4s ease-in-out infinite 1s;
+      }
+    }
+
+    &:hover .floatingBee {
+      opacity: 0.8;
+    }
+  }
+
+  // Glow effect
+  .glowEffect {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+    border-radius: 1rem;
+    opacity: 0;
+    filter: blur(24px);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover .glowEffect {
+    opacity: 0.3;
+  }
+}
+
+.infoSection {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .conversationInfo {
+    font-size: 0.875rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    .icon {
+      color: #f59e0b;
+      flex-shrink: 0;
+    }
+
+    .text {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  .responseTime {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+
+    .statusDot {
+      width: 0.375rem;
+      height: 0.375rem;
+      background-color: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// Animations
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes honeyDrip {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(2px);
+    opacity: 0.4;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(5deg);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-3deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-4px);
+  }
+  70% {
+    transform: translateY(-2px);
+  }
+  90% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .buttonContainer .contactButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+
+    .buttonContent .text {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .contactSection {
+    animation: none;
+    opacity: 1;
+  }
+
+  .buttonContainer .contactButton {
+    .floatingBee,
+    .honeyDrip {
+      animation: none;
+    }
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  .infoSection .responseTime .statusDot {
+    animation: none;
+  }
+}

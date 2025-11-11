@@ -109,9 +109,9 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
             <div key={`job-${jobOffer.id}-${index}`} className="group relative">
               <Card
                 uniqueId={jobOffer?.user_id}
-                jobId={Number(jobOffer.id) || index}
+                jobId={jobOffer.id || undefined}
                 blockId={jobOffer.block_id}
-                type="company"
+                type="job"
                 title={jobOffer.title || "Job Position"}
                 postedBy={jobOffer.companyName || "Company"}
                 postedOn={`Posted ${moment(jobOffer.posted_at).fromNow()}`}

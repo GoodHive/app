@@ -1,0 +1,617 @@
+.wrapper {
+  position: static;
+  top: auto;
+  z-index: auto;
+}
+
+.shell {
+  border-bottom: 1px solid rgba(252, 211, 77, 0.35);
+  background: #fefbe9;
+  box-shadow: none;
+}
+
+.inner {
+  margin: 0 auto;
+  padding: 1rem 1.5rem 1.75rem;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.fieldColumns {
+  flex: 1 1 540px;
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 1rem;
+  min-width: 520px;
+}
+
+@media (max-width: 860px) {
+  .fieldColumns {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fieldLabel {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--gh-amber-500);
+}
+
+.fieldControl {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(252, 211, 77, 0.4);
+  background: white;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 4px 18px -12px rgba(17, 24, 39, 0.35);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.fieldControl:focus-within {
+  border-color: var(--gh-amber-400);
+  box-shadow: 0 10px 24px -12px rgba(245, 158, 11, 0.35);
+}
+
+.fieldIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+  color: var(--gh-amber-400);
+  margin-top: 0.15rem;
+}
+
+.skillsInput {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: text;
+  background: transparent;
+}
+
+.skillsInput :global(input) {
+  font-size: 1rem;
+  color: var(--gh-gray-700);
+}
+
+.skillsInput :global(input::placeholder) {
+  color: var(--gh-gray-400);
+}
+
+.locationInput {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--gh-gray-700);
+  padding: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.locationInput::placeholder {
+  color: var(--gh-gray-400);
+}
+
+
+.chipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  overflow: visible;
+  padding-bottom: 0.2rem;
+}
+
+.chipButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: white;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gh-gray-600);
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.chipButton:hover {
+  border-color: rgba(252, 211, 77, 0.7);
+  color: var(--gh-amber-600);
+}
+
+.chipButtonActive {
+  border-color: rgba(252, 211, 77, 0.95);
+  background: linear-gradient(120deg, rgba(254, 243, 199, 0.8), rgba(254, 240, 138, 0.75));
+  color: var(--gh-amber-700);
+  box-shadow: 0 10px 22px -18px rgba(245, 158, 11, 0.6);
+}
+
+.chipCaret {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.filterChip {
+  position: relative;
+  display: inline-flex;
+}
+
+.chipPanel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  margin-top: 0;
+  width: 16rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(252, 211, 77, 0.35);
+  background: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 22px 45px -24px rgba(15, 23, 42, 0.45);
+  z-index: 60;
+}
+
+.panelList {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.chipOption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: white;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gh-gray-600);
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.chipOption:hover {
+  border-color: rgba(252, 211, 77, 0.55);
+}
+
+.chipOptionActive {
+  border-color: rgba(252, 211, 77, 0.95);
+  background: linear-gradient(120deg, rgba(254, 249, 195, 0.9), rgba(253, 230, 138, 0.85));
+  color: var(--gh-amber-700);
+  box-shadow: 0 12px 28px -24px rgba(245, 158, 11, 0.6);
+}
+
+.chipOptionDescription {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gh-gray-500);
+}
+
+.chipToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: #fff;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gh-gray-600);
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.chipToggle:hover {
+  border-color: rgba(252, 211, 77, 0.55);
+}
+
+.chipToggleActive {
+  border-color: rgba(252, 211, 77, 0.95);
+  background: rgba(254, 243, 199, 0.45);
+  color: var(--gh-amber-700);
+}
+
+.chipToggleIndicator {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--gh-gray-300);
+}
+
+.chipToggleActive .chipToggleIndicator {
+  background: var(--gh-amber-500);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
+
+.chipClearLink {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gh-amber-600);
+  cursor: pointer;
+}
+
+.chipClearLink:hover {
+  color: var(--gh-amber-500);
+}
+
+.allFiltersButton,
+.clearButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  padding: 0.55rem 1.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.allFiltersButton {
+  border: 1px solid rgba(252, 211, 77, 0.45);
+  background: #fff;
+  color: var(--gh-amber-600);
+}
+
+.allFiltersButton:hover {
+  border-color: rgba(252, 211, 77, 0.85);
+  color: var(--gh-amber-700);
+}
+
+.clearButton {
+  border: none;
+  background: rgba(254, 243, 199, 0.45);
+  color: var(--gh-amber-700);
+}
+
+.clearButton:hover {
+  background: rgba(254, 240, 138, 0.6);
+}
+
+.sortSelect {
+  position: relative;
+}
+
+.sortSelectButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  background: white;
+  padding: 0.55rem 1.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gh-gray-600);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sortSelectButton:hover {
+  border-color: rgba(252, 211, 77, 0.55);
+  color: var(--gh-amber-600);
+}
+
+.sortSelectOptions {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 15rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(252, 211, 77, 0.35);
+  background: #fff;
+  box-shadow: 0 22px 45px -24px rgba(15, 23, 42, 0.45);
+  padding: 0.4rem;
+  z-index: 40;
+}
+
+.sortSelectOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 1rem;
+  padding: 0.65rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gh-gray-600);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sortSelectOption:hover {
+  background: rgba(254, 243, 199, 0.45);
+}
+
+.sortSelectOptionActive {
+  background: rgba(254, 243, 199, 0.6);
+  color: var(--gh-amber-700);
+}
+
+.sortSelectIndicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--gh-amber-500);
+}
+
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(2px);
+}
+
+.drawerRoot {
+  position: relative;
+  z-index: 50;
+}
+
+.drawerViewport {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+}
+
+.drawerViewportInner {
+  display: flex;
+  min-height: 100%;
+  justify-content: flex-end;
+}
+
+@media (min-width: 1024px) {
+  .drawerViewportInner {
+    justify-content: center;
+  }
+}
+
+.drawerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.drawerPanel {
+  position: relative;
+  width: min(680px, 100%);
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(18px);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  min-height: 100vh;
+  box-shadow: -24px 0 45px -30px rgba(15, 23, 42, 0.5);
+}
+
+@media (min-width: 992px) {
+  .drawerPanel {
+    border: 1px solid rgba(252, 211, 77, 0.3);
+    border-radius: 1.75rem 0 0 1.75rem;
+    margin-left: auto;
+    min-height: auto;
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.drawerTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gh-gray-900);
+}
+
+.drawerDescription {
+  font-size: 0.85rem;
+  color: var(--gh-gray-500);
+  margin-top: 0.2rem;
+}
+
+.drawerCloseButton {
+  border: none;
+  border-radius: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: rgba(254, 243, 199, 0.65);
+  color: var(--gh-amber-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.drawerCloseButton:hover {
+  background: rgba(252, 211, 77, 0.8);
+}
+
+.tipsCard {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .drawerContent {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+  }
+
+  .tipsCard {
+    display: block;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(252, 211, 77, 0.35);
+    background: rgba(254, 243, 199, 0.45);
+    padding: 1.25rem;
+  }
+
+  .tipsTitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--gh-amber-700);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tipsList {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--gh-amber-800);
+  }
+}
+
+.drawerFilters {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.drawerFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drawerFieldLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gh-amber-600);
+}
+
+.drawerInput {
+  width: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(252, 211, 77, 0.35);
+  background: white;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.9rem;
+  color: var(--gh-gray-700);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.drawerInput:focus {
+  outline: none;
+  border-color: var(--gh-amber-400);
+  box-shadow: 0 12px 24px -20px rgba(245, 158, 11, 0.55);
+}
+
+.drawerGridTwo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.drawerActionBar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(252, 211, 77, 0.35);
+  padding-top: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .drawerActionBar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.resetButton {
+  border: none;
+  border-radius: 1.5rem;
+  background: rgba(254, 243, 199, 0.55);
+  color: var(--gh-amber-700);
+  padding: 0.85rem 1.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.resetButton:hover {
+  background: rgba(252, 211, 77, 0.75);
+}
+
+.confirmButton {
+  border: none;
+  border-radius: 1.5rem;
+  background: linear-gradient(90deg, var(--gh-amber-500), var(--gh-yellow-500));
+  color: white;
+  padding: 0.9rem 2.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 14px 30px -16px rgba(249, 115, 22, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.confirmButton:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 18px 34px -18px rgba(245, 158, 11, 0.65);
+}
+
+.confirmButton:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 720px) {
+  .inner {
+    padding: 0.9rem 1rem 1.5rem;
+  }
+
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fieldColumns {
+    min-width: auto;
+    width: 100%;
+    grid-template-columns: 1.6fr 1fr;
+  }
+ 
+  .chipRow {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}

@@ -1,11 +1,5 @@
 import type { NextRequest } from "next/server";
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+import sql from "@/lib/db";
 
 export async function GET(request: NextRequest) {
   const searchParamsEntries = request.nextUrl.searchParams.entries();
@@ -20,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const users = await sql`
-      SELECT id, userid, email, talent_status, mentor_status, recruiter_status, wallet_address, okto_wallet_address, referred_by, approved_roles
+      SELECT id, userid, email, talent_status, mentor_status, recruiter_status, wallet_address, thirdweb_wallet_address, referred_by, approved_roles
       FROM goodhive.users
       WHERE userid = ${user_id}
     `;

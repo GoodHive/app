@@ -1,12 +1,21 @@
 import { useRef, ReactNode, useEffect } from "react";
+import styles from "./modal.module.scss";
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  disableOutsideClick?: boolean;
+  blurIntensity?: 'light' | 'medium' | 'heavy';
 }
 
-const Modal = ({ open, onClose, children }: ModalProps) => {
+const Modal = ({
+  open,
+  onClose,
+  children,
+  disableOutsideClick = false,
+  blurIntensity = 'medium'
+}: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 
   useEffect(() => {
@@ -20,22 +29,31 @@ const Modal = ({ open, onClose, children }: ModalProps) => {
     }
   }, [open]);
 
-  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === dialogRef.current) {
+  const handleOverlayClick = () => {
+    if (!disableOutsideClick) {
       onClose();
     }
   };
 
+  const getOverlayClasses = () => {
+    const baseClasses = `${styles.modalOverlay} ${open ? styles.visible : styles.hidden}`;
+    const blurClass = styles[`blur${blurIntensity.charAt(0).toUpperCase() + blurIntensity.slice(1)}`];
+    return `${baseClasses} ${blurClass}`;
+  };
+
+  const dialogClasses = `${styles.modalDialog} ${
+    open ? styles.visible : styles.hidden
+  }`;
+
   return (
     <div
-      className={`fixed top-0 left-0 w-[100vw] h-[100vh] z-[99999999] rounded bg-black bg-opacity-30 flex items-center justify-center ${
-        open ? "block" : "hidden"
-      }`}
-      onClick={handleOutsideClick}
+      className={getOverlayClasses()}
+      onClick={handleOverlayClick}
     >
       <dialog
         ref={dialogRef}
-        className="relative bg-white rounded-xl shadow-lg border-0 p-0 max-h-[80%] max-w-[80%] z-[9999999]"
+        className={dialogClasses}
+        onClick={(e) => e.stopPropagation()}
       >
         {children}
       </dialog>

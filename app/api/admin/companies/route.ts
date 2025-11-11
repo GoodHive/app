@@ -1,12 +1,6 @@
 import { getAdminCompanies } from "@/lib/fetch-admin-companies";
 import type { NextRequest } from "next/server";
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-  },
-});
+import sql from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   console.log("Getting Companies");

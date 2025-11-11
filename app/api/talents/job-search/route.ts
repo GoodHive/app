@@ -1,10 +1,4 @@
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-  },
-});
+import sql from "@/lib/db";
 
 // Force the browser to always fetch the latest data from the server
 export const revalidate = 0;

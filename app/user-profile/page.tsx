@@ -3,7 +3,9 @@
 import Cookies from "js-cookie";
 import {
   Briefcase,
+  CheckCircle,
   CircleUserRound,
+  Clock,
   Copy,
   GraduationCap,
   Mail,
@@ -11,13 +13,12 @@ import {
   User,
   Users,
   Wallet,
-  CheckCircle,
-  Clock,
   XCircle,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import BeeHiveSpinner from "../components/spinners/bee-hive-spinner";
+import styles from "./user-profile.module.scss";
 
 export interface UserProfile {
   id: number;
@@ -27,13 +28,12 @@ export interface UserProfile {
   mentor_status: "pending" | "approved";
   recruiter_status: "pending" | "approved";
   wallet_address?: string;
-  okto_wallet_address?: string;
+  thirdweb_wallet_address?: string;
 }
 
 export default function UserProfilePage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [showConnectEmailPopup, setShowConnectEmailPopup] = useState(false);
 
   // Add custom animations
   const animationStyles = `
@@ -110,104 +110,81 @@ export default function UserProfilePage() {
     fetchUserProfile();
   }, [fetchUserProfile]);
 
-  const handleConnect = () => {
-    setShowConnectEmailPopup(true);
-  };
-
   if (!userProfile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 flex flex-col items-center justify-center">
-        <BeeHiveSpinner size="large" />
-        <p className="mt-6 text-xl font-semibold text-amber-700">Loading User Profile</p>
+      <div className={styles.loadingContainer}>
+        <BeeHiveSpinner size="large" loadingText="Loading User Profile..." />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 relative overflow-hidden">
-      <style dangerouslySetInnerHTML={{__html: animationStyles}} />
-      
+    <div className={styles.userProfile}>
       {/* Animated Honeycomb Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 animate-honeycomb" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59E0B' fill-opacity='0.4'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundSize: '60px 60px'
-        }}></div>
+      <div className={styles.honeycombBackground}>
+        <div className={styles.honeycombPattern}></div>
       </div>
-      
+
       {/* Floating Hexagon Decorations with Animation */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-8 h-8 rotate-12 opacity-20 animate-float">
-          <div className="w-full h-full bg-amber-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
-        <div className="absolute top-40 right-20 w-6 h-6 rotate-45 opacity-15 animate-float-reverse" style={{animationDelay: '1s'}}>
-          <div className="w-full h-full bg-yellow-500 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
-        <div className="absolute bottom-32 left-1/4 w-10 h-10 rotate-12 opacity-10 animate-float" style={{animationDelay: '2s'}}>
-          <div className="w-full h-full bg-orange-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
-        <div className="absolute top-1/3 right-10 w-4 h-4 rotate-90 opacity-25 animate-float-reverse" style={{animationDelay: '3s'}}>
-          <div className="w-full h-full bg-amber-300 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
-        {/* Additional floating elements */}
-        <div className="absolute top-60 left-20 w-5 h-5 rotate-30 opacity-15 animate-float" style={{animationDelay: '4s'}}>
-          <div className="w-full h-full bg-yellow-400 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
-        <div className="absolute bottom-20 right-1/3 w-7 h-7 rotate-60 opacity-20 animate-float-reverse" style={{animationDelay: '5s'}}>
-          <div className="w-full h-full bg-amber-500 transform rotate-45" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)'}}></div>
-        </div>
+      <div className={styles.floatingHexagons}>
+        <div className={`${styles.hexagon} ${styles.hex1}`}></div>
+        <div className={`${styles.hexagon} ${styles.hex2}`}></div>
+        <div className={`${styles.hexagon} ${styles.hex3}`}></div>
+        <div className={`${styles.hexagon} ${styles.hex4}`}></div>
+        <div className={`${styles.hexagon} ${styles.hex5}`}></div>
+        <div className={`${styles.hexagon} ${styles.hex6}`}></div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+      <div className={styles.container}>
         {/* Header Section */}
-        <div className="text-center mb-12 relative">
+        <div className={styles.header}>
           {/* Decorative honeycomb elements around header with pulsing animation */}
-          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 -translate-y-8 opacity-10">
-            <div className="flex space-x-2">
-              <div className="w-3 h-3 bg-amber-400 transform rotate-45 animate-pulse-custom" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)', animationDelay: '0s'}}></div>
-              <div className="w-3 h-3 bg-yellow-400 transform rotate-45 animate-pulse-custom" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)', animationDelay: '1s'}}></div>
-              <div className="w-3 h-3 bg-amber-400 transform rotate-45 animate-pulse-custom" style={{clipPath: 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)', animationDelay: '2s'}}></div>
+          <div className={styles.decorativeTop}>
+            <div className={styles.hexGroup}>
+              <div className={`${styles.hex} ${styles.hex1}`}></div>
+              <div className={`${styles.hex} ${styles.hex2}`}></div>
+              <div className={`${styles.hex} ${styles.hex3}`}></div>
             </div>
           </div>
-          
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 rounded-3xl mb-6 shadow-lg relative hover:scale-105 transition-transform duration-300 group">
-            <CircleUserRound className="w-10 h-10 text-white group-hover:scale-105 transition-transform duration-300" />
+
+          <div className={styles.avatar}>
+            <CircleUserRound className={styles.avatarIcon} />
             {/* Subtle hexagon pattern on avatar with shimmer effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-3xl group-hover:animate-shimmer" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.1'%3E%3Cpolygon points='10,1 4,5 4,15 10,19 16,15 16,5'/%3E%3C/g%3E%3C/svg%3E")`,
-            }}></div>
+            <div className={styles.shimmer}></div>
           </div>
-          
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-amber-700 via-yellow-700 to-orange-700 bg-clip-text text-transparent mb-4 leading-tight">
-            User Profile
-          </h1>
-          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            Manage your 🐝 <span className="font-semibold text-amber-700">GoodHive</span> account and track your status across all roles
+
+          <h1 className={styles.title}>User Profile</h1>
+          <p className={styles.subtitle}>
+            Manage your 🐝{" "}
+            <span className="font-semibold text-amber-700">GoodHive</span>{" "}
+            account and track your status across all roles
           </p>
-          
+
           {/* Subtle decorative elements with staggered pulse */}
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 opacity-10">
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse-custom" style={{animationDelay: '0s'}}></div>
-              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse-custom" style={{animationDelay: '1s'}}></div>
-              <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse-custom" style={{animationDelay: '2s'}}></div>
+          <div className={styles.decorativeBottom}>
+            <div className={styles.dotGroup}>
+              <div className={`${styles.dot} ${styles.dot1}`}></div>
+              <div className={`${styles.dot} ${styles.dot2}`}></div>
+              <div className={`${styles.dot} ${styles.dot3}`}></div>
             </div>
           </div>
         </div>
 
-        {/* Profile Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
-          {/* Account Information */}
-          <div className="lg:col-span-2 xl:col-span-1">
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-amber-200/60 h-full hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:border-amber-300/70 hover:scale-102 hover:bg-white group animate-fade-in-up" style={{animationDelay: '0.1s'}}>
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mr-4">
-                  <User className="w-6 h-6 text-white" />
+        {/* Profile Cards Grid - Two Column Layout */}
+        <div className={styles.profileGrid}>
+          {/* Left Column - Account Information */}
+          <div>
+            <div
+              className={`${styles.card} ${styles.animateFadeInUp} ${styles.delay1}`}
+            >
+              <div className={styles.cardHeader}>
+                <div className={`${styles.icon} ${styles.blue}`}>
+                  <User className={styles.iconSvg} />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Account Info</h2>
+                <h2 className={styles.title}>Account Info</h2>
               </div>
-              
-              <div className="space-y-6">
+
+              <div className={styles.spaceY6}>
                 <InfoItem
                   icon={Mail}
                   label="Email Address"
@@ -224,17 +201,19 @@ export default function UserProfilePage() {
             </div>
           </div>
 
-          {/* Role Status */}
-          <div className="lg:col-span-2 xl:col-span-1">
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-amber-200/60 h-full hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:border-amber-300/70 hover:scale-102 hover:bg-white group animate-fade-in-up" style={{animationDelay: '0.3s'}}>
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-500 rounded-2xl flex items-center justify-center mr-4">
-                  <Users className="w-6 h-6 text-white" />
+          {/* Right Column - Role Status */}
+          <div>
+            <div
+              className={`${styles.card} ${styles.animateFadeInUp} ${styles.delay2}`}
+            >
+              <div className={styles.cardHeader}>
+                <div className={`${styles.icon} ${styles.purple}`}>
+                  <Users className={styles.iconSvg} />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Role Status</h2>
+                <h2 className={styles.title}>Role Status</h2>
               </div>
-              
-              <div className="space-y-4">
+
+              <div className={styles.spaceY4}>
                 <RoleStatusCard
                   icon={Briefcase}
                   title="Talent"
@@ -256,56 +235,73 @@ export default function UserProfilePage() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Wallet Connections */}
-          <div className="lg:col-span-2 xl:col-span-1">
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-amber-200/60 h-full hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:border-amber-300/70 hover:scale-102 hover:bg-white group animate-fade-in-up" style={{animationDelay: '0.5s'}}>
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-500 rounded-2xl flex items-center justify-center mr-4">
-                  <Wallet className="w-6 h-6 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">Wallets</h2>
+        {/* Wallet Connections - Full Width */}
+        <div className={styles.walletSection}>
+          <div className={`${styles.card} ${styles.animateFadeInUp}`}>
+            <div className={styles.cardHeader}>
+              <div className={`${styles.icon} ${styles.green}`}>
+                <Wallet className={styles.iconSvg} />
               </div>
-              
-              <div className="space-y-6">
-                <WalletItem
-                  icon={Wallet}
-                  label="External Wallet"
-                  address={userProfile.wallet_address}
-                  description="Your connected external wallet"
-                />
-                <WalletItem
-                  icon={Shield}
-                  label="GoodHive Wallet"
-                  address={userProfile.okto_wallet_address}
-                  description="Your secure GoodHive wallet"
-                />
-              </div>
+              <h2 className={styles.title}>Wallets</h2>
+            </div>
+
+            <div className={styles.walletGrid}>
+              <WalletItem
+                icon={Wallet}
+                label="External Wallet"
+                address={userProfile.wallet_address}
+                description="Your connected external wallet"
+              />
+              <WalletItem
+                icon={Shield}
+                label="Thirdweb Wallet"
+                address={userProfile.thirdweb_wallet_address}
+                description="Your secure Thirdweb wallet"
+              />
             </div>
           </div>
         </div>
 
         {/* Statistics Overview */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-amber-200/60 hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:border-amber-300/70 hover:scale-105 hover:bg-white animate-fade-in-up" style={{animationDelay: '0.6s'}}>
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Account Overview</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className={styles.statisticsOverview}>
+          <h2 className={styles.title}>Account Overview</h2>
+          <div className={styles.statsGrid}>
             <StatCard
               value={userProfile.email ? "1" : "0"}
               label="Connected Accounts"
               color="blue"
             />
             <StatCard
-              value={[userProfile.talent_status, userProfile.mentor_status, userProfile.recruiter_status].filter(s => s === "approved").length.toString()}
+              value={[
+                userProfile.talent_status,
+                userProfile.mentor_status,
+                userProfile.recruiter_status,
+              ]
+                .filter((s) => s === "approved")
+                .length.toString()}
               label="Approved Roles"
               color="green"
             />
             <StatCard
-              value={[userProfile.talent_status, userProfile.mentor_status, userProfile.recruiter_status].filter(s => s === "pending").length.toString()}
+              value={[
+                userProfile.talent_status,
+                userProfile.mentor_status,
+                userProfile.recruiter_status,
+              ]
+                .filter((s) => s === "pending")
+                .length.toString()}
               label="Pending Approvals"
               color="yellow"
             />
             <StatCard
-              value={[userProfile.wallet_address, userProfile.okto_wallet_address].filter(Boolean).length.toString()}
+              value={[
+                userProfile.wallet_address,
+                userProfile.thirdweb_wallet_address,
+              ]
+                .filter(Boolean)
+                .length.toString()}
               label="Connected Wallets"
               color="purple"
             />
@@ -346,7 +342,13 @@ interface StatCardProps {
 }
 
 // InfoItem Component
-function InfoItem({ icon: Icon, label, value, status, copyable }: InfoItemProps) {
+function InfoItem({
+  icon: Icon,
+  label,
+  value,
+  status,
+  copyable,
+}: InfoItemProps) {
   const handleCopy = () => {
     navigator.clipboard
       .writeText(value)
@@ -359,33 +361,37 @@ function InfoItem({ icon: Icon, label, value, status, copyable }: InfoItemProps)
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl border border-gray-100">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
-          <Icon className="w-5 h-5 text-gray-600" />
+    <div className={styles.infoItem}>
+      <div className={styles.left}>
+        <div className={styles.icon}>
+          <Icon className={styles.iconSvg} />
         </div>
-        <div>
-          <p className="text-sm font-medium text-gray-500">{label}</p>
-          <p className="text-sm font-semibold text-gray-900 mt-1">{value}</p>
+        <div className={styles.content}>
+          <p className={styles.label}>{label}</p>
+          <p className={styles.value}>{value}</p>
         </div>
       </div>
-      <div className="flex items-center space-x-2">
+      <div className={styles.right}>
         {status && (
           <div className="flex items-center">
             {status === "connected" ? (
-              <CheckCircle className="w-4 h-4 text-green-500" />
+              <CheckCircle
+                className={`${styles.statusIcon} ${styles.connected}`}
+              />
             ) : (
-              <XCircle className="w-4 h-4 text-red-500" />
+              <XCircle
+                className={`${styles.statusIcon} ${styles.disconnected}`}
+              />
             )}
           </div>
         )}
         {copyable && (
           <button
             onClick={handleCopy}
-            className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+            className={styles.copyButton}
             title="Copy to clipboard"
           >
-            <Copy className="w-4 h-4 text-gray-500" />
+            <Copy className={styles.copyIcon} />
           </button>
         )}
       </div>
@@ -394,13 +400,12 @@ function InfoItem({ icon: Icon, label, value, status, copyable }: InfoItemProps)
 }
 
 // RoleStatusCard Component
-function RoleStatusCard({ icon: Icon, title, status, description }: RoleStatusCardProps) {
-  const getStatusColor = () => {
-    return status === "approved" 
-      ? "from-green-400 to-green-500" 
-      : "from-yellow-400 to-yellow-500";
-  };
-
+function RoleStatusCard({
+  icon: Icon,
+  title,
+  status,
+  description,
+}: RoleStatusCardProps) {
   const getStatusIcon = () => {
     return status === "approved" ? CheckCircle : Clock;
   };
@@ -408,32 +413,39 @@ function RoleStatusCard({ icon: Icon, title, status, description }: RoleStatusCa
   const StatusIcon = getStatusIcon();
 
   return (
-    <div className="flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-2xl border border-gray-100 hover:shadow-md transition-all duration-200">
-      <div className={`w-12 h-12 bg-gradient-to-r ${getStatusColor()} rounded-2xl flex items-center justify-center mr-4 shadow-lg`}>
-        <Icon className="w-6 h-6 text-white" />
+    <div className={styles.roleStatusCard}>
+      <div
+        className={`${styles.icon} ${status === "approved" ? styles.approved : styles.pending}`}
+      >
+        <Icon className={styles.iconSvg} />
       </div>
-      <div className="flex-1">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          <div className="flex items-center space-x-2">
-            <StatusIcon className={`w-4 h-4 ${status === "approved" ? "text-green-500" : "text-yellow-500"}`} />
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              status === "approved" 
-                ? "bg-green-100 text-green-800" 
-                : "bg-yellow-100 text-yellow-800"
-            }`}>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>{title}</h3>
+          <div className={styles.status}>
+            <StatusIcon
+              className={`${styles.statusIcon} ${status === "approved" ? styles.approved : styles.pending}`}
+            />
+            <span
+              className={`${styles.statusBadge} ${status === "approved" ? styles.approved : styles.pending}`}
+            >
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
         </div>
-        <p className="text-sm text-gray-600 mt-1">{description}</p>
+        <p className={styles.description}>{description}</p>
       </div>
     </div>
   );
 }
 
 // WalletItem Component
-function WalletItem({ icon: Icon, label, address, description }: WalletItemProps) {
+function WalletItem({
+  icon: Icon,
+  label,
+  address,
+  description,
+}: WalletItemProps) {
   const handleCopy = () => {
     if (address) {
       navigator.clipboard
@@ -453,36 +465,36 @@ function WalletItem({ icon: Icon, label, address, description }: WalletItemProps
   };
 
   return (
-    <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-2xl border border-gray-100">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-green-100 to-green-200 rounded-xl flex items-center justify-center">
-            <Icon className="w-5 h-5 text-green-600" />
+    <div className={styles.walletItem}>
+      <div className={styles.header}>
+        <div className={styles.left}>
+          <div className={styles.icon}>
+            <Icon className={styles.iconSvg} />
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">{label}</h3>
-            <p className="text-xs text-gray-600">{description}</p>
+          <div className={styles.content}>
+            <h3 className={styles.title}>{label}</h3>
+            <p className={styles.description}>{description}</p>
           </div>
         </div>
         {address && (
-          <div className="flex items-center space-x-2">
-            <CheckCircle className="w-4 h-4 text-green-500" />
+          <div className={styles.right}>
+            <CheckCircle className={styles.statusIcon} />
             <button
               onClick={handleCopy}
-              className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              className={styles.copyButton}
               title="Copy address"
             >
-              <Copy className="w-4 h-4 text-gray-500" />
+              <Copy className={styles.copyIcon} />
             </button>
           </div>
         )}
       </div>
-      <div className="text-sm font-mono bg-white/50 p-3 rounded-xl border border-gray-200 break-all">
+      <div className={styles.address}>
         {address ? (
-          <span className="block w-full">{formatAddress(address)}</span>
+          <span className={styles.addressText}>{formatAddress(address)}</span>
         ) : (
-          <span className="text-gray-500 flex items-center">
-            <XCircle className="w-4 h-4 mr-2" />
+          <span className={styles.notConnected}>
+            <XCircle className={styles.icon} />
             Not Connected
           </span>
         )}
@@ -493,22 +505,12 @@ function WalletItem({ icon: Icon, label, address, description }: WalletItemProps
 
 // StatCard Component
 function StatCard({ value, label, color }: StatCardProps) {
-  const getColorClasses = () => {
-    const colors = {
-      blue: "from-blue-400 to-blue-500",
-      green: "from-green-400 to-green-500", 
-      yellow: "from-yellow-400 to-yellow-500",
-      purple: "from-purple-400 to-purple-500",
-    };
-    return colors[color];
-  };
-
   return (
-    <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100 hover:shadow-lg hover:shadow-amber-100/50 transition-all duration-300 hover:scale-102 hover:bg-white/80 group animate-fade-in-up">
-      <div className={`w-16 h-16 bg-gradient-to-r ${getColorClasses()} rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300`}>
-        <span className="text-2xl font-bold text-white">{value}</span>
+    <div className={styles.statCard}>
+      <div className={`${styles.icon} ${styles[color]}`}>
+        <span className={styles.value}>{value}</span>
       </div>
-      <p className="text-sm font-medium text-gray-600 group-hover:text-gray-800 transition-colors duration-300">{label}</p>
+      <p className={styles.label}>{label}</p>
     </div>
   );
 }

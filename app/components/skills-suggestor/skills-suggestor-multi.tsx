@@ -101,12 +101,32 @@ export const SkillsSuggestionMulti: React.FC<SkillsSuggestionMultiProps> = ({
   };
 
   return (
-    <div className="relative">
-      <div className={`${classes} flex flex-wrap gap-2 p-2 min-h-[48px] cursor-text`} onClick={() => inputRef.current?.focus()}>
+    <div style={{ position: 'relative' }}>
+      <div
+        className={classes}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '0.4rem',
+          alignItems: 'center',
+          cursor: 'text'
+        }}
+        onClick={() => inputRef.current?.focus()}
+      >
         {selectedSkills.map((skill) => (
           <span
             key={skill}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              padding: '0.25rem 0.75rem',
+              backgroundColor: '#fef3c7',
+              color: '#92400e',
+              borderRadius: '9999px',
+              fontSize: '0.875rem',
+              fontWeight: '500'
+            }}
           >
             {skill}
             <button
@@ -115,9 +135,22 @@ export const SkillsSuggestionMulti: React.FC<SkillsSuggestionMultiProps> = ({
                 e.stopPropagation();
                 handleRemoveSkill(skill);
               }}
-              className="hover:bg-amber-200 rounded-full p-0.5 transition-colors"
+              style={{
+                borderRadius: '9999px',
+                padding: '0.125rem',
+                transition: 'background-color 0.15s',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#fde68a';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style={{ width: '0.75rem', height: '0.75rem' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -131,31 +164,86 @@ export const SkillsSuggestionMulti: React.FC<SkillsSuggestionMultiProps> = ({
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
           placeholder={selectedSkills.length === 0 ? placeholder : ""}
-          className="flex-1 min-w-[150px] bg-transparent outline-none border-none p-0 text-base font-normal text-gray-600"
+          style={{
+            flex: '1',
+            minWidth: '150px',
+            background: 'transparent',
+            outline: 'none',
+            border: 'none',
+            padding: '0',
+            fontSize: '1rem',
+            fontWeight: 'normal',
+            color: 'var(--gh-gray-700)'
+          }}
         />
       </div>
-      {isOpen && (suggestions.length > 0 || (inputValue.trim() && !skills.some(skill => 
+      {isOpen && (suggestions.length > 0 || (inputValue.trim() && !skills.some(skill =>
         skill.name.toLowerCase() === inputValue.toLowerCase()
       ))) && (
-        <div ref={dropdownRef} className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto mt-1">
+        <div
+          ref={dropdownRef}
+          style={{
+            position: 'absolute',
+            zIndex: 10,
+            width: '100%',
+            background: 'white',
+            border: '1px solid #d1d5db',
+            borderRadius: '0.375rem',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            maxHeight: '15rem',
+            overflowY: 'auto',
+            marginTop: '0.25rem'
+          }}
+        >
           {suggestions.map((skill) => (
             <div
               key={skill.id}
               onClick={() => handleSkillSelect(skill)}
-              className="px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-100 flex justify-between items-center"
+              style={{
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f3f4f6',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               <span>{skill.name}</span>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+              <span style={{
+                fontSize: '0.75rem',
+                color: '#6b7280',
+                backgroundColor: '#f3f4f6',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '0.25rem'
+              }}>
                 {skill.category}
               </span>
             </div>
           ))}
-          {inputValue.trim() && !skills.some(skill => 
+          {inputValue.trim() && !skills.some(skill =>
             skill.name.toLowerCase() === inputValue.toLowerCase()
           ) && !selectedSkills.includes(inputValue.trim()) && (
             <div
               onClick={handleAddNewSkill}
-              className="px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-blue-100 text-blue-600 font-medium"
+              style={{
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f3f4f6',
+                color: '#2563eb',
+                fontWeight: '500'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#dbeafe';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               + Add "{inputValue}" as new skill
             </div>

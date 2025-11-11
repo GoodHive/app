@@ -87,3 +87,17 @@ export const GoodhiveQuestLink = "https://zealy.io/cw/goodhive";
 
 export const GoodHiveWalletAddress =
   "0xFE3CC6c61919cc858281eDBD6A8A541210678755";
+
+// Currency/Token options for job creation (database-only, no web3 dependencies)
+export const currencyOptions = [
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "GBP", label: "GBP" },
+  { value: "USDC", label: "USDC" },
+  { value: "ETH", label: "ETH" },
+];
+
+// Temporary token constants for job creation (to be replaced with web3 integration)
+export const ethereumTokens = currencyOptions;
+export const polygonMainnetTokens = currencyOptions;
+export const gnosisChainTokens = currencyOptions;

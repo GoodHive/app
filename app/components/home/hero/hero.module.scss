@@ -1,0 +1,474 @@
+// Hero Section Styles
+.hero {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+// Background Styles
+.background {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(at 40% 20%, hsla(45, 100%, 74%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(35, 100%, 70%, 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(50, 100%, 80%, 0.04) 0px, transparent 50%),
+    linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.honeycombPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.02;
+  background-image:
+    linear-gradient(
+      30deg,
+      #d97706 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #d97706 87.5%,
+      #d97706
+    ),
+    linear-gradient(
+      150deg,
+      #d97706 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #d97706 87.5%,
+      #d97706
+    ),
+    linear-gradient(
+      30deg,
+      #d97706 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #d97706 87.5%,
+      #d97706
+    ),
+    linear-gradient(
+      150deg,
+      #d97706 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #d97706 87.5%,
+      #d97706
+    ),
+    linear-gradient(
+      60deg,
+      #dc2626 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #dc2626 75%,
+      #dc2626
+    ),
+    linear-gradient(
+      60deg,
+      #dc2626 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #dc2626 75%,
+      #dc2626
+    );
+  background-size: 40px 70px;
+  background-position:
+    0 0,
+    0 0,
+    20px 35px,
+    20px 35px,
+    0 0,
+    20px 35px;
+}
+
+// Hexagon Clusters - Better responsive control
+.hexagonCluster {
+  position: absolute;
+
+  // Default: hidden on mobile and tablet
+  display: none;
+
+  // Show on large screens (1024px and up) - but with more precise control
+  @media (min-width: 1024px) {
+    display: block;
+  }
+
+  // Ensure consistent visibility across all large screen sizes
+  @media (min-width: 1024px) and (max-width: 1920px) {
+    display: block !important;
+  }
+}
+
+.topLeftCluster {
+  @extend .hexagonCluster;
+  left: -80px;
+  top: -40px;
+
+  svg {
+    width: 450px;
+    height: 450px;
+  }
+}
+
+.bottomRightCluster {
+  @extend .hexagonCluster;
+  right: -80px;
+  bottom: 20px; // Changed from -40px to 20px to keep it within viewport
+
+  svg {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+// Scattered hexagons container
+.scatteredHexagons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  // Same responsive behavior as clusters
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1920px) {
+    display: block !important;
+  }
+}
+
+// Individual scattered hexagon positions
+.topCenterHex {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+// Top-right hexagon cluster
+.topRightCluster {
+  @extend .hexagonCluster;
+  right: -80px;
+  top: -30px;
+
+  svg {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+// Bottom-left hexagon cluster
+.bottomLeftCluster {
+  @extend .hexagonCluster;
+  left: -60px;
+  bottom: 20px;
+
+  svg {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+.midLeftHex {
+  position: absolute;
+  top: 50%;
+  left: 128px;
+  transform: translateY(-50%);
+}
+
+.midRightHex {
+  position: absolute;
+  top: 33.333%;
+  right: 160px;
+}
+
+.bottomCenterHex {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-33.333%);
+}
+
+.topRightHex {
+  position: absolute;
+  top: 128px;
+  right: 256px;
+}
+
+.centerHex {
+  position: absolute;
+  top: 66.666%;
+  left: 33.333%;
+}
+
+.bottomLeftHex {
+  position: absolute;
+  bottom: 160px;
+  left: 208px;
+}
+
+// Main content container - Takes up exactly 100vh minus navbar height
+.content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 10;
+  min-height: calc(100vh - 64px); // Subtract navbar height (h-16 = 64px)
+
+  // Mobile viewport height fix for better centering
+  @supports (-webkit-touch-callout: none) {
+    min-height: calc(-webkit-fill-available - 64px);
+  }
+}
+
+// Logo styles
+.logo {
+  position: relative;
+  margin-bottom: 40px;
+
+  .logoContainer {
+    height: 80px;
+    width: 320px;
+    position: relative;
+    z-index: 10;
+
+    @media (max-width: 640px) {
+      height: 64px;
+      width: 256px;
+    }
+
+    @media (min-width: 641px) and (max-width: 768px) {
+      height: 72px;
+      width: 288px;
+    }
+  }
+}
+
+// Typography section
+.typography {
+  text-align: center;
+  margin-bottom: 32px;
+  z-index: 20;
+  position: relative;
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #fffbeb;
+    color: #b45309;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 32px;
+    border: 1px solid #fde68a;
+
+    .icon {
+      margin-right: 8px;
+    }
+  }
+
+  .title {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: -0.025em;
+
+    @media (min-width: 640px) {
+      font-size: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 3.75rem;
+      line-height: 1;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 4.5rem;
+    }
+
+    .textGray {
+      color: #111827;
+    }
+
+    .textGradient {
+      background: linear-gradient(to right, #d97706, #ca8a04);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: #4b5563;
+    font-weight: 400;
+    max-width: 36rem;
+    margin: 0 auto;
+
+    .highlight {
+      color: #d97706;
+      font-weight: 500;
+    }
+  }
+}
+
+// Action buttons
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  z-index: 20;
+  position: relative;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .primaryButton {
+    padding: 14px 32px;
+    background-color: #d97706;
+    color: white;
+    font-weight: 500;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #b45309;
+    }
+  }
+
+  .secondaryButton {
+    padding: 14px 32px;
+    background-color: white;
+    color: #111827;
+    font-weight: 500;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f9fafb;
+    }
+  }
+}
+
+// Rewards section - Positioned after 100vh
+.rewardsSection {
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 20;
+  position: relative;
+  margin: 0 auto;
+  padding: 64px 24px;
+
+  .rewardsCard {
+    background-color: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #f3f4f6;
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+
+      .icon {
+        width: 40px;
+        height: 40px;
+        background-color: #fef3c7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 20px;
+      }
+
+      .title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+      }
+    }
+
+    .description {
+      text-align: center;
+      color: #4b5563;
+      margin-bottom: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+
+      .highlight {
+        font-weight: 500;
+        color: #d97706;
+      }
+    }
+
+    .questButton {
+      padding: 10px 20px;
+      background-color: #fef3c7;
+      color: #b45309;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+      margin: 0 auto;
+      display: block;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #fde68a;
+      }
+    }
+  }
+}
+
+// Debug styles for testing hexagon visibility
+.debugHexagons {
+  // Force hexagons to be visible at all screen sizes for testing
+  .hexagonCluster,
+  .scatteredHexagons {
+    display: block !important;
+  }
+}
+
+// Additional responsive breakpoints for fine-tuning
+@media (min-width: 1024px) and (max-width: 1079px) {
+  .hexagonCluster,
+  .scatteredHexagons {
+    display: block !important;
+  }
+}
+
+@media (min-width: 1080px) and (max-width: 1279px) {
+  .hexagonCluster,
+  .scatteredHexagons {
+    display: block !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hexagonCluster,
+  .scatteredHexagons {
+    display: block !important;
+  }
+}

@@ -58,10 +58,10 @@ export const SelectInput: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (defaultValue) {
+    if (defaultValue && !inputValue) {
       setInputValue(defaultValue);
     }
-  }, [defaultValue]);
+  }, [defaultValue, inputValue]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

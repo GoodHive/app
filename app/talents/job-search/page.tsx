@@ -2,18 +2,74 @@ import { Pagination } from "@/app/components/pagination";
 import { fetchJobs } from "@/lib/jobsearch";
 import { Metadata } from "next";
 import JobResult from "./job-result";
-import { 
-  Briefcase, 
-  CheckCircle, 
-  Wrench, 
-  MapPin, 
-  Building, 
-  UserTie, 
-  GraduationCap, 
-  User, 
-  Search, 
-  FolderOpen 
+import {
+  ArrowDownUp,
+  Briefcase,
+  BriefcaseBusiness,
+  CalendarClock,
+  CheckCircle,
+  FolderOpen,
+  GraduationCap,
+  MapPin,
+  Search,
+  User,
+  UserCheck,
+  Wallet,
+  Wrench,
+  Building,
 } from "lucide-react";
+
+const DATE_POSTED_LABELS: Record<string, string> = {
+  "1d": "Past 24 hours",
+  "3d": "Past 3 days",
+  "7d": "Past week",
+  "14d": "Past 2 weeks",
+  "30d": "Past month",
+};
+
+const JOB_TYPE_LABELS: Record<string, string> = {
+  remote: "Remote",
+  hybrid: "Hybrid",
+  onsite: "On-site",
+};
+
+const ENGAGEMENT_LABELS: Record<string, string> = {
+  freelance: "Freelancing",
+  remote: "Employee",
+  any: "Any engagement",
+};
+
+const SORT_LABELS: Record<string, string> = {
+  latest: "Latest",
+  oldest: "Oldest",
+  budget_high: "Budget high to low",
+  budget_low: "Budget low to high",
+};
+
+const formatBudgetRange = (range?: string) => {
+  if (!range) {
+    return "";
+  }
+
+  const [minRaw, maxRaw] = range.split("-");
+  if (!minRaw) {
+    return "";
+  }
+
+  const formatValue = (value: string) => {
+    const numeric = Number(value);
+    if (Number.isNaN(numeric)) {
+      return value;
+    }
+    return `$${numeric.toLocaleString()}`;
+  };
+
+  if (maxRaw) {
+    return `${formatValue(minRaw)} – ${formatValue(maxRaw)}`;
+  }
+
+  return `${formatValue(minRaw)}+`;
+};
 
 export const metadata: Metadata = {
   title: "Job Search - Find Web3 & Blockchain Opportunities | GoodHive",
@@ -36,9 +92,15 @@ export default async function JobSearchPage({
     name?: string;
     page: number;
     recruiter?: string;
+    openToRecruiter?: string;
     mentor?: string;
     // New "Open to" filters
     openToTalents?: string;
+    jobType?: string;
+    engagement?: string;
+    datePosted?: string;
+    budgetRange?: string;
+    sort?: string;
   };
 }) {
   console.log("Search params received:", searchParams);
@@ -52,6 +114,9 @@ export default async function JobSearchPage({
   console.log("Jobs found:", jobs.length);
   console.log("Total count:", count);
   console.log("First job:", jobs[0]);
+
+  const openToRecruiterFilter =
+    searchParams.openToRecruiter ?? searchParams.recruiter;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 relative overflow-hidden">
@@ -133,12 +198,7 @@ export default async function JobSearchPage({
                 </h3>
               </div>
               <div className="flex flex-wrap gap-3">
-                {searchParams.search && (
-                  <span className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
-                    <Wrench className="w-4 h-4 mr-1" /> Skills:{" "}
-                    {searchParams.search}
-                  </span>
-                )}
+                {/* Do not display a chip for free-text keyword search */}
                 {searchParams.location && (
                   <span className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 text-blue-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
                     <MapPin className="w-4 h-4 mr-1" /> Location:{" "}
@@ -151,9 +211,33 @@ export default async function JobSearchPage({
                     {searchParams.name}
                   </span>
                 )}
-                {searchParams.recruiter === "true" && (
+                {searchParams.datePosted && searchParams.datePosted !== "any" && (
+                  <span className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <CalendarClock className="w-4 h-4 mr-1" /> Posted:{" "}
+                    {DATE_POSTED_LABELS[searchParams.datePosted] ?? "Recent"}
+                  </span>
+                )}
+                {searchParams.jobType && searchParams.jobType !== "all" && (
+                  <span className="bg-gradient-to-r from-slate-50 to-zinc-50 border border-slate-200 text-slate-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <BriefcaseBusiness className="w-4 h-4 mr-1" /> Type:{" "}
+                    {JOB_TYPE_LABELS[searchParams.jobType] ?? searchParams.jobType}
+                  </span>
+                )}
+                {searchParams.engagement && searchParams.engagement !== "any" && (
+                  <span className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <Briefcase className="w-4 h-4 mr-1" /> Engagement:{" "}
+                    {ENGAGEMENT_LABELS[searchParams.engagement] ?? searchParams.engagement}
+                  </span>
+                )}
+                {searchParams.budgetRange && (
+                  <span className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 text-emerald-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <Wallet className="w-4 h-4 mr-1" /> Budget:{" "}
+                    {formatBudgetRange(searchParams.budgetRange)}
+                  </span>
+                )}
+                {openToRecruiterFilter === "true" && (
                   <span className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
-                    <UserTie className="w-4 h-4 mr-1" /> Open to Recruiters
+                    <UserCheck className="w-4 h-4 mr-1" /> Open to Recruiters
                   </span>
                 )}
                 {searchParams.mentor === "true" && (
@@ -164,6 +248,12 @@ export default async function JobSearchPage({
                 {searchParams.openToTalents === "true" && (
                   <span className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
                     <User className="w-4 h-4 mr-1" /> Open to Talents
+                  </span>
+                )}
+                {searchParams.sort && searchParams.sort !== "latest" && (
+                  <span className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 text-sky-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <ArrowDownUp className="w-4 h-4 mr-1" /> Sort:{" "}
+                    {SORT_LABELS[searchParams.sort] ?? searchParams.sort}
                   </span>
                 )}
               </div>

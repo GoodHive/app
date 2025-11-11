@@ -21,7 +21,7 @@ export default function ContactUsTemplate({ name, email, message }: ContactUsTem
         
         {/* Content */}
         <div style={content}>
-          <h1 style={heading}>🍯 New Sweet Message from GoodHive!</h1>
+          <h1 style={heading}>🍯 New GoodHive Inquiry Received!</h1>
           
           <p style={paragraph}>
             Buzzing news! You have received a new contact message from the GoodHive website:

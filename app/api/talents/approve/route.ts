@@ -1,15 +1,9 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function POST(request: Request) {
   const { userId, approvalTypes, referral_code } = await request.json();
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  try {
+    try {
     await sql`
       UPDATE goodhive.talents
       SET

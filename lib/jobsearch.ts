@@ -1,4 +1,5 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
+import { getCountrySearchTerms } from "@/lib/country-mapping";
 
 type FetchJobsProps = {
   search?: string;
@@ -14,17 +15,40 @@ type FetchJobsProps = {
   experienceLevel?: string;
   skills?: string;
   // New "Open to" filters
+  openToRecruiter?: string;
   openToTalents?: string;
+  jobType?: string;
+  engagement?: string;
+  datePosted?: string;
+  sort?: string;
 };
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 function contains(str: string) {
   return "%" + str.toLowerCase() + "%";
+}
+
+function normalizeBooleanFilter(value: string | boolean | undefined | null) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+
+    if (!normalized || normalized === "undefined" || normalized === "null") {
+      return null;
+    }
+
+    if (["true", "1", "yes", "on"].includes(normalized)) {
+      return true;
+    }
+
+    if (["false", "0", "no", "off"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  return null;
 }
 
 // Force the browser to always fetch the latest data from the server
@@ -35,36 +59,77 @@ export async function fetchJobs({
   name = "",
   items = 9,
   page = 1,
-  recruiter = "",
-  mentor = "",
-  talent = "",
+  recruiter,
+  mentor,
+  talent,
   projectType = "",
   budgetRange = "",
   experienceLevel = "",
   skills = "",
+  openToRecruiter,
   // New "Open to" filters
-  openToTalents = "",
+  openToTalents,
+  jobType = "",
+  engagement = "",
+  datePosted = "",
+  sort = "latest",
 }: FetchJobsProps) {
   try {
+    const recruiterFlag = normalizeBooleanFilter(
+      recruiter?.trim() ? recruiter : openToRecruiter,
+    );
+    const mentorFlag = normalizeBooleanFilter(mentor);
+    const talentFlag = normalizeBooleanFilter(talent);
+    const openToTalentsFlag = normalizeBooleanFilter(openToTalents);
+
     // Build dynamic WHERE conditions
     let whereConditions = ["published = true"];
     let params: any[] = [];
     let paramIndex = 0;
 
-    // Search in title, skills, and company name
+    // Search in title, description, skills, and company name
+    // Split multi-word queries to match all words (AND logic)
     if (search) {
-      whereConditions.push(
-        `(LOWER(title) LIKE $${++paramIndex} OR LOWER(COALESCE(skills, '')) LIKE $${paramIndex} OR LOWER(company_name) LIKE $${paramIndex})`,
-      );
-      params.push(contains(search));
+      const searchTerms = search.trim().split(/\s+/).filter(term => term.length > 0);
+      
+      if (searchTerms.length > 0) {
+        const searchConditions: string[] = [];
+        
+        // For each search term, check if it appears in any of the searchable fields
+        searchTerms.forEach((term) => {
+          const termPattern = contains(term);
+          const termParamIndex = ++paramIndex;
+          
+          // Check title, description, skills, and company name
+          searchConditions.push(
+            `(LOWER(title) LIKE $${termParamIndex} OR LOWER(COALESCE(description, '')) LIKE $${termParamIndex} OR LOWER(COALESCE(skills, '')) LIKE $${termParamIndex} OR LOWER(company_name) LIKE $${termParamIndex})`
+          );
+          params.push(termPattern);
+        });
+        
+        // All terms must match (AND logic)
+        whereConditions.push(`(${searchConditions.join(' AND ')})`);
+      }
     }
 
-    // Location search
+    // Location search - enhanced to handle country codes and full names
     if (location) {
-      whereConditions.push(
-        `(LOWER(city) LIKE $${++paramIndex} OR LOWER(country) LIKE $${paramIndex})`,
-      );
-      params.push(contains(location));
+      const searchTerms = getCountrySearchTerms(location);
+      const locationConditions: string[] = [];
+
+      // For each search term, check both city and country fields
+      searchTerms.forEach((term) => {
+        const termPattern = contains(term);
+        const termParamIndex = ++paramIndex;
+
+        locationConditions.push(
+          `(LOWER(city) LIKE $${termParamIndex} OR LOWER(country) LIKE $${termParamIndex})`
+        );
+        params.push(termPattern);
+      });
+
+      // Use OR logic: location matches if any search term matches
+      whereConditions.push(`(${locationConditions.join(' OR ')})`);
     }
 
     // Company name search (separate from general search)
@@ -74,29 +139,55 @@ export async function fetchJobs({
     }
 
     // Recruiter filter
-    if (recruiter === "true") {
-      whereConditions.push("recruiter::text = 'true'");
+    if (recruiterFlag === true) {
+      whereConditions.push("COALESCE(recruiter::text, 'false') = 'true'");
     }
 
     // Mentor filter
-    if (mentor === "true") {
-      whereConditions.push("mentor::text = 'true'");
+    if (mentorFlag === true) {
+      whereConditions.push("COALESCE(mentor::text, 'false') = 'true'");
     }
 
     // Talent filter
-    if (talent === "true") {
-      whereConditions.push("talent::text = 'true'");
+    if (talentFlag === true) {
+      whereConditions.push("COALESCE(talent::text, 'false') = 'true'");
     }
 
     // New "Open to" filters
-    if (openToTalents === "true") {
-      whereConditions.push("talent::text = 'true'");
+    if (openToTalentsFlag === true) {
+      whereConditions.push("COALESCE(talent::text, 'false') = 'true'");
     }
 
     // Project type filter
     if (projectType) {
       whereConditions.push(`project_type = $${++paramIndex}`);
       params.push(projectType);
+    }
+
+    if (jobType && jobType !== "all") {
+      whereConditions.push(`job_type = $${++paramIndex}`);
+      params.push(jobType);
+    }
+
+    if (engagement && engagement !== "all") {
+      whereConditions.push(`type_engagement = $${++paramIndex}`);
+      params.push(engagement);
+    }
+
+    if (datePosted && datePosted !== "any") {
+      const intervalMap: Record<string, string> = {
+        "1d": "1 day",
+        "3d": "3 days",
+        "7d": "7 days",
+        "14d": "14 days",
+        "30d": "30 days",
+      };
+
+      const interval = intervalMap[datePosted];
+
+      if (interval) {
+        whereConditions.push(`posted_at >= NOW() - INTERVAL '${interval}'`);
+      }
     }
 
     // Budget range filter
@@ -138,8 +229,21 @@ export async function fetchJobs({
     const limit = Number(items);
     const offset = limit * (Number(page) - 1);
 
+    let orderClause = "ORDER BY posted_at DESC NULLS LAST, id DESC";
+    const normalizedSort = sort?.toLowerCase();
+
+    if (normalizedSort === "oldest") {
+      orderClause = "ORDER BY posted_at ASC NULLS LAST, id ASC";
+    } else if (normalizedSort === "budget_high") {
+      orderClause = "ORDER BY CAST(NULLIF(budget, '') AS INTEGER) DESC NULLS LAST, posted_at DESC";
+    } else if (normalizedSort === "budget_low") {
+      orderClause = "ORDER BY CAST(NULLIF(budget, '') AS INTEGER) ASC NULLS LAST, posted_at DESC";
+    }
+
     // Main query
-    const jobsQuery = `SELECT * FROM goodhive.job_offers WHERE ${whereClause} ORDER BY id DESC LIMIT $${++paramIndex} OFFSET $${++paramIndex}`;
+    const limitIndex = ++paramIndex;
+    const offsetIndex = ++paramIndex;
+    const jobsQuery = `SELECT * FROM goodhive.job_offers WHERE ${whereClause} ${orderClause} LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
     const jobsResult = await sql.unsafe(jobsQuery, [...params, limit, offset]);
 
     console.log("Jobs found:", jobsResult.length);

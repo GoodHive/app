@@ -3,7 +3,7 @@ import { getPendingCompanies } from "@/lib/fetch-pending-company";
 import { getPendingTalents } from "@/lib/fetch-talent-data";
 import type { NextRequest } from "next/server";
 
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,13 +23,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { userId } = await req.json();
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  try {
+    try {
     await sql`
       UPDATE goodhive.companies
       SET approved = true, inReview = false

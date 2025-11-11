@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "@components/button";
 import { MessageBoxModal } from "@components/message-box-modal";
 import { Mail, MessageCircle, Sparkles } from "lucide-react";
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { useAuthCheck } from "@/app/hooks/useAuthCheck";
+import styles from "./company-contact-btn.module.scss";
 
 interface Props {
   toEmail: string;
@@ -16,13 +17,32 @@ export const CompanyContactBtn = ({ toEmail, toUserName }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPopupModal, setIsPopupModal] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const user_id = Cookies.get("user_id");
+  const { user_id, checkAuthAndShowConnectPrompt } = useAuthCheck();
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+
+    // Listen for post-auth contact modal trigger
+    const handleShowContactModal = (event: CustomEvent) => {
+      if (user_id) {
+        // User is now authenticated, show the contact modal
+        onContactMeBtnClickHandler();
+      }
+    };
+
+    window.addEventListener('show-contact-modal', handleShowContactModal as EventListener);
+
+    return () => {
+      window.removeEventListener('show-contact-modal', handleShowContactModal as EventListener);
+    };
+  }, [user_id]);
 
   const onContactMeBtnClickHandler = async () => {
+    // Check if user is authenticated first
+    if (!checkAuthAndShowConnectPrompt("contact this company", "contact", { toEmail, toUserName })) {
+      return;
+    }
+    
     setIsLoading(true);
     const userDataResponse = await fetch(
       `/api/talents/my-profile?user_id=${user_id}`,
@@ -56,7 +76,9 @@ export const CompanyContactBtn = ({ toEmail, toUserName }: Props) => {
       return;
     }
     if (!user_id) {
-      toast.error("Please login to your account first!");
+      // This should not happen if checkAuthAndShowConnectPrompt passed
+      // But keeping as fallback
+      checkAuthAndShowConnectPrompt("send a message");
       return;
     }
     try {
@@ -99,62 +121,60 @@ export const CompanyContactBtn = ({ toEmail, toUserName }: Props) => {
   };
 
   return (
-    <div className={`w-full space-y-4 ${isVisible ? 'animate-slide-in-up delay-300' : 'opacity-0'}`}>
+    <div className={styles.contactSection}>
       {/* Enhanced Contact Button */}
-      <div className="relative group">
+      <div className={styles.buttonContainer}>
         <button
           onClick={onContactMeBtnClickHandler}
           disabled={isLoading}
-          className="relative w-full px-8 py-4 bg-gradient-to-r from-amber-500 via-[#FFC905] to-yellow-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed"
+          className={styles.contactButton}
         >
           {/* Background Animation */}
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          
+          <div className={styles.backgroundAnimation}></div>
+
           {/* Honey Drip Effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-amber-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-honey-drip"></div>
-          
+          <div className={styles.honeyDrip}></div>
+
           {/* Button Content */}
-          <div className="relative z-10 flex items-center justify-center gap-3">
+          <div className={styles.buttonContent}>
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                <span>Connecting...</span>
+                <div className={styles.loadingSpinner}></div>
+                <span className={styles.text}>Connecting...</span>
               </>
             ) : (
               <>
-                <Mail className="w-5 h-5 group-hover:animate-bounce" />
-                <span className="text-lg">Contact Company</span>
-                <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+                <Mail className={styles.icon} size={20} />
+                <span className={styles.text}>Contact Company</span>
+                <Sparkles className={styles.sparkles} size={16} />
               </>
             )}
           </div>
-          
+
           {/* Floating Bees */}
-          <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-80 transition-opacity duration-300">
-            <div className="bee-particle animate-float"></div>
-          </div>
-          <div className="absolute -bottom-1 -left-1 opacity-0 group-hover:opacity-60 transition-opacity duration-500">
-            <div className="bee-particle animate-float-slow"></div>
-          </div>
+          <div className={`${styles.floatingBee} ${styles.bee1}`}>🐝</div>
+          <div className={`${styles.floatingBee} ${styles.bee2}`}>🐝</div>
         </button>
-        
+
         {/* Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-yellow-400 rounded-2xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300 -z-10"></div>
+        <div className={styles.glowEffect}></div>
       </div>
-      
+
       {/* Additional Info */}
-      <div className="text-center space-y-2">
-        <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
-          <MessageCircle className="w-4 h-4 text-amber-500" />
-          <span>Start a conversation with the hive</span>
-          <span className="text-lg">🐝</span>
+      <div className={styles.infoSection}>
+        <p className={styles.conversationInfo}>
+          <MessageCircle className={styles.icon} size={16} />
+          <span className={styles.text}>
+            Start a conversation with the hive
+            <span>🐝</span>
+          </span>
         </p>
-        <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-          <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+        <div className={styles.responseTime}>
+          <div className={styles.statusDot}></div>
           <span>Usually responds within 24 hours</span>
         </div>
       </div>
-      
+
       {/* Enhanced Modal */}
       {isPopupModal && (
         <MessageBoxModal

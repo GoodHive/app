@@ -20,7 +20,7 @@ export const CompanyRegistrationTemplate: React.FC<
         with your hiring needs, let&apos;s have a chat! Please schedule a
         45-minute meeting with us at{" "}
         <a href="https://calendly.com/benoit-kulesza/45-minutes-meeting.">
-          https://calendly.com/benoit-kulesza/45-minutes-meeting.
+          https://calendly.com/benoit-kulesza/45-minutes-meeting
         </a>{" "}
         We&apos;re excited to learn more about {name} and how we can assist in
         finding your ideal IT talent.

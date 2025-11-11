@@ -1,10 +1,5 @@
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-  },
-});
+import sql from "@/lib/db";
+import { getCountrySearchTerms } from "@/lib/country-mapping";
 
 function contains(str: string) {
   return "%" + str.toLowerCase() + "%";
@@ -37,6 +32,10 @@ export async function fetchTalents({
   onlyTalent = "",
   onlyMentor = "",
   onlyRecruiter = "",
+  availability = "",
+  remoteOnly = "",
+  freelanceOnly = "",
+  sort = "recent",
 }: {
   search?: string;
   location?: string;
@@ -46,6 +45,10 @@ export async function fetchTalents({
   onlyTalent?: string;
   onlyMentor?: string;
   onlyRecruiter?: string;
+  availability?: string;
+  remoteOnly?: string;
+  freelanceOnly?: string;
+  sort?: string;
 }) {
   try {
     // Build dynamic WHERE conditions
@@ -53,22 +56,28 @@ export async function fetchTalents({
     let params: any[] = [];
     let paramIndex = 0;
 
-    // Skills search - handle multiple skills with AND logic
+    // Keyword search - split multi-word queries to match all words (AND logic)
+    // Search across name, skills, description, and about_work fields
     if (search) {
-      // Decode URL-encoded search string and split by comma
-      const decodedSearch = decodeURIComponent(search);
-      const searchSkills = decodedSearch.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0);
+      const searchTerms = search.trim().split(/\s+/).filter(term => term.length > 0);
       
-      if (searchSkills.length > 0) {
-        const skillConditions: string[] = [];
+      if (searchTerms.length > 0) {
+        const searchConditions: string[] = [];
         
-        searchSkills.forEach((skill) => {
-          skillConditions.push(`LOWER(skills) LIKE $${++paramIndex}`);
-          params.push(contains(skill));
+        // For each search term, check if it appears in any of the searchable fields
+        searchTerms.forEach((term) => {
+          const termPattern = contains(term);
+          const termParamIndex = ++paramIndex;
+          
+          // Check first name, last name, skills, description, and about_work
+          searchConditions.push(
+            `(LOWER(first_name) LIKE $${termParamIndex} OR LOWER(last_name) LIKE $${termParamIndex} OR LOWER(COALESCE(skills, '')) LIKE $${termParamIndex} OR LOWER(COALESCE(description, '')) LIKE $${termParamIndex} OR LOWER(COALESCE(about_work, '')) LIKE $${termParamIndex})`
+          );
+          params.push(termPattern);
         });
         
-        // Use AND logic: talent must have ALL searched skills
-        whereConditions.push(`(${skillConditions.join(' AND ')})`);
+        // All terms must match (AND logic)
+        whereConditions.push(`(${searchConditions.join(' AND ')})`);
       }
     }
 
@@ -78,10 +87,24 @@ export async function fetchTalents({
       params.push(contains(name));
     }
 
-    // Location search
+    // Location search - enhanced to handle country codes and full names
     if (location) {
-      whereConditions.push(`(LOWER(city) LIKE $${++paramIndex} OR LOWER(country) LIKE $${paramIndex})`);
-      params.push(contains(location));
+      const searchTerms = getCountrySearchTerms(location);
+      const locationConditions: string[] = [];
+
+      // For each search term, check both city and country fields
+      searchTerms.forEach((term) => {
+        const termPattern = contains(term);
+        const termParamIndex = ++paramIndex;
+
+        locationConditions.push(
+          `(LOWER(city) LIKE $${termParamIndex} OR LOWER(country) LIKE $${termParamIndex})`
+        );
+        params.push(termPattern);
+      });
+
+      // Use OR logic: location matches if any search term matches
+      whereConditions.push(`(${locationConditions.join(' OR ')})`);
     }
 
     // Role filters
@@ -95,6 +118,20 @@ export async function fetchTalents({
 
     if (onlyMentor === "true") {
       whereConditions.push("mentor = true");
+    }
+
+    if (availability === "true") {
+      whereConditions.push(
+        "(availability = true OR LOWER(CAST(availability AS TEXT)) = 'available')",
+      );
+    }
+
+    if (remoteOnly === "true") {
+      whereConditions.push("COALESCE(remote_only::text, 'false') = 'true'");
+    }
+
+    if (freelanceOnly === "true") {
+      whereConditions.push("COALESCE(freelance_only::text, 'false') = 'true'");
     }
 
     const whereClause = whereConditions.join(" AND ");
@@ -112,8 +149,21 @@ export async function fetchTalents({
     const limit = Number(items);
     const offset = limit * (Number(page) - 1);
 
+    let orderClause = "ORDER BY last_active DESC NULLS LAST";
+    const normalizedSort = sort?.toLowerCase();
+
+    if (normalizedSort === "alphabetical") {
+      orderClause = "ORDER BY LOWER(first_name) ASC NULLS LAST, LOWER(last_name) ASC";
+    } else if (normalizedSort === "rate_high") {
+      orderClause = "ORDER BY CAST(NULLIF(rate, '') AS NUMERIC) DESC NULLS LAST, last_active DESC";
+    } else if (normalizedSort === "rate_low") {
+      orderClause = "ORDER BY CAST(NULLIF(rate, '') AS NUMERIC) ASC NULLS LAST, last_active DESC";
+    }
+
     // Main query
-    const talentsQuery = `SELECT * FROM goodhive.talents WHERE ${whereClause} ORDER BY last_active DESC LIMIT $${++paramIndex} OFFSET $${++paramIndex}`;
+    const limitIndex = ++paramIndex;
+    const offsetIndex = ++paramIndex;
+    const talentsQuery = `SELECT * FROM goodhive.talents WHERE ${whereClause} ${orderClause} LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
     const talentsCursor = await sql.unsafe(talentsQuery, [...params, limit, offset]);
 
     console.log("Talents found:", talentsCursor.length);

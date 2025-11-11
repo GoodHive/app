@@ -3,7 +3,6 @@ import { X } from "lucide-react";
 import Cookies from "js-cookie";
 import { UserProfile } from "@/app/user-profile/page";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 interface ConnectEmailPopupProps {
   isOpen: boolean;
@@ -16,7 +15,6 @@ export function ConnectEmailPopup({
   onClose,
   setUserProfile,
 }: ConnectEmailPopupProps) {
-  const { address: wallet_address } = useAccount();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

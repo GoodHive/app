@@ -6,12 +6,14 @@ interface BeeHiveSpinnerProps {
   size?: "small" | "default" | "large";
   className?: string;
   style?: React.CSSProperties;
+  loadingText?: string;
 }
 
 export default function BeeHiveSpinner({
   size = "default",
   className = "",
   style = {},
+  loadingText = "Loading...",
 }: BeeHiveSpinnerProps) {
   const containerSizes = {
     small: "w-20 h-20",
@@ -212,7 +214,7 @@ export default function BeeHiveSpinner({
           {/* Loading text with better styling */}
           <div className="text-center">
             <p className={`text-amber-600 font-semibold ${textSizes[size]} animate-pulse tracking-wide`}>
-              Loading talent profile...
+              {loadingText}
             </p>
             <div className="flex justify-center mt-2">
               <div className="flex space-x-1">

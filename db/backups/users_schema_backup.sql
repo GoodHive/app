@@ -1,0 +1,32 @@
+-- Database backup created on 2025-01-03
+-- Users table schema with all columns before cleanup
+
+-- Current columns in goodhive.users table:
+-- id - integer primary key
+-- email - character varying
+-- passwordhash - character varying
+-- userid - uuid
+-- talent_status - character varying
+-- mentor_status - character varying
+-- recruiter_status - character varying
+-- wallet_address - character varying (CURRENTLY USED)
+-- last_active - timestamp with time zone
+-- referred_by - character varying
+-- approved_roles - ARRAY
+-- google_auth_id - text (TO BE REMOVED)
+-- first_name - text
+-- last_name - text
+-- okto_wallet_address - character (TO BE REMOVED)
+-- login_method - character varying (TO BE REMOVED)
+-- thirdweb_wallet_address - character varying (TO BE REMOVED)
+-- thirdweb_smart_account_address - character varying (KEEP FOR NOW)
+-- auth_provider - character varying (TO BE REMOVED)
+-- auth_method - character varying (CURRENTLY USED)
+-- migration_date - timestamp without time zone (TO BE REMOVED)
+-- last_auth_provider - character varying (TO BE REMOVED)
+-- wallet_metadata - json (TO BE REMOVED)
+-- migration_status - character varying (TO BE REMOVED)
+
+-- This backup documents the state before cleanup
+-- Columns to be removed: okto_wallet_address, login_method, thirdweb_wallet_address, 
+-- google_auth_id, auth_provider, last_auth_provider, migration_date, migration_status, wallet_metadata

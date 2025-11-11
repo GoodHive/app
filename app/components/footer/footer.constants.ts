@@ -13,7 +13,7 @@ export const pageLinks = [
   },
   {
     name: "About",
-    url: "https://linktr.ee/goodhive",
+    url: "/about-us",
   },
   {
     name: "FAQ",

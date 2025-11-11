@@ -1,114 +1,65 @@
 "use client";
 
-import { getAccount, useOkto } from "@okto_web3/react-sdk";
-import { googleLogout } from "@react-oauth/google";
 import Cookies from "js-cookie";
-import { CircleUserRound, Wallet } from "lucide-react";
+import { ConnectButton, useActiveAccount, useConnectModal } from "thirdweb/react";
+
+import { useAuth } from "@/app/contexts/AuthContext";
+import { thirdwebClient } from "@/clients";
+import { activeChain } from "@/config/chains";
+import {
+  authenticateWithWallet,
+  extractWalletAuthData,
+  detectWalletType,
+  logoutWalletUser,
+  getEmailFromInAppWallet,
+} from "@/lib/auth/thirdwebAuth";
+import { supportedWallets, connectModalOptions } from "@/lib/auth/walletConfig";
+import { ReturnUrlManager } from "@/app/utils/returnUrlManager";
+import { useAuthCheck } from "@/app/hooks/useAuthCheck";
+import { CircleUserRound } from "lucide-react";
 import { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { ProtectedLink } from "./ProtectedLink";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useProtectedNavigation } from "@/app/hooks/useProtectedNavigation";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount, useDisconnect } from "wagmi";
-import { WalletPopup } from "./WalletConnect/WalletPopup";
+import EmailVerificationModal from "./EmailVerificationModal";
+import { OnboardingPopup } from "./onboarding-popup";
 
 const commonLinks = [
-  { href: "/talents/job-search", label: "Find a Job" },
-  { href: "/companies/search-talents", label: "Find a Talent" },
+  { href: "/talents/job-search", label: "Find a Job", protected: false },
+  { href: "/companies/search-talents", label: "Find a Talent", protected: false },
 ];
 
 const talentsLinks = [
-  { href: "/talents/job-search", label: "Job Search" },
-  { href: "/talents/my-profile", label: "My Talent Profile" },
+  { href: "/talents/job-search", label: "Job Search", protected: false },
+  { href: "/talents/my-profile", label: "My Talent Profile", protected: true },
 ];
 
 const companiesLinks = [
-  { href: "/companies/search-talents", label: "Search Talents" },
-  { href: "/companies/my-profile", label: "My Company Profile" },
+  { href: "/companies/search-talents", label: "Search Talents", protected: false },
+  { href: "/companies/my-profile", label: "My Company Profile", protected: true },
 ];
 
-// Add usePrevious hook
-function usePrevious<T>(value: T): T | undefined {
-  const ref = React.useRef<T>();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-}
-
 export const NavBar = () => {
-  const { disconnect } = useDisconnect();
-  const oktoClient = useOkto();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
-  const [isOpenWalletPopup, setIsOpenWalletPopup] = useState(false);
-  const [oktoWalletAddress, setOktoWalletAddress] = useState<string | null>(
-    null,
-  );
-  const walletButtonRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [walletAddressToVerify, setWalletAddressToVerify] = useState("");
+  const [showOnboardingPopup, setShowOnboardingPopup] = useState(false);
   const pathname = usePathname();
-  const { address: wagmiAddress, isConnected } = useAccount();
-  const prevIsConnected = usePrevious(isConnected);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { navigate: protectedNavigate } = useProtectedNavigation();
+  const account = useActiveAccount();
+  const { connect, isConnecting } = useConnectModal();
+  const { user, isAuthenticated, login, logout } = useAuth();
+  const { setManualConnection } = useAuthCheck();
+  const connectModalShownRef = useRef(false);
 
   const loggedIn_user_id = Cookies.get("user_id");
-
-  const POLYGON_CAIP2_ID = "eip155:137";
-
-  // Fetch Okto wallet address
-  useEffect(() => {
-    const fetchUserWallet = async () => {
-      if (!oktoClient || !loggedIn_user_id) {
-        setOktoWalletAddress(null);
-        return;
-      }
-
-      try {
-        const accounts = await getAccount(oktoClient);
-        console.log(accounts, "accounts...goodhive");
-        const polygonAccount = accounts.find(
-          (account: any) => account.caipId === POLYGON_CAIP2_ID,
-        );
-        if (polygonAccount) {
-          setOktoWalletAddress(polygonAccount?.address);
-        } else {
-          setOktoWalletAddress(null);
-        }
-      } catch (error: any) {
-        console.error("Error fetching user wallet:", error);
-        setOktoWalletAddress(null);
-      }
-    };
-
-    fetchUserWallet();
-  }, [oktoClient, loggedIn_user_id]);
-
-  // Close wallet popup when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        walletButtonRef.current &&
-        !walletButtonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpenWalletPopup(false);
-      }
-    };
-
-    if (isOpenWalletPopup) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpenWalletPopup]);
-
-  // Ensure WalletPopup stays open after wallet connect
-  /* useEffect(() => {
-    if (!prevIsConnected && isConnected) {
-      setIsOpenWalletPopup(true);
-    }
-  }, [isConnected, prevIsConnected]); */
 
   const links = pathname.startsWith("/talents")
     ? talentsLinks
@@ -116,29 +67,319 @@ export const NavBar = () => {
       ? companiesLinks
       : commonLinks;
 
-  const handleLogout = async () => {
+  // Handle wallet connection/disconnection
+  useEffect(() => {
+    const handleWalletAuth = async () => {
+      if (account?.address && !loggedIn_user_id && !isAuthenticating) {
+        setIsAuthenticating(true);
+
+        try {
+          // Debug the account object structure
+          console.log("Account in handleWalletAuth:", account);
+          
+          // IMPORTANT: For Thirdweb social wallets, the account from useActiveAccount()
+          // doesn't have wallet property, but we can detect it's a social wallet
+          // by trying to get the email first
+          let extractedEmail: string | undefined;
+          let isThirdwebSocialWallet = false;
+          
+          // Try to get email from Thirdweb SDK first
+          try {
+            const email = await getEmailFromInAppWallet(thirdwebClient);
+            if (email) {
+              extractedEmail = email;
+              isThirdwebSocialWallet = true;
+              console.log("Successfully detected Thirdweb social wallet with email:", email);
+            }
+          } catch (error) {
+            console.log("Not a Thirdweb social wallet or email not available");
+          }
+          
+          // Extract wallet data with the detected information
+          const walletData = extractWalletAuthData(account, extractedEmail, isThirdwebSocialWallet);
+          if (!walletData) {
+            throw new Error("Failed to extract wallet data");
+          }
+          
+          // Override with correct values if we detected a social wallet
+          if (isThirdwebSocialWallet) {
+            walletData.isThirdwebWallet = true;
+            walletData.walletType = 'in-app';
+            walletData.email = extractedEmail;
+          }
+
+          // For in-app wallets without email, try API fallback
+          if (walletData.isThirdwebWallet && !walletData.email) {
+            try {
+              console.log("Trying API fallback to get email");
+              const typeInfo = await detectWalletType(account.address);
+              if (typeInfo.userInfo?.primaryEmail) {
+                walletData.email = typeInfo.userInfo.primaryEmail;
+                console.log("Got email from API:", walletData.email);
+              }
+            } catch (error) {
+              console.log("API fallback also failed:", error);
+            }
+          }
+
+          // Log wallet data for debugging
+          console.log("Wallet authentication data:", {
+            address: walletData.address,
+            email: walletData.email,
+            isThirdwebWallet: walletData.isThirdwebWallet,
+            walletType: walletData.walletType
+          });
+
+          // Authenticate with backend
+          const authResult = await authenticateWithWallet(walletData);
+
+          if (authResult.success) {
+            toast.success(
+              authResult.isNewUser
+                ? "Welcome to GoodHive! Account created successfully."
+                : "Welcome back!",
+            );
+
+            // Update auth context
+            login(authResult.user);
+
+            // Show onboarding popup for new users
+            if (authResult.isNewUser) {
+              setShowOnboardingPopup(true);
+            }
+
+            // If no email was captured, show a notification
+            if (walletData.isThirdwebWallet && !walletData.email) {
+              toast("Consider adding your email in profile settings for account recovery", {
+                icon: "ℹ️",
+                duration: 5000,
+              });
+            }
+
+            // Handle post-authentication redirect
+            const redirectUrl = ReturnUrlManager.getRedirectUrl();
+            const postAuthAction = ReturnUrlManager.getPostAuthAction();
+
+            console.log('Post-auth redirect - URL:', redirectUrl, 'Action:', postAuthAction);
+
+            if (redirectUrl) {
+              console.log('Redirecting to:', redirectUrl);
+              router.push(redirectUrl);
+
+              // Handle post-auth actions
+              if (postAuthAction?.type === 'show-contact-modal') {
+                // This will be handled by the company contact button component
+                // after the page loads and user is authenticated
+                setTimeout(() => {
+                  const event = new CustomEvent('show-contact-modal', {
+                    detail: postAuthAction.data
+                  });
+                  window.dispatchEvent(event);
+                }, 500);
+              }
+            } else {
+              console.log('No redirect URL found, using fallback');
+              // Fallback to homepage if no redirect URL is set
+              router.push("/");
+            }
+
+            // Clear auth context after handling
+            ReturnUrlManager.clearAuthContext();
+          } else if (authResult.requiresEmailVerification) {
+            // User doesn't exist - need email verification
+            console.log("Email verification required for wallet:", walletData.address);
+            setWalletAddressToVerify(walletData.address);
+            setShowEmailVerification(true);
+          } else {
+            toast.error(authResult.error || "Authentication failed");
+          }
+        } catch (error) {
+          console.error("Wallet authentication error:", error);
+          toast.error("Failed to authenticate wallet");
+        } finally {
+          setIsAuthenticating(false);
+        }
+      }
+    };
+
+    handleWalletAuth();
+  }, [account, loggedIn_user_id, isAuthenticating, login, router]);
+
+  const handleEmailVerificationSuccess = (user: any, isNewUser: boolean = true) => {
+    // Update auth context with verified user
+    login(user);
+    setShowEmailVerification(false);
+    setWalletAddressToVerify("");
+
+    toast.success("Email verified successfully! Welcome to GoodHive!");
+
+    // Show onboarding popup for new users after email verification
+    if (isNewUser) {
+      setShowOnboardingPopup(true);
+    }
+
+    // Handle post-authentication redirect (same logic as above)
+    const redirectUrl = ReturnUrlManager.getRedirectUrl();
+    const postAuthAction = ReturnUrlManager.getPostAuthAction();
+
+    if (redirectUrl) {
+      router.push(redirectUrl);
+
+      // Handle post-auth actions
+      if (postAuthAction?.type === 'show-contact-modal') {
+        setTimeout(() => {
+          const event = new CustomEvent('show-contact-modal', {
+            detail: postAuthAction.data
+          });
+          window.dispatchEvent(event);
+        }, 500);
+      }
+    } else {
+      // Fallback to homepage if no redirect URL is set
+      router.push("/");
+    }
+
+    // Clear auth context after handling
+    ReturnUrlManager.clearAuthContext();
+  };
+
+  const handleOnboardingClose = () => {
+    setShowOnboardingPopup(false);
+  };
+
+  const handleOnboardingContinue = () => {
+    setShowOnboardingPopup(false);
+    // Redirect to talents profile page after onboarding
+    router.push("/talents/my-profile");
+  };
+
+  const handleWalletDisconnect = async () => {
     try {
-      googleLogout();
-      oktoClient.sessionClear();
+      // Clear backend session
+      await logoutWalletUser();
 
-      Cookies.remove("user_id");
-      Cookies.remove("loggedIn_user");
+      // Clear client-side auth context and any stored redirects
+      logout();
+      ReturnUrlManager.clearAuthContext();
 
-      disconnect();
+      toast.success("Successfully disconnected");
 
-      toast.success("Successfully logged out");
-      window.location.href = "/auth/login";
+      // Redirect to homepage after disconnect
+      router.push("/");
     } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Failed to logout. Please try again.");
+      console.error("Disconnect failed:", error);
+      toast.error("Failed to disconnect. Please try again.");
     }
   };
 
+  const handleConnectButtonClick = () => {
+    // Set manual connection context before opening modal
+    setManualConnection();
+  };
+
+  const handleOnConnect = async (wallet: any) => {
+    console.log("=== WALLET CONNECTION DEBUG ===");
+    console.log("Full wallet object:", wallet);
+    console.log("Wallet ID:", wallet.id);
+    console.log("Wallet walletId:", wallet.walletId);
+    console.log("Wallet type:", wallet.type);
+    console.log("Wallet connector:", wallet.connector);
+
+    const account = await wallet.getAccount();
+    console.log("Account object:", account);
+    console.log("Account address:", account?.address);
+
+    // Check if this is a social/in-app wallet
+    const isSocialWallet = wallet.id === 'inApp' ||
+                          wallet.walletId === 'inApp' ||
+                          wallet.id?.includes('social') ||
+                          wallet.id?.includes('email') ||
+                          wallet.id?.includes('google');
+
+    console.log("Is social wallet?", isSocialWallet);
+
+    // Try to get email immediately after connection for in-app wallets
+    if (isSocialWallet) {
+      try {
+        const email = await getEmailFromInAppWallet(thirdwebClient);
+        console.log("Email from in-app wallet:", email);
+      } catch (error) {
+        console.log("Could not get email immediately after connection:", error);
+      }
+    }
+    console.log("=== END WALLET DEBUG ===");
+  };
+
+  useEffect(() => {
+    const promptFromQuery = searchParams?.get("connectWallet") === "true";
+    const shouldPrompt =
+      promptFromQuery &&
+      !connectModalShownRef.current &&
+      !isConnecting &&
+      !isAuthenticated &&
+      !loggedIn_user_id &&
+      !account?.address;
+
+    if (!shouldPrompt) {
+      return;
+    }
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    connectModalShownRef.current = true;
+
+    const params = new URLSearchParams(searchParams!.toString());
+    params.delete("connectWallet");
+
+    const newQuery = params.toString();
+    const { pathname: currentPathname, hash } = window.location;
+    const cleanedUrl = `${currentPathname}${newQuery ? `?${newQuery}` : ""}${hash ?? ""}`;
+
+    void connect({
+      client: thirdwebClient,
+      wallets: supportedWallets,
+      chain: activeChain,
+      ...connectModalOptions,
+    }).finally(() => {
+      connectModalShownRef.current = false;
+    });
+
+    // Clean up the query param to avoid repeated prompts on navigation
+    router.replace(cleanedUrl, { scroll: false });
+  }, [
+    account?.address,
+    connect,
+    isAuthenticated,
+    isConnecting,
+    loggedIn_user_id,
+    router,
+    searchParams,
+  ]);
+  
   return (
-    <header
-      aria-label="Site Header"
-      className="bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 shadow-lg border-b border-amber-200 backdrop-blur-sm"
-    >
+    <>
+      <EmailVerificationModal
+        open={showEmailVerification}
+        onClose={() => {
+          setShowEmailVerification(false);
+          setWalletAddressToVerify("");
+        }}
+        walletAddress={walletAddressToVerify}
+        onVerificationSuccess={handleEmailVerificationSuccess}
+      />
+
+      <OnboardingPopup
+        isOpen={showOnboardingPopup}
+        onClose={handleOnboardingClose}
+        onContinue={handleOnboardingContinue}
+      />
+      
+      <header
+        aria-label="Site Header"
+        className="sticky top-0 z-40 bg-gradient-to-r from-amber-100 via-amber-50 to-yellow-100 shadow-lg border-b border-amber-200 backdrop-blur-sm"
+      >
       <div className="flex items-center h-16 gap-8 px-8 mx-auto sm:px-6">
         <Link className="block group" href="/">
           <span className="sr-only">Home</span>
@@ -175,72 +416,58 @@ export const NavBar = () => {
         <div className="flex items-center sm:justify-end flex-1 justify-between">
           <nav aria-label="Site Nav" className="block sm:hidden">
             <ul className="flex items-center gap-6 text-sm">
-              {links.map(({ href, label }) => (
+              {links.map(({ href, label, protected: isProtected }) => (
                 <li key={`${href}${label}`}>
-                  <Link
-                    href={href as Route}
-                    className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
-                  >
-                    {label}
-                  </Link>
+                  {isProtected ? (
+                    <ProtectedLink
+                      href={href as Route}
+                      className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
+                      authDescription={`access ${label.toLowerCase()}`}
+                    >
+                      {label}
+                    </ProtectedLink>
+                  ) : (
+                    <Link
+                      href={href as Route}
+                      className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
+                    >
+                      {label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
           </nav>
 
-          <div className="flex items-center gap-5">
-            {loggedIn_user_id ? (
-              <button
-                className="my-2 text-base font-semibold bg-[#FFC905] h-10 w-40 rounded-full hover:bg-opacity-80 active:shadow-md transition duration-150 ease-in-out"
-                type="submit"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            ) : (
-              <button
-                className="my-2 text-base font-semibold bg-[#FFC905] h-10 w-40 rounded-full hover:bg-opacity-80 active:shadow-md transition duration-150 ease-in-out"
-                type="submit"
-                onClick={() => router.push("/auth/login")}
-              >
-                Login
-              </button>
-            )}
+          <div className="flex items-center gap-4">
+            {/* Always show ConnectButton - it adapts based on wallet state */}
+            <div onClick={handleConnectButtonClick}>
+              <ConnectButton
+                client={thirdwebClient}
+                wallets={supportedWallets}
+                chain={activeChain}
+                onDisconnect={handleWalletDisconnect}
+                theme="light"
+                connectButton={{
+                  label: "Connect Wallet",
+                }}
+                onConnect={handleOnConnect}
+                connectModal={{
+                  title: "Connect to GoodHive",
+                  size: "wide",
+                  showThirdwebBranding: false,
+                }}
+              />
+            </div>
 
-            {/* Wallet Button - Only show when logged in */}
-            {loggedIn_user_id && (
-              <div className="relative" ref={walletButtonRef}>
-                <button
-                  className="relative group flex items-center justify-center px-6 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-full hover:from-amber-600 hover:to-yellow-600 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-amber-500/25 h-10"
-                  onClick={() => setIsOpenWalletPopup(!isOpenWalletPopup)}
-                >
-                  <Wallet
-                    size={20}
-                    className="mr-2 transition-all duration-300 group-hover:rotate-12"
-                  />
-                  <span className="font-semibold text-sm sm:text-base">
-                    Wallet
-                  </span>
-                  {/* Glow effect on hover */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
-                </button>
-                {/* Wallet Popup (refactored) */}
-                <WalletPopup
-                  isOpen={isOpenWalletPopup}
-                  anchorRef={walletButtonRef}
-                  onClose={() => setIsOpenWalletPopup(false)}
-                  oktoWalletAddress={oktoWalletAddress}
-                />
-              </div>
-            )}
-
-            {loggedIn_user_id && (
-              <Link href="/user-profile" className="group">
+            {/* Show profile icon when user is authenticated */}
+            {(isAuthenticated || loggedIn_user_id) && (
+              <ProtectedLink href="/user-profile" className="group" title="Profile" authDescription="access your profile">
                 <CircleUserRound
                   size={36}
                   className="cursor-pointer text-gray-600 hover:text-amber-700 transition-all duration-300 group-hover:scale-110"
                 />
-              </Link>
+              </ProtectedLink>
             )}
 
             <button
@@ -279,14 +506,24 @@ export const NavBar = () => {
         <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-t border-amber-200 shadow-inner">
           <nav aria-label="Site Nav" className="hidden sm:block">
             <ul className="flex flex-col items-center justify-center gap-4 py-4 text-sm">
-              {links.map(({ href, label }) => (
+              {links.map(({ href, label, protected: isProtected }) => (
                 <li key={`${href}${label}`}>
-                  <Link
-                    href={href as Route}
-                    className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
-                  >
-                    {label}
-                  </Link>
+                  {isProtected ? (
+                    <ProtectedLink
+                      href={href as Route}
+                      className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
+                      authDescription={`access ${label.toLowerCase()}`}
+                    >
+                      {label}
+                    </ProtectedLink>
+                  ) : (
+                    <Link
+                      href={href as Route}
+                      className="text-gray-700 font-medium transition hover:text-amber-700 hover:scale-105 active:scale-95"
+                    >
+                      {label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -294,5 +531,6 @@ export const NavBar = () => {
         </div>
       )}
     </header>
+    </>
   );
 };

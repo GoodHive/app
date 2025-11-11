@@ -4,6 +4,7 @@ import { generateCountryFlag } from "@/app/utils/generate-country-flag";
 import { Sparkles, MapPin, Users, Briefcase } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import styles from "./company-hero-section.module.scss";
 
 interface CompanyHeroSectionProps {
   companyName: string;
@@ -31,12 +32,12 @@ export const CompanyHeroSection = ({
   }, []);
 
   return (
-    <section className="relative min-h-[400px] w-full bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-100 overflow-hidden">
+    <section className={styles.heroSection}>
       {/* Animated Background Elements */}
-      <div className="absolute inset-0">
+      <div className={styles.backgroundContainer}>
         {/* Enhanced Honeycomb Pattern */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03]">
-          <svg className="w-full h-full" viewBox="0 0 100 100">
+        <div className={styles.honeycombPattern}>
+          <svg className={styles.honeycombSvg} viewBox="0 0 100 100">
             <defs>
               <pattern
                 id="honeycomb-hero"
@@ -45,14 +46,10 @@ export const CompanyHeroSection = ({
                 width="20"
                 height="17.32"
                 patternUnits="userSpaceOnUse"
-                className="animate-hexagon-spin"
               >
                 <polygon
                   points="10,0 20,5.77 20,11.55 10,17.32 0,11.55 0,5.77"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="0.5"
-                  className="text-amber-400"
+                  className={styles.honeycombPolygon}
                 />
               </pattern>
             </defs>
@@ -61,58 +58,46 @@ export const CompanyHeroSection = ({
         </div>
 
         {/* Floating Bee Particles */}
-        <div className="absolute top-1/4 left-1/6">
-          <div className="bee-particle animate-float delay-100"></div>
-        </div>
-        <div className="absolute top-1/3 right-1/4">
-          <div className="bee-particle animate-float-slow delay-300"></div>
-        </div>
-        <div className="absolute bottom-1/3 left-1/3">
-          <div className="bee-particle animate-float delay-500"></div>
-        </div>
-
-        {/* Animated Bees */}
-        <div className="absolute top-20 left-20 opacity-60">
-          <div
-            className="relative animate-bounce"
-            style={{ animationDelay: "0s", animationDuration: "3s" }}
-          >
-            <span className="text-3xl">🐝</span>
+        <div className={styles.floatingParticles}>
+          <div className={styles.particle1}>
+            <div className={`${styles.beeParticle} ${styles.delay100}`}></div>
+          </div>
+          <div className={styles.particle2}>
+            <div className={`${styles.beeParticle} ${styles.slow} ${styles.delay300}`}></div>
+          </div>
+          <div className={styles.particle3}>
+            <div className={`${styles.beeParticle} ${styles.delay500}`}></div>
           </div>
         </div>
 
-        <div className="absolute top-32 right-32 opacity-50">
-          <div
-            className="relative animate-bounce"
-            style={{ animationDelay: "1.5s", animationDuration: "4s" }}
-          >
-            <span className="text-2xl">🐝</span>
+        {/* Animated Bees */}
+        <div className={styles.animatedBees}>
+          <div className={styles.bee1}>
+            <span className={styles.beeEmoji}>🐝</span>
+          </div>
+          <div className={styles.bee2}>
+            <span className={styles.beeEmoji}>🐝</span>
           </div>
         </div>
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20"></div>
+        <div className={styles.gradientOverlay}></div>
       </div>
 
       {/* Hero Content */}
-      <div className="relative container mx-auto px-6 py-16 flex flex-col lg:flex-row items-center justify-between min-h-[400px]">
+      <div className={styles.heroContent}>
         {/* Company Information */}
-        <div className="flex-1 text-center lg:text-left mb-8 lg:mb-0">
+        <div className={styles.companyInfo}>
           {/* Company Logo and Name */}
           <div
-            className={`flex flex-col lg:flex-row items-center lg:items-start mb-6 ${
-              isVisible ? "animate-slide-in-left" : "opacity-0"
+            className={`${styles.companyHeader} ${
+              isVisible ? styles.visible : styles.hidden
             }`}
           >
-            <div className="relative mb-4 lg:mb-0 lg:mr-6 group">
-              <div
-                className="relative h-24 w-24 lg:h-32 lg:w-32 flex items-center justify-center cursor-pointer bg-gradient-to-br from-yellow-100 to-amber-100 border-4 border-white shadow-xl hover-glow"
-                style={{
-                  clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
-                }}
-              >
+            <div className={styles.logoContainer}>
+              <div className={styles.logoWrapper}>
                 <Image
-                  className="object-cover"
+                  className={styles.logoImage}
                   src={imageUrl || "/img/placeholder-image.png"}
                   alt={`${companyName} logo`}
                   fill
@@ -120,96 +105,102 @@ export const CompanyHeroSection = ({
               </div>
               {/* Verification Badge */}
               {isVerified && (
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-                  <span className="text-white text-xs">✓</span>
+                <div className={styles.verificationBadge}>
+                  <span className={styles.checkIcon}>✓</span>
                 </div>
               )}
               {/* Decorative bee icon */}
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#FFC905] rounded-full flex items-center justify-center shadow-lg border-2 border-white animate-float">
-                <span className="text-sm">🐝</span>
+              <div className={styles.decorativeBee}>
+                <span className={styles.beeIcon}>🐝</span>
               </div>
             </div>
 
-            <div className="text-center lg:text-left">
-              <h1 className="text-3xl lg:text-5xl font-bold mb-3 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+            <div className={styles.titleSection}>
+              <h1 className={styles.companyName}>
                 {companyName}
               </h1>
-              
-              <div className="flex items-center justify-center lg:justify-start gap-2 mb-3">
-                <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-lg px-2 py-1 border border-gray-200/60 shadow-sm">
-                  <div className="relative w-4 h-3 rounded-sm overflow-hidden shadow-sm border border-gray-200">
+
+              <div className={styles.locationSection}>
+                <div className={styles.countryBadge}>
+                  <div className={styles.flagContainer}>
                     <Image
                       src={generateCountryFlag(country) as string}
                       alt={`${country} flag`}
                       fill
-                      className="object-cover"
+                      className={styles.flagImage}
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 capitalize">
+                  <span className={styles.countryName}>
                     {country}
                   </span>
                 </div>
-                <MapPin className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-600 text-lg">
+                <MapPin className={styles.mapIcon} />
+                <span className={styles.cityName}>
                   {city}
                 </span>
               </div>
-
-              
             </div>
           </div>
 
           {/* Quick Stats */}
           <div
-            className={`flex items-center justify-center lg:justify-start gap-6 ${
-              isVisible ? "animate-slide-in-left delay-200" : "opacity-0"
+            className={`${styles.quickStats} ${
+              isVisible ? styles.visible : styles.hidden
             }`}
           >
-            <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
-              <Briefcase className="w-4 h-4 text-[#FFC905]" />
-              <span className="text-sm font-semibold text-gray-700">
+            <div className={styles.statBadge}>
+              <Briefcase className={styles.jobIcon} />
+              <span className={styles.statText}>
                 {jobCount} Active {jobCount === 1 ? 'Job' : 'Jobs'}
               </span>
             </div>
-            
+
             {isVerified && (
-              <div className="flex items-center gap-2 bg-green-100/60 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
-                <Sparkles className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-semibold text-green-700">Verified</span>
+              <div className={`${styles.statBadge} ${styles.verified}`}>
+                <Sparkles className={styles.verifiedIcon} />
+                <span className={styles.verifiedText}>Verified</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Decorative Elements */}
-        <div className="flex-1 relative hidden lg:flex justify-center items-center">
+        <div className={styles.decorativeElements}>
           {/* Large Animated Bee */}
           <div
-            className={`relative w-64 h-64 ${
-              isVisible ? "animate-scale-in-center delay-400" : "opacity-0"
+            className={`${styles.mascotContainer} ${
+              isVisible ? styles.visible : styles.hidden
             }`}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-200 to-yellow-200 rounded-full opacity-20 animate-pulse"></div>
-            <div className="relative w-full h-full animate-float-slow">
+            <div className={styles.glowBackground}></div>
+            <div className={styles.mascotWrapper}>
               <Image
                 alt="Company mascot bee"
                 src="/img/client-bee.png"
                 fill={true}
-                className="drop-shadow-2xl"
+                className={styles.mascotImage}
               />
             </div>
             {/* Floating particles around the bee */}
-            <div className="absolute top-1/4 left-1/4 bee-particle animate-bee-trail delay-100"></div>
-            <div className="absolute top-3/4 right-1/4 bee-particle animate-bee-trail delay-300"></div>
-            <div className="absolute top-1/2 right-1/6 bee-particle animate-bee-trail delay-500"></div>
+            <div className={styles.floatingTrails}>
+              <div className={styles.trail1}>
+                <div className={styles.trailParticle}></div>
+              </div>
+              <div className={styles.trail2}>
+                <div className={styles.trailParticle}></div>
+              </div>
+              <div className={styles.trail3}>
+                <div className={styles.trailParticle}></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Decorative Wave */}
-      <div className="absolute bottom-0 left-0 w-full">
+      <div className={styles.bottomWave}>
         <svg
-          className="w-full h-12 fill-current text-white"
+          className={styles.waveSvg}
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
         >

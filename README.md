@@ -20,6 +20,23 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Google Analytics (GA4)
+
+- Set `NEXT_PUBLIC_GA_ID` in `.env.local` (included by default with the current measurement ID) to enable tracking. Without this value the Google Tag script stays disabled.
+- The GA loader script and manual pageview trigger live in `app/layout.tsx`, with the router listener implemented in `app/ga-listener.tsx`. Shared helpers for firing pageviews and events are available via `lib/ga.ts`.
+- Fire custom events anywhere in the app by importing the helper: 
+  ```ts
+  import { gaEvent } from "@/lib/ga";
+
+  gaEvent("purchase_click", { value: 1 });
+  ```
+- Optional consent mode example (kept commented by default):
+  ```ts
+  // window.gtag?.("consent", "default", { ad_user_data: "denied", ad_personalization: "denied", ad_storage: "denied", analytics_storage: "denied" });
+  // window.gtag?.("consent", "update", { analytics_storage: "granted" });
+  ```
+- To verify tracking locally, run the dev server, navigate between pages, and watch for single `collect` hits in DevTools Network tab or confirm activity in GA DebugView.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -3,11 +3,7 @@
 import React from "react";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
-import { useAccount } from "wagmi";
-
 const LastActiveHandler = () => {
-  const { address } = useAccount();
-  const walletAddress = address;
 
   useEffect(() => {
     const user_email = Cookies.get("user_email");
@@ -18,7 +14,7 @@ const LastActiveHandler = () => {
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ walletAddress, email: user_email }),
+            body: JSON.stringify({ email: user_email }),
           }
         );
 
@@ -42,7 +38,7 @@ const LastActiveHandler = () => {
     );
 
     if (lastActiveRequestSentTime === undefined) {
-      if (walletAddress) {
+      if (user_email) {
         sendLastActiveTime();
       }
     } else {
@@ -52,11 +48,11 @@ const LastActiveHandler = () => {
         300000;
 
       console.log(last_req_less_than_5_minutes, "last_req_less_than_5_minutes");
-      if ((walletAddress || user_email) && !last_req_less_than_5_minutes) {
+      if (user_email && !last_req_less_than_5_minutes) {
         sendLastActiveTime();
       }
     }
-  }, [walletAddress]);
+  }, [user_email]);
   return <></>;
 };
 

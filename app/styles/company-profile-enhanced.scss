@@ -349,24 +349,205 @@ $large-desktop: 1536px;
   }
 }
 
-/* Enhanced Job Section Grid */
-.jobs-grid-enhanced {
-  display: grid;
-  gap: 2rem;
-  
-  // Mobile: 1 column
-  @media (max-width: $laptop) {
-    grid-template-columns: 1fr;
+/* Pill-Shaped Job Section */
+.jobs-section-pill {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
-  
-  // Laptop and above: 2 columns
-  @media (min-width: $laptop) {
-    grid-template-columns: repeat(2, 1fr);
+
+  .jobs-header-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .jobs-title-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg,
+        rgba(59, 130, 246, 0.1) 0%,
+        rgba(99, 102, 241, 0.08) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 100px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+      }
+
+      .pill-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: #3b82f6;
+      }
+
+      span {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #374151;
+      }
+    }
+
+    .jobs-count-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #92400e;
+      box-shadow: 0 2px 6px rgba(251, 191, 36, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: $tablet) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+
+      .jobs-title-pill {
+        padding: 0.75rem 1.25rem;
+
+        span {
+          font-size: 1rem;
+        }
+      }
+    }
   }
-  
-  // Large desktop: Consider 3 columns if there are many jobs
-  @media (min-width: $large-desktop) {
-    grid-template-columns: repeat(2, 1fr); // Keep 2 columns for better readability
+
+  .jobs-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .jobs-grid-pill {
+    display: grid;
+    gap: 1.5rem;
+
+    // Mobile: 1 column
+    @media (max-width: $laptop) {
+      grid-template-columns: 1fr;
+    }
+
+    // Laptop and above: 2 columns
+    @media (min-width: $laptop) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    // Large desktop: Keep 2 columns for better readability
+    @media (min-width: $large-desktop) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .job-card-container {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      border-radius: 1.5rem;
+      padding: 0.25rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+  }
+
+  .jobs-empty-state {
+    padding: 3rem 1rem;
+    text-align: center;
+
+    .empty-state-pill {
+      max-width: 400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 2rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+
+      .empty-icon-pill {
+        width: 4rem;
+        height: 4rem;
+        background: linear-gradient(135deg,
+          rgba(251, 191, 36, 0.1) 0%,
+          rgba(245, 158, 11, 0.08) 100%);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.1);
+
+        .empty-icon {
+          width: 1.5rem;
+          height: 1.5rem;
+          color: #f59e0b;
+        }
+      }
+
+      .empty-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+      }
+
+      .empty-description {
+        font-size: 0.875rem;
+        color: #6b7280;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+
+        .empty-cta {
+          color: #f59e0b;
+          font-weight: 500;
+        }
+      }
+
+      .empty-action-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: rgba(251, 191, 36, 0.1);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 100px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #92400e;
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1);
+
+        .action-icon {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+    }
   }
 }
 

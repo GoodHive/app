@@ -1,9 +1,8 @@
 import { Metadata } from "next";
-
 import { Hero } from "@components/home/hero";
-import { Services } from "@components/home/services";
 import { HowItWorks } from "@components/home/how-it-works";
 import { ReachUs } from "@components/home/reach-us";
+import { Services } from "@components/home/services";
 
 export const metadata: Metadata = {
   title:

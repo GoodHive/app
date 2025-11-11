@@ -1,15 +1,9 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function POST(request: Request) {
   const { id } = await request.json();
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  if (!id) {
+    if (!id) {
     return new Response(JSON.stringify({ message: "Job id not found" }), {
       status: 400,
     });

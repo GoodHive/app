@@ -130,7 +130,7 @@ export default function ContactForm() {
             ) : (
               <>
                 <Send className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                Send Sweet Message
+                Send Message
               </>
             )}
           </span>
