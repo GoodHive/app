@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+import sql from "@/lib/db";
 
 export async function GET(
   request: Request,

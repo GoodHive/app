@@ -1,13 +1,7 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function POST(request: Request) {
   const { id, escrowAmount } = await request.json();
-
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
 
   console.log(typeof id, typeof escrowAmount);
   console.log(id, escrowAmount);

@@ -1,5 +1,3 @@
-import { BigNumberish } from "ethers";
-
 interface Talent {
   title: string;
   description: string;
@@ -12,11 +10,10 @@ interface Talent {
   email: string;
   aboutWork: string;
   telegram: string;
-  rate: BigNumberish;
+  rate: number;
   currency: string;
   skills: string[];
   imageUrl: string;
-  walletAddress: string;
   freelancer: boolean;
   remote: boolean;
   availability: boolean;

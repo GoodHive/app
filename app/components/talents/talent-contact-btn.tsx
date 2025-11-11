@@ -5,6 +5,7 @@ import { MessageBoxModal } from "@components/message-box-modal";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuthCheck } from "@/app/hooks/useAuthCheck";
 
 interface Props {
   toEmail: string;
@@ -14,8 +15,13 @@ interface Props {
 export const TalentContactBtn = ({ toEmail, toUserName }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPopupModal, setIsPopupModal] = useState(false);
-  const user_id = Cookies.get("user_id");
+  const { user_id, checkAuthAndShowConnectPrompt } = useAuthCheck();
   const onContactMeBtnClickHandler = async () => {
+    // Check if user is authenticated first
+    if (!checkAuthAndShowConnectPrompt("contact this talent")) {
+      return;
+    }
+    
     setIsLoading(true);
     const companyData = await fetch(
       `/api/companies/my-profile?userId=${user_id}`,
@@ -50,7 +56,9 @@ export const TalentContactBtn = ({ toEmail, toUserName }: Props) => {
       return;
     }
     if (!user_id) {
-      toast.error("Please connect your wallet first!");
+      // This should not happen if checkAuthAndShowConnectPrompt passed
+      // But keeping as fallback
+      checkAuthAndShowConnectPrompt("send a message");
       return;
     }
     try {

@@ -1,4 +1,4 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function POST(request: Request) {
   const {
@@ -12,13 +12,7 @@ export async function POST(request: Request) {
     distinction,
   } = await request.json();
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  try {
+    try {
     await sql`
       INSERT INTO goodhive.users_education (
         school,

@@ -4,7 +4,7 @@
   "workbench.colorTheme": "Dracula Theme Soft",
   // Editor appearance and behavior
   "editor.fontLigatures": true,
-  "editor.fontSize": 12,
+  "editor.fontSize": 14,
   "editor.lineHeight": 22,
   "editor.fontWeight": 500,
   "editor.cursorSmoothCaretAnimation": "on",

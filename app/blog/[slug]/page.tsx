@@ -113,7 +113,7 @@ const staticPost = {
         {
           _type: "span",
           marks: [],
-          text: "Sure, being a good person is great and all, but in the real world, it helps to have a little (okay, a lot) of financial motivation. That’s where GoodHive steps in, armed with a sweet incentive system that rewards our community with something we call... drumroll please... ",
+          text: "Sure, being a good person is great and all, but in the real world, it helps to have a little (okay, a lot) of financial motivation. That’s where GoodHive steps in, armed with a compelling incentive system that rewards our community with something we call... drumroll please... ",
           _key: "300463b86cbd0",
         },
         {

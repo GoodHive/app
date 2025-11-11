@@ -1,19 +1,30 @@
-import { Card } from "@/app/components/card";
+import TalentResult from "./talent-result";
 import { Pagination } from "@/app/components/pagination";
 import { fetchTalents } from "@/lib/talents";
 import { Metadata } from "next";
-import { 
-  Users, 
-  CheckCircle, 
-  Wrench, 
-  MapPin, 
-  User, 
-  Briefcase, 
-  GraduationCap, 
-  UserTie, 
-  Search, 
-  FolderOpen 
+import {
+  ArrowDownUp,
+  Users,
+  CheckCircle,
+  Wrench,
+  MapPin,
+  User,
+  Briefcase,
+  GraduationCap,
+  UserCheck,
+  Search,
+  FolderOpen,
+  Clock,
+  Globe2,
+  BriefcaseBusiness,
 } from "lucide-react";
+
+const TALENT_SORT_LABELS: Record<string, string> = {
+  recent: "Recently active",
+  alphabetical: "Name A → Z",
+  rate_high: "Rate high to low",
+  rate_low: "Rate low to high",
+};
 
 export const metadata: Metadata = {
   title: "Search Talents - Find Web3 & Blockchain Professionals | GoodHive",
@@ -39,6 +50,10 @@ export default async function SearchTalentsPage({
     onlyTalent?: string;
     onlyMentor?: string;
     onlyRecruiter?: string;
+    availability?: string;
+    remoteOnly?: string;
+    freelanceOnly?: string;
+    sort?: string;
   };
 }) {
   console.log("Search params received:", searchParams);
@@ -132,12 +147,7 @@ export default async function SearchTalentsPage({
                 </h3>
               </div>
               <div className="flex flex-wrap gap-3">
-                {searchParams.search && (
-                  <span className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
-                    <Wrench className="w-4 h-4 mr-1" /> Skills:{" "}
-                    {searchParams.search}
-                  </span>
-                )}
+                {/* Do not display a chip for free-text keyword search */}
                 {searchParams.location && (
                   <span className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 text-blue-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
                     <MapPin className="w-4 h-4 mr-1" /> Location:{" "}
@@ -161,7 +171,28 @@ export default async function SearchTalentsPage({
                 )}
                 {searchParams.onlyRecruiter === "true" && (
                   <span className="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
-                    <UserTie className="w-4 h-4 mr-1" /> Recruiter Only
+                    <UserCheck className="w-4 h-4 mr-1" /> Recruiter Only
+                  </span>
+                )}
+                {searchParams.availability === "true" && (
+                  <span className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 text-emerald-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <Clock className="w-4 h-4 mr-1" /> Available now
+                  </span>
+                )}
+                {searchParams.remoteOnly === "true" && (
+                  <span className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 text-sky-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <Globe2 className="w-4 h-4 mr-1" /> Remote Only
+                  </span>
+                )}
+                {searchParams.freelanceOnly === "true" && (
+                  <span className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <BriefcaseBusiness className="w-4 h-4 mr-1" /> Freelance Only
+                  </span>
+                )}
+                {searchParams.sort && searchParams.sort !== "recent" && (
+                  <span className="bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">
+                    <ArrowDownUp className="w-4 h-4 mr-1" /> Sort:{" "}
+                    {TALENT_SORT_LABELS[searchParams.sort] ?? searchParams.sort}
                   </span>
                 )}
               </div>
@@ -172,35 +203,7 @@ export default async function SearchTalentsPage({
         {/* Talents Section */}
         <div className="p-8">
           {talents.length > 0 ? (
-            <div className="grid grid-cols-2 lg:grid-cols-2 sm:grid-cols-1 gap-6">
-              {talents.map((talent) => (
-                <div key={talent.phoneNumber} className="group relative">
-                  <Card
-                    type="talent"
-                    title={talent.title}
-                    postedBy={`${talent.firstName} ${talent.lastName}`}
-                    postedOn={talent.last_active} // TODO: use real data instead when available
-                    image={talent.imageUrl}
-                    country={talent.country} // TODO: create flag table
-                    city={talent.city}
-                    budget={Number(talent.rate)}
-                    projectType="hourly"
-                    currency={talent.currency}
-                    description={talent.description}
-                    skills={talent.skills}
-                    buttonText="Connect"
-                    walletAddress={talent.walletAddress}
-                    freelancer={talent.freelancer}
-                    remote={talent.remote}
-                    availability={talent.availability}
-                    last_active={talent.last_active}
-                    uniqueId={talent.userId}
-                  />
-                  {/* Hover Effect Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none"></div>
-                </div>
-              ))}
-            </div>
+            <TalentResult talents={talents} />
           ) : (
             <div className="text-center py-20">
               <div className="max-w-md mx-auto">

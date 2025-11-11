@@ -7,6 +7,7 @@ import VideoTutorials from "./VideoTutorials";
 import { ArrowLeft } from "lucide-react";
 import "./OnboardingPopup.css";
 import { useRouter } from "next/navigation";
+import { useProtectedNavigation } from "@/app/hooks/useProtectedNavigation";
 
 interface OnboardingPopupProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
   onClose,
 }) => {
   const router = useRouter();
+  const { navigate: protectedNavigate } = useProtectedNavigation();
   const [profileType, setProfileType] = useState<ProfileType>("talent");
   const [step, setStep] = useState<Step>("type");
   const [currentVideo, setCurrentVideo] = useState(0);
@@ -57,9 +59,13 @@ const OnboardingPopup: React.FC<OnboardingPopupProps> = ({
     if (onClose) onClose();
 
     if (profileType === "talent") {
-      router.push("/talents/my-profile");
+      protectedNavigate("/talents/my-profile", {
+        authDescription: "access your talent profile"
+      });
     } else {
-      router.push("/companies/my-profile");
+      protectedNavigate("/companies/my-profile", {
+        authDescription: "access your company profile"
+      });
     }
   };
 

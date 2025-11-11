@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   // Clear all session-related cookies
   cookies().set("session_token", "", {
     expires: new Date(0),
@@ -19,6 +19,11 @@ export async function GET(request: Request) {
   });
 
   cookies().set("user_address", "", {
+    expires: new Date(0),
+    path: "/",
+  });
+
+  cookies().set("loggedIn_user", "", {
     expires: new Date(0),
     path: "/",
   });

@@ -1,7 +1,8 @@
 "use client";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
@@ -37,6 +38,12 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
   onClose,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   const {
     register,
@@ -81,14 +88,27 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4"
-      style={{ zIndex: 9999 }}
+      className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]"
+      style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto"
+           style={{ margin: '0 auto' }}>
         {/* Decorative Header with Honeycomb Pattern */}
         <div className="relative bg-gradient-to-br from-amber-400 via-yellow-400 to-amber-500 p-8 rounded-t-3xl overflow-hidden">
           {/* Honeycomb Background Pattern */}
@@ -135,7 +155,7 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
               Buzz with Us!
             </h2>
             <p className="text-amber-100 text-sm">
-              Drop us a sweet message and we'll get back to you
+              Drop us a message and we'll get back to you
             </p>
           </div>
         </div>
@@ -152,7 +172,7 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
               <input
                 {...register("name")}
                 type="text"
-                placeholder="Enter your sweet name..."
+                placeholder="Enter your name..."
                 className="w-full px-4 py-3 border-2 border-amber-100 rounded-xl focus:border-amber-400 focus:ring-0 bg-amber-50/30 text-gray-800 placeholder-gray-500 font-medium transition-all duration-200 hover:bg-amber-50/50"
                 disabled={isSubmitting}
               />
@@ -211,7 +231,7 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-600 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-200 disabled:opacity-50"
+                className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-600 font-semibold rounded-full hover:bg-gray-50 transition-all duration-200 disabled:opacity-50"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -219,7 +239,7 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-xl hover:from-amber-600 hover:to-yellow-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:shadow-lg flex items-center justify-center"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-full hover:from-amber-600 hover:to-yellow-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:shadow-lg flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>
@@ -247,4 +267,8 @@ export const MessagePopup: React.FC<MessagePopupProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : null;
 };

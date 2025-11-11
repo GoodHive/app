@@ -1,4 +1,5 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
+import { IJobSection } from "@/interfaces/job-offer";
 
 export async function POST(request: Request) {
   const {
@@ -22,13 +23,8 @@ export async function POST(request: Request) {
     recruiter,
     mentor,
     in_saving_stage,
+    sections, // New field for job sections
   } = await request.json();
-
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
 
   try {
     const postedAt = new Date().toISOString();
@@ -115,6 +111,41 @@ export async function POST(request: Request) {
       throw new Error("Failed to create job - no ID returned");
     }
 
+    // Insert job sections if provided
+    if (sections && Array.isArray(sections) && sections.length > 0) {
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i] as IJobSection;
+        await sql`
+          INSERT INTO goodhive.job_sections (
+            job_id,
+            heading,
+            content,
+            sort_order
+          ) VALUES (
+            ${jobId},
+            ${section.heading},
+            ${section.content},
+            ${i}
+          )
+        `;
+      }
+    } else if (description && description.trim()) {
+      // If no sections provided but description exists, create a default section
+      await sql`
+        INSERT INTO goodhive.job_sections (
+          job_id,
+          heading,
+          content,
+          sort_order
+        ) VALUES (
+          ${jobId},
+          ${"Job Description"},
+          ${description},
+          ${0}
+        )
+      `;
+    }
+
     return new Response(
       JSON.stringify({
         jobId,
@@ -132,7 +163,5 @@ export async function POST(request: Request) {
       }),
       { status: 500 },
     );
-  } finally {
-    await sql.end();
   }
 }

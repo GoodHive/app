@@ -1,8 +1,8 @@
 export const FAQ_TRANSLATION = {
   title: "Frequently Asked Questions",
-  subtitle: "Sweet Answers to Your Buzzing Questions",
+  subtitle: "Insightful Answers to Your Buzzing Questions",
   description:
-    "Everything you need to know about GoodHive, the sweetest Web3 talent marketplace. Find answers to common questions about our platform, how it works, and getting started in the decentralized economy.",
+    "Everything you need to know about GoodHive, the leading Web3 talent marketplace. Find answers to common questions about our platform, how it works, and getting started in the decentralized economy.",
 };
 
 export const FAQ_DATA = [

@@ -1,3 +1,13 @@
+export interface IJobSection {
+  id?: string;
+  job_id?: string;
+  heading: string;
+  content: string;
+  sort_order: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface IJobOffer {
   id: string;
   user_id: string;
@@ -26,4 +36,5 @@ export interface IJobOffer {
   in_saving_stage: boolean;
   block_id: number;
   published: boolean;
+  sections?: IJobSection[]; // New field for job sections
 }

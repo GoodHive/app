@@ -1,13 +1,7 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 const ADMIN_JWT_SECRET =
   process.env.ADMIN_JWT_SECRET || "your-admin-secret-key";

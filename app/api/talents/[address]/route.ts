@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 export async function GET(
   request: NextRequest,
@@ -7,13 +7,7 @@ export async function GET(
 ) {
   const { address: walletAddress } = context.params;
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  if (!walletAddress) {
+    if (!walletAddress) {
     return new Response(
       JSON.stringify({ message: "Missing address parameter" }),
       {

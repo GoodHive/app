@@ -1,4 +1,5 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
+import { IJobSection } from "@/interfaces/job-offer";
 
 export async function POST(request: Request) {
   const {
@@ -22,17 +23,12 @@ export async function POST(request: Request) {
     recruiter,
     mentor,
     in_saving_stage,
+    sections, // New field for job sections
   } = await request.json();
 
   console.log(in_saving_stage, "in_saving_stage....");
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  if (!id) {
+    if (!id) {
     return new Response(JSON.stringify({ message: "Job id not found" }), {
       status: 400,
     });
@@ -63,6 +59,35 @@ export async function POST(request: Request) {
             in_saving_stage = ${in_saving_stage}
         WHERE id = ${id}
         `;
+
+    // Update job sections if provided
+    if (sections && Array.isArray(sections)) {
+      // Delete existing sections
+      await sql`
+        DELETE FROM goodhive.job_sections
+        WHERE job_id = ${id}
+      `;
+
+      // Insert new sections
+      if (sections.length > 0) {
+        for (let i = 0; i < sections.length; i++) {
+          const section = sections[i] as IJobSection;
+          await sql`
+            INSERT INTO goodhive.job_sections (
+              job_id,
+              heading,
+              content,
+              sort_order
+            ) VALUES (
+              ${id},
+              ${section.heading},
+              ${section.content},
+              ${i}
+            )
+          `;
+        }
+      }
+    }
 
     return new Response(
       JSON.stringify({ message: "Job updated successfully" }),

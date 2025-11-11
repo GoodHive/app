@@ -1,4 +1,4 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 
 import type { NextRequest } from "next/server";
 
@@ -8,13 +8,7 @@ export async function GET(request: NextRequest) {
 
   const { id } = searchParams;
 
-  const sql = postgres(process.env.DATABASE_URL || "", {
-    ssl: {
-      rejectUnauthorized: false, // This allows connecting to a database with a self-signed certificate
-    },
-  });
-
-  if (!id) {
+    if (!id) {
     return new Response(JSON.stringify({ message: "Missing job id" }), {
       status: 404,
     });
@@ -32,6 +26,14 @@ export async function GET(request: NextRequest) {
         status: 404,
       });
     }
+
+    // Fetch job sections
+    const sectionsQuery = await sql`
+      SELECT id, heading, content, sort_order, created_at, updated_at
+      FROM goodhive.job_sections
+      WHERE job_id = ${id}
+      ORDER BY sort_order ASC
+    `;
     const singleJob = jobsQuery.map((item) => ({
       id: item.id,
       user_id: item.user_id,
@@ -58,7 +60,20 @@ export async function GET(request: NextRequest) {
       createdAt: item.posted_at,
       job_id: item.job_id,
       block_id: item.block_id,
+      payment_token_address: item.payment_token_address,
+      blockchain_job_id: item.blockchain_job_id,
+      blockchainJobId:
+        item.blockchain_job_id ?? item.block_id ?? item.job_id ?? null,
       published: item.published,
+      sections: sectionsQuery.map(section => ({
+        id: section.id.toString(),
+        job_id: id,
+        heading: section.heading,
+        content: section.content,
+        sort_order: section.sort_order,
+        created_at: section.created_at,
+        updated_at: section.updated_at,
+      })),
     }));
 
     return new Response(JSON.stringify(singleJob[0]));

@@ -1,9 +1,24 @@
 "use client";
 
 import Cookies from "js-cookie";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
+import { useConnectModal, useActiveAccount } from "thirdweb/react";
+import { thirdwebClient } from "@/clients";
+import { activeChain } from "@/config/chains";
+import { supportedWallets, connectModalOptions } from "@/lib/auth/walletConfig";
+import styles from "./CompanyLandingPage.module.scss";
+import {
+  Briefcase,
+  Globe,
+  Zap,
+  Lock,
+  BarChart3,
+  Users,
+  Link2,
+  Rocket,
+  Hexagon
+} from "lucide-react";
 
 import { Button } from "@/app/components/button";
 import ProfileImageUpload from "@/app/components/profile-image-upload";
@@ -35,7 +50,8 @@ const quillModules = {
 };
 
 export default function MyProfile() {
-  const userId = Cookies.get("user_id");
+  const [userId, setUserId] = useState<string | undefined>(Cookies.get("user_id"));
+  const activeAccount = useActiveAccount();
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const imageInputValue = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,9 +76,9 @@ export default function MyProfile() {
     referrer: "",
     approved: false,
     inreview: null,
+    wallet_address: "",
   });
 
-  console.log(profileData, "Profile Data...");
   const unapprovedProfile =
     profileData?.approved === false && profileData.inreview === true;
 
@@ -77,19 +93,26 @@ export default function MyProfile() {
   const [selectedCountry, setSelectedCountry] = useState<LabelOption | null>(
     null,
   );
-  
-  const [selectedPhoneCountryCode, setSelectedPhoneCountryCode] = useState<LabelOption | null>(
-    null,
-  );
 
-  const { address } = useAccount();
-  const walletAddress = address || "";
+  const [selectedPhoneCountryCode, setSelectedPhoneCountryCode] =
+    useState<LabelOption | null>(null);
+
+  // Wallet address will be handled by Thirdweb integration later
+  // const { address } = useAccount();
+  const walletAddress = profileData?.wallet_address || "";
+
+  // Connect Modal hook for authentication
+  const { connect, isConnecting } = useConnectModal();
 
   // Convert countryCodes to LabelOption format for SelectInput
-  const phoneCountryCodeOptions: LabelOption[] = countryCodes.map((countryCode) => ({
-    label: `${countryCode.name} ${countryCode.dial_code}`,
-    value: countryCode.dial_code,
-  }));
+  const phoneCountryCodeOptions: LabelOption[] = useMemo(
+    () =>
+      countryCodes.map((countryCode) => ({
+        label: `${countryCode.name} ${countryCode.dial_code}`,
+        value: countryCode.dial_code,
+      })),
+    [],
+  );
 
   const handleImageClick = () => {
     setProfileData({ ...profileData, image_url: "" });
@@ -97,15 +120,12 @@ export default function MyProfile() {
 
   const fetchProfile = useCallback(async () => {
     setIsLoading(true);
-    console.log("Fetching profile for userId:", userId);
-
     const profileResponse = await fetch(
       `/api/companies/my-profile?userId=${userId}`,
     );
 
     if (profileResponse.ok) {
       const profileData = await profileResponse.json();
-      console.log("Fetched profile data:", profileData);
 
       setProfileData(profileData);
 
@@ -129,6 +149,24 @@ export default function MyProfile() {
       setNoProfileFound(true);
     }
     setIsLoading(false);
+  }, [userId]);
+
+  // Monitor for wallet connection changes and update userId
+  useEffect(() => {
+    const checkUserIdFromCookies = () => {
+      const currentUserId = Cookies.get("user_id");
+      if (currentUserId && currentUserId !== userId) {
+        setUserId(currentUserId);
+      }
+    };
+
+    // Check immediately
+    checkUserIdFromCookies();
+
+    // Set up an interval to periodically check for userId changes
+    const interval = setInterval(checkUserIdFromCookies, 1000);
+
+    return () => clearInterval(interval);
   }, [userId]);
 
   useEffect(() => {
@@ -302,11 +340,507 @@ export default function MyProfile() {
     handleFormSubmit(profileData, true);
   };
 
+  const handleConnectWallet = async () => {
+    try {
+      await connect({
+        client: thirdwebClient,
+        wallets: supportedWallets,
+        chain: activeChain,
+        ...connectModalOptions,
+      });
+    } catch (error) {
+      console.debug("Connect modal dismissed", error);
+    }
+  };
+
   if (!userId) {
     return (
-      <h2 className="px-4 py-3 text-xl font-medium text-center text-red-500 rounded-md shadow-md bg-yellow-50">
-        🚀 To Get Started Please Login First
-      </h2>
+      <main className={styles.container}>
+        {/* Decorative Background Elements */}
+        <div className={styles.backgroundDecorations}>
+          {/* Honeycomb Pattern */}
+          <div className={styles.honeycombPattern}>
+            <div className={styles.honeycombGrid}>
+              {Array.from({ length: 144 }, (_, i) => (
+                <div key={i} className={styles.honeycombCell}></div>
+              ))}
+            </div>
+          </div>
+
+          {/* Floating Bees */}
+          <div className={styles.floatingBee1}>
+            <div className={`${styles.beeAnimation} ${styles.beeAnimation1}`}>
+              <span className={styles.bee}>🐝</span>
+            </div>
+          </div>
+
+          <div className={styles.floatingBee2}>
+            <div className={`${styles.beeAnimation} ${styles.beeAnimation2}`}>
+              <span className={styles.bee2}>🐝</span>
+            </div>
+          </div>
+
+          <div className={styles.floatingBee3}>
+            <div className={`${styles.beeAnimation} ${styles.beeAnimation3}`}>
+              <span className={styles.bee3}>🐝</span>
+            </div>
+          </div>
+
+          {/* Hexagon Clusters */}
+          <div className={styles.topLeftHexCluster}>
+            <svg className="w-[400px] h-[400px]" viewBox="0 0 400 400">
+              <defs>
+                <linearGradient id="hexGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+                </linearGradient>
+                <linearGradient id="hexGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#d97706" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.05" />
+                </linearGradient>
+              </defs>
+
+              <polygon
+                points="180,60 250,95 250,165 180,200 110,165 110,95"
+                fill="none"
+                stroke="#d97706"
+                strokeWidth="2.5"
+                opacity="0.3"
+                strokeDasharray="5 3"
+              />
+
+              <polygon
+                points="140,130 200,160 200,220 140,250 80,220 80,160"
+                fill="url(#hexGradient1)"
+                stroke="#f59e0b"
+                strokeWidth="1.5"
+                opacity="0.25"
+              />
+
+              <polygon
+                points="260,40 300,62 300,106 260,128 220,106 220,62"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="2"
+                opacity="0.35"
+              />
+
+              <polygon
+                points="300,160 340,182 340,226 300,248 260,226 260,182"
+                fill="url(#hexGradient2)"
+                stroke="#d97706"
+                strokeWidth="1.8"
+                opacity="0.2"
+              />
+
+              <polygon
+                points="80,80 105,93 105,119 80,132 55,119 55,93"
+                fill="none"
+                stroke="#f59e0b"
+                strokeWidth="1.5"
+                opacity="0.4"
+                strokeDasharray="3 2"
+              />
+
+              <polygon
+                points="220,260 245,273 245,299 220,312 195,299 195,273"
+                fill="#fbbf24"
+                fillOpacity="0.1"
+                stroke="#d97706"
+                strokeWidth="1.2"
+                opacity="0.3"
+              />
+            </svg>
+          </div>
+
+          <div className={styles.topRightHexCluster}>
+            <svg className="w-[350px] h-[350px]" viewBox="0 0 350 350">
+              <defs>
+                <linearGradient id="hexGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+                </linearGradient>
+              </defs>
+
+              <polygon
+                points="220,50 280,80 280,140 220,170 160,140 160,80"
+                fill="none"
+                stroke="#f59e0b"
+                strokeWidth="2.5"
+                opacity="0.25"
+                strokeDasharray="5 3"
+              />
+
+              <polygon
+                points="170,110 230,140 230,200 170,230 110,200 110,140"
+                fill="url(#hexGradient3)"
+                stroke="#d97706"
+                strokeWidth="1.8"
+                opacity="0.2"
+              />
+
+              <polygon
+                points="260,180 300,200 300,240 260,260 220,240 220,200"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="2"
+                opacity="0.3"
+              />
+
+              <polygon
+                points="120,220 160,240 160,280 120,300 80,280 80,240"
+                fill="#f59e0b"
+                fillOpacity="0.08"
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                opacity="0.18"
+              />
+            </svg>
+          </div>
+
+          <div className={styles.bottomLeftHexCluster}>
+            <svg className="w-[300px] h-[300px]" viewBox="0 0 300 300">
+              <defs>
+                <linearGradient id="hexGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.12" />
+                  <stop offset="100%" stopColor="#d97706" stopOpacity="0.04" />
+                </linearGradient>
+              </defs>
+
+              <polygon
+                points="150,200 210,230 210,290 150,320 90,290 90,230"
+                fill="none"
+                stroke="#d97706"
+                strokeWidth="2.2"
+                opacity="0.22"
+                strokeDasharray="4 3"
+              />
+
+              <polygon
+                points="120,150 180,180 180,240 120,270 60,240 60,180"
+                fill="url(#hexGradient4)"
+                stroke="#f59e0b"
+                strokeWidth="1.6"
+                opacity="0.18"
+              />
+
+              <polygon
+                points="200,120 240,140 240,180 200,200 160,180 160,140"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="1.8"
+                opacity="0.28"
+              />
+            </svg>
+          </div>
+
+          <div className={styles.bottomRightHexCluster}>
+            <svg className="w-[450px] h-[450px]" viewBox="0 0 450 450">
+              <defs>
+                <linearGradient id="hexGradient5" x1="100%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+                </linearGradient>
+                <linearGradient id="hexGradient6" x1="100%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="#d97706" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.03" />
+                </linearGradient>
+              </defs>
+
+              <polygon
+                points="260,220 330,265 330,355 260,400 190,355 190,265"
+                fill="none"
+                stroke="#f59e0b"
+                strokeWidth="2.5"
+                opacity="0.3"
+                strokeDasharray="6 4"
+              />
+
+              <polygon
+                points="310,150 370,185 370,255 310,290 250,255 250,185"
+                fill="url(#hexGradient5)"
+                stroke="#d97706"
+                strokeWidth="1.8"
+                opacity="0.22"
+              />
+
+              <polygon
+                points="180,360 220,382 220,426 180,448 140,426 140,382"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="2"
+                opacity="0.35"
+              />
+
+              <polygon
+                points="140,230 180,252 180,296 140,318 100,296 100,252"
+                fill="url(#hexGradient6)"
+                stroke="#f59e0b"
+                strokeWidth="1.5"
+                opacity="0.25"
+              />
+
+              <polygon
+                points="360,330 385,343 385,369 360,382 335,369 335,343"
+                fill="none"
+                stroke="#d97706"
+                strokeWidth="1.5"
+                opacity="0.4"
+                strokeDasharray="3 2"
+              />
+            </svg>
+          </div>
+
+          {/* Scattered Small Hexagons */}
+          <div className={styles.scatteredHexagons}>
+            <div className={styles.topCenterHex}>
+              <svg width="50" height="50" viewBox="0 0 50 50">
+                <polygon
+                  points="25,7 40,15 40,31 25,39 10,31 10,15"
+                  fill="none"
+                  stroke="#f59e0b"
+                  strokeWidth="1.5"
+                  opacity="0.2"
+                  strokeDasharray="4 3"
+                />
+              </svg>
+            </div>
+
+            <div className={styles.midLeftHex}>
+              <svg width="35" height="35" viewBox="0 0 35 35">
+                <polygon
+                  points="17.5,5 27.5,10 27.5,20 17.5,25 7.5,20 7.5,10"
+                  fill="#fbbf24"
+                  fillOpacity="0.08"
+                  stroke="#d97706"
+                  strokeWidth="1.2"
+                  opacity="0.25"
+                />
+              </svg>
+            </div>
+
+            <div className={styles.midRightHex}>
+              <svg width="40" height="40" viewBox="0 0 40 40">
+                <polygon
+                  points="20,6 32,12 32,24 20,30 8,24 8,12"
+                  fill="none"
+                  stroke="#fcd34d"
+                  strokeWidth="1.8"
+                  opacity="0.18"
+                  strokeDasharray="3 2"
+                />
+              </svg>
+            </div>
+
+            <div className={styles.bottomCenterHex}>
+              <svg width="45" height="45" viewBox="0 0 45 45">
+                <polygon
+                  points="22.5,6 36,13 36,27 22.5,34 9,27 9,13"
+                  fill="#f59e0b"
+                  fillOpacity="0.06"
+                  stroke="#fbbf24"
+                  strokeWidth="1.5"
+                  opacity="0.3"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.contentWrapper}>
+          {/* Hero Section */}
+          <div className={styles.heroSection}>
+            {/* Floating elements */}
+            <div className={styles.floatingElement1}></div>
+            <div className={styles.floatingElement2}></div>
+
+            <div className={styles.heroContent}>
+              <div className={styles.badge}>
+                <Hexagon className={styles.badgeIcon} />
+                <span className={styles.badgeText}>GoodHive for Companies</span>
+              </div>
+
+              <h1 className={styles.heroTitle}>
+                Join the Premier
+                <span className={styles.heroTitleGradient}>
+                  Web3 Talent Marketplace
+                </span>
+              </h1>
+
+              <p className={styles.heroDescription}>
+                Connect with top-tier Web3 developers, designers, and blockchain experts.
+                Build your dream team and scale your projects with the best talent in the industry.
+              </p>
+
+              {/* Connect Wallet Button */}
+              <div className={styles.connectSection}>
+                <button
+                  onClick={handleConnectWallet}
+                  disabled={isConnecting}
+                  className={styles.connectButton}
+                >
+                  <div className={styles.connectButtonOverlay}></div>
+                  <div className={styles.connectButtonContent}>
+                    {isConnecting ? (
+                      <>
+                        <div className={styles.spinner}></div>
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <Link2 className={styles.connectButtonIcon} />
+                        Connect Wallet to Get Started
+                      </>
+                    )}
+                  </div>
+                  <div className={styles.connectButtonShine}></div>
+                </button>
+
+                <p className={styles.connectDescription}>
+                  Connect with MetaMask, WalletConnect, or create an account with your email
+                </p>
+              </div>
+
+              {/* Decorative line */}
+              <div className={styles.decorativeLine}>
+                <div className={styles.lineSegment1}></div>
+                <div className={styles.lineDot1}></div>
+                <div className={styles.lineSegment2}></div>
+                <div className={styles.lineDot2}></div>
+                <div className={styles.lineSegment3}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className={styles.featuresGrid}>
+            {/* Feature 1 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration1}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon1}`}>
+                  <Briefcase />
+                </div>
+                <h3 className={styles.featureTitle}>Post Unlimited Jobs</h3>
+                <p className={styles.featureDescription}>
+                  Create and manage job postings for your Web3 projects. Reach thousands of qualified candidates instantly.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration2}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon2}`}>
+                  <Globe />
+                </div>
+                <h3 className={styles.featureTitle}>Global Talent Pool</h3>
+                <p className={styles.featureDescription}>
+                  Access top Web3 developers, designers, and blockchain experts from around the world.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration3}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon3}`}>
+                  <Zap />
+                </div>
+                <h3 className={styles.featureTitle}>Fast Hiring</h3>
+                <p className={styles.featureDescription}>
+                  Streamlined application process and direct communication tools to hire the best talent quickly.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 4 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration4}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon4}`}>
+                  <Lock />
+                </div>
+                <h3 className={styles.featureTitle}>Secure & Verified</h3>
+                <p className={styles.featureDescription}>
+                  All talent profiles are verified and vetted. Secure Web3-native hiring with smart contracts.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 5 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration5}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon5}`}>
+                  <BarChart3 />
+                </div>
+                <h3 className={styles.featureTitle}>Analytics & Insights</h3>
+                <p className={styles.featureDescription}>
+                  Track application metrics, hiring performance, and team growth with detailed analytics.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 6 */}
+            <div className={styles.featureCard}>
+              <div className={`${styles.featureCardDecoration} ${styles.featureCardDecoration6}`}></div>
+              <div className={styles.featureContent}>
+                <div className={`${styles.featureIcon} ${styles.featureIcon6}`}>
+                  <Users />
+                </div>
+                <h3 className={styles.featureTitle}>Community Driven</h3>
+                <p className={styles.featureDescription}>
+                  Join a thriving community of Web3 companies and talent building the future together.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className={styles.ctaSection}>
+            <div className={styles.ctaCard}>
+              <div className={styles.ctaCardDecoration1}></div>
+              <div className={styles.ctaCardDecoration2}></div>
+
+              <div className={styles.ctaContent}>
+                <h2 className={styles.ctaTitle}>
+                  Ready to Build Your
+                  <span className={styles.ctaTitleGradient}>
+                    Dream Team?
+                  </span>
+                </h2>
+                <p className={styles.ctaDescription}>
+                  Join hundreds of Web3 companies already using GoodHive to find and hire exceptional talent.
+                </p>
+
+                <button
+                  onClick={handleConnectWallet}
+                  disabled={isConnecting}
+                  className={styles.ctaButton}
+                >
+                  <div className={styles.ctaButtonOverlay}></div>
+                  <div className={styles.ctaButtonContent}>
+                    {isConnecting ? (
+                      <>
+                        <div className={styles.ctaSpinner}></div>
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <Rocket className={styles.ctaButtonIcon} />
+                        Get Started Now
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -501,17 +1035,19 @@ export default function MyProfile() {
               </div>
             </div>
             <div className="w-full flex justify-center gap-4 mb-8">
-              <Link href={`/companies/${userId}`}>
-                <button className="inline-flex items-center px-6 py-3 bg-white bg-opacity-80 text-amber-700 font-semibold rounded-xl border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 transform hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg">
-                  👁️ Public View
-                </button>
+              <Link
+                href={`/companies/${userId}`}
+                className="inline-flex items-center px-6 py-3 bg-white bg-opacity-80 text-amber-700 font-semibold rounded-xl border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 transform hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                👁️ Public View
               </Link>
-              
+
               {!noProfileFound && !unapprovedProfile && (
-                <Link href={`/companies/create-job`}>
-                  <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
-                    💼 Create Job
-                  </button>
+                <Link
+                  href="/companies/create-job"
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  💼 Create Job
                 </Link>
               )}
             </div>
@@ -724,7 +1260,10 @@ export default function MyProfile() {
                     inputValue={selectedCountry}
                     setInputValue={(country: any) => {
                       setSelectedCountry(country);
-                      setProfileData({ ...profileData, country });
+                    setProfileData({
+                      ...profileData,
+                      country: country?.value || "",
+                    });
                       // Clear error when country is selected
                       if (errors.country) {
                         setErrors(prev => {

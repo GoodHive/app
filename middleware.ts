@@ -11,19 +11,27 @@ import { rateLimit } from "./middleware/rateLimit";
 
 // Public paths that don't need authentication
 const PUBLIC_PATHS = [
-  "/auth/login",
   "/auth/signup",
   "/admin/login",
   "/",
+  "/about-us",  // Public about us page
+  "/blog",  // Allow access to blog pages
+  "/talents/job-search",
+  "/companies/search-talents",
+  "/talents/",  // Allow viewing talent profiles
+  "/companies/",  // Allow viewing company profiles
   "/api/auth/login",
   "/api/auth/signup",
   "/api/auth/admin/login",
-  "/api/auth/nonce",
-  "/api/auth/verify",
-  "/api/auth/verify-wallet",
-  "/api/auth/check-wallet",
+  "/api/auth/thirdweb-login",
   "/api/auth/logout",
   "/api/auth/me",
+  "/api/talents/job-search",
+  "/api/companies/search-talents",
+  "/api/companies/my-profile",  // For viewing company details
+  "/api/companies/jobs",  // For viewing company jobs
+  "/api/companies/job-data",  // For viewing single job
+  "/api/talents/my-profile",  // For viewing talent details
 ];
 
 // Helper function to check if a path is public
@@ -47,7 +55,12 @@ async function validateSessionToken(token: string) {
 }
 
 export async function middleware(req: NextRequest) {
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
+
   const path = req.nextUrl.pathname;
+  const hasConnectPrompt = req.nextUrl.searchParams.get("connectWallet") === "true";
   let response: NextResponse;
 
   try {
@@ -112,7 +125,14 @@ export async function middleware(req: NextRequest) {
             { status: 401 },
           );
         }
-        return NextResponse.redirect(new URL("/auth/login", req.url));
+        if (!hasConnectPrompt) {
+          const redirectUrl = req.nextUrl.clone();
+          redirectUrl.searchParams.set("connectWallet", "true");
+          return NextResponse.redirect(redirectUrl);
+        }
+
+        response = NextResponse.next();
+        return response;
       }
 
       // Validate the session token
@@ -125,12 +145,31 @@ export async function middleware(req: NextRequest) {
               { error: "Invalid session", code: "INVALID_TOKEN" },
               { status: 401 },
             )
-          : NextResponse.redirect(new URL("/auth/login", req.url));
+          : (() => {
+              if (!hasConnectPrompt) {
+                const redirectUrl = req.nextUrl.clone();
+                redirectUrl.searchParams.set("connectWallet", "true");
+                const redirect = NextResponse.redirect(redirectUrl);
+                redirect.cookies.delete("session_token");
+                redirect.cookies.delete("user_id");
+                redirect.cookies.delete("user_email");
+                redirect.cookies.delete("user_address");
+                return redirect;
+              }
 
-        redirectResponse.cookies.delete("session_token");
-        redirectResponse.cookies.delete("user_id");
-        redirectResponse.cookies.delete("user_email");
-        redirectResponse.cookies.delete("user_address");
+              const next = NextResponse.next();
+              next.cookies.delete("session_token");
+              next.cookies.delete("user_id");
+              next.cookies.delete("user_email");
+              next.cookies.delete("user_address");
+              return next;
+            })();
+        if (path.startsWith("/api/")) {
+          redirectResponse.cookies.delete("session_token");
+          redirectResponse.cookies.delete("user_id");
+          redirectResponse.cookies.delete("user_email");
+          redirectResponse.cookies.delete("user_address");
+        }
         return redirectResponse;
       }
 
@@ -148,11 +187,18 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    // Add security headers
-    return addSecurityHeaders(response);
+    // Add security headers (temporarily disabled for Thirdweb development)
+    // return addSecurityHeaders(response);
+    return response;
   } catch (error) {
     console.error("Middleware error:", error);
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+    if (!hasConnectPrompt) {
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.searchParams.set("connectWallet", "true");
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return NextResponse.next();
   }
 }
 

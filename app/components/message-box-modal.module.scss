@@ -1,0 +1,438 @@
+// Enhanced Message Box Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+
+  // Enhanced backdrop
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(12px);
+    z-index: -1;
+  }
+}
+
+.modalContainer {
+  position: relative;
+  width: 100%;
+  max-width: 768px;
+  min-width: 320px;
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+  border-radius: 24px;
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(251, 191, 36, 0.2);
+  animation: slideUpScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  // Honeycomb pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background:
+      radial-gradient(circle at 20px 20px, rgba(251, 191, 36, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 60px 60px, rgba(245, 158, 11, 0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (min-width: 640px) {
+    min-width: 600px;
+  }
+}
+
+.modalHeader {
+  position: relative;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  padding: 2rem 2rem 1.5rem;
+  z-index: 2;
+
+  .headerContent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .iconContainer {
+      width: 3rem;
+      height: 3rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+
+      .beeIcon {
+        font-size: 1.5rem;
+        animation: float 3s ease-in-out infinite;
+      }
+    }
+
+    .titleSection {
+      flex: 1;
+
+      .title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 0.25rem 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .subtitle {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+      }
+    }
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: white;
+    }
+  }
+}
+
+.modalBody {
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+
+  .inputSection {
+    margin-bottom: 1.5rem;
+
+    .label {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.75rem;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 1rem 1.25rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      font-size: 1rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: all 0.3s ease;
+      background: #ffffff;
+
+      &:focus {
+        outline: none;
+        border-color: #fbbf24;
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        background: #fffef7;
+      }
+
+      &::placeholder {
+        color: #9ca3af;
+      }
+    }
+
+    .characterCount {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+
+      .requirement {
+        color: #6b7280;
+      }
+
+      .count {
+        color: #9ca3af;
+
+        &.valid {
+          color: #10b981;
+        }
+
+        &.invalid {
+          color: #ef4444;
+        }
+      }
+    }
+  }
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 2;
+
+  .cancelButton {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #d1d5db;
+    background: #ffffff;
+    color: #6b7280;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #9ca3af;
+      color: #374151;
+      transform: translateY(-1px);
+    }
+  }
+
+  .submitButton {
+    position: relative;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .buttonContent {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .loadingSpinner {
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    // Honey drip effect
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+      z-index: 1;
+    }
+
+    &:hover::before {
+      left: 100%;
+    }
+  }
+}
+
+// Floating decoration elements
+.floatingBees {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+
+  .bee {
+    position: absolute;
+    font-size: 1rem;
+    opacity: 0.6;
+
+    &.bee1 {
+      top: 20%;
+      right: 10%;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    &.bee2 {
+      bottom: 25%;
+      left: 15%;
+      animation: float 5s ease-in-out infinite 1s;
+    }
+
+    &.bee3 {
+      top: 60%;
+      right: 20%;
+      animation: float 3.5s ease-in-out infinite 2s;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpScale {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .modalContainer {
+    margin: 0.5rem;
+    border-radius: 20px;
+  }
+
+  .modalHeader {
+    padding: 1.5rem 1.5rem 1rem;
+
+    .headerContent {
+      .iconContainer {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+
+      .titleSection .title {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .modalBody {
+    padding: 1.5rem;
+  }
+
+  .modalFooter {
+    padding: 1rem 1.5rem 1.5rem;
+    flex-direction: column-reverse;
+
+    .cancelButton,
+    .submitButton {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Portal animation for entrance
+.modalEntering {
+  .modalOverlay {
+    animation-duration: 0.3s;
+  }
+
+  .modalContainer {
+    animation-duration: 0.4s;
+  }
+}
+
+// Portal animation for exit
+.modalExiting {
+  .modalOverlay {
+    animation: fadeOut 0.2s ease-in forwards;
+  }
+
+  .modalContainer {
+    animation: slideDownScale 0.3s ease-in forwards;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideDownScale {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+}

@@ -1,11 +1,5 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 import bcrypt from "bcryptjs";
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
 export async function POST(req: Request) {
   if (req.method === "POST") {
     const { email, password, referred_by } = await req.json();

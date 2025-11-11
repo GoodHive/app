@@ -1,40 +1,69 @@
 import Modal from "@components/modal";
-import { PopupModal } from "./PopupModal";
+import toast from "react-hot-toast";
+
+// PopupModal component removed - will be replaced with Thirdweb integration
+const PopupModal = () => null;
 
 interface JobModalsProps {
   isManageFundsModalOpen: boolean;
-  handleManageFundsModalClose: () => void;
-  handlePopupModal: (type: string) => void;
+  setIsManageFundsModalOpen: (open: boolean) => void;
   jobData: any;
   isPopupModalOpen: boolean;
-  handlePopupModalClose: () => void;
+  setIsPopupModalOpen: (open: boolean) => void;
   popupModalType: string;
-  onPopupModalSubmit: (amount: number, type: string) => void;
   selectedCurrency: any;
 }
 
 export const JobModals = ({
   isManageFundsModalOpen,
-  handleManageFundsModalClose,
-  handlePopupModal,
+  setIsManageFundsModalOpen,
   jobData,
   isPopupModalOpen,
-  handlePopupModalClose,
+  setIsPopupModalOpen,
   popupModalType,
-  onPopupModalSubmit,
   selectedCurrency,
 }: JobModalsProps) => {
+  // Handler functions with toast notifications for upcoming features
+  const handleFundsAction = (action: string) => {
+    setIsManageFundsModalOpen(false);
+    switch (action) {
+      case "addFunds":
+        toast("Adding funds will be available after Web3 integration. Coming soon!", {
+          icon: "💰",
+          duration: 4000,
+        });
+        break;
+      case "withdraw":
+        toast("Withdrawing funds will be available after Web3 integration. Coming soon!", {
+          icon: "💸",
+          duration: 4000,
+        });
+        break;
+      case "transfer":
+        toast("Payment transfer will be available after Web3 integration. Coming soon!", {
+          icon: "🔄",
+          duration: 4000,
+        });
+        break;
+      default:
+        toast("This feature will be available after Web3 integration. Coming soon!", {
+          icon: "💡",
+          duration: 4000,
+        });
+    }
+  };
+
   return (
     <>
       <Modal
         open={isManageFundsModalOpen}
-        onClose={handleManageFundsModalClose}
+        onClose={() => setIsManageFundsModalOpen(false)}
       >
         <div className="flex justify-between p-5 min-w-[300px]">
           <h3 className="text-2xl font-semibold text-black">Manage Funds:</h3>
           <button
             type="button"
-            onClick={handleManageFundsModalClose}
+            onClick={() => setIsManageFundsModalOpen(false)}
             className="w-6 h-6 text-black bg-gray-400 rounded-full"
           >
             &#10005;
@@ -46,7 +75,7 @@ export const JobModals = ({
             <button
               className="my-2 text-base font-semibold bg-transparent border-2 border-[#FFC905] h-14 w-56 rounded-full transition duration-150 ease-in-out"
               type="button"
-              onClick={() => handlePopupModal("addFunds")}
+              onClick={() => handleFundsAction("addFunds")}
             >
               Provision Funds
             </button>
@@ -55,7 +84,7 @@ export const JobModals = ({
             <button
               className="my-2 text-base font-semibold bg-transparent border-2 border-[#FFC905] h-14 w-56 rounded-full transition duration-150 ease-in-out"
               type="button"
-              onClick={() => handlePopupModal("withdraw")}
+              onClick={() => handleFundsAction("withdraw")}
             >
               Withdraw Funds
             </button>
@@ -65,22 +94,14 @@ export const JobModals = ({
             <button
               className="my-2 text-base font-semibold bg-transparent border-2 border-[#FFC905] h-14 w-56 rounded-full transition duration-150 ease-in-out"
               type="button"
-              onClick={() => handlePopupModal("transfer")}
+              onClick={() => handleFundsAction("transfer")}
             >
               Pay Now
             </button>
           )}
         </div>
       </Modal>
-      <PopupModal
-        open={isPopupModalOpen}
-        onClose={handlePopupModalClose}
-        jobId={jobData?.job_id}
-        type={popupModalType}
-        onSubmit={onPopupModalSubmit}
-        currencyToken={selectedCurrency?.value ?? ""}
-        currencyLabel={selectedCurrency?.label ?? ""}
-      />
+      {/* PopupModal removed - replaced with toast notifications */}
     </>
   );
 };

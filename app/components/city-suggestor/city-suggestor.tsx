@@ -11,12 +11,16 @@ interface CitySuggestionProps {
   onCitySelect?: (city: City) => void;
   classes?: string;
   value?: string;
+  onQueryChange?: (value: string) => void;
+  placeholder?: string;
 }
 
 export const CitySuggestion: React.FC<CitySuggestionProps> = ({
   onCitySelect,
   classes,
   value = "",
+  onQueryChange,
+  placeholder = "Type a city name...",
 }) => {
   const [query, setQuery] = useState(value);
   const [suggestions, setSuggestions] = useState<City[]>([]);
@@ -50,13 +54,16 @@ export const CitySuggestion: React.FC<CitySuggestionProps> = ({
   }, [debouncedQuery]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+    const nextValue = event.target.value;
+    setQuery(nextValue);
+    onQueryChange?.(nextValue);
   };
 
   const handleCitySelect = (city: City) => {
     setQuery(city.name);
     setSuggestions([]);
     onCitySelect?.(city);
+    onQueryChange?.(city.name);
   };
 
   const handleAddNewCity = () => {
@@ -69,20 +76,32 @@ export const CitySuggestion: React.FC<CitySuggestionProps> = ({
       setQuery(newCity.name);
       setSuggestions([]);
       onCitySelect?.(newCity);
+      onQueryChange?.(newCity.name);
     }
   };
 
   return (
-    <div className="relative">
+    <div style={{ position: 'relative' }}>
       <input
         type="text"
         value={query}
         onChange={handleInputChange}
-        placeholder="Type a city name..."
-        className={`${classes} relative rounded-lg block w-full px-4 py-2 text-base font-normal text-gray-600 bg-gray-100 focus:outline-none focus:ring-0`}
+        placeholder={placeholder}
+        className={classes}
       />
       {(suggestions.length > 0 || (query.trim() && !cities.some(city => city.name.toLowerCase() === query.toLowerCase()))) && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto mt-1">
+        <ul style={{
+          position: 'absolute',
+          zIndex: 10,
+          width: '100%',
+          background: 'white',
+          border: '1px solid #d1d5db',
+          borderRadius: '0.375rem',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          maxHeight: '15rem',
+          overflowY: 'auto',
+          marginTop: '0.25rem'
+        }}>
           {suggestions.map((city) => (
             <li
               key={city.id}
@@ -90,7 +109,17 @@ export const CitySuggestion: React.FC<CitySuggestionProps> = ({
                 e.preventDefault();
                 handleCitySelect(city);
               }}
-              className="px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-100"
+              style={{
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f3f4f6'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               {city.name}
               {city.country ? `, ${city.country}` : ""}
@@ -102,7 +131,19 @@ export const CitySuggestion: React.FC<CitySuggestionProps> = ({
                 e.preventDefault();
                 handleAddNewCity();
               }}
-              className="px-4 py-2 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-blue-100 text-blue-600 font-medium"
+              style={{
+                padding: '0.5rem 1rem',
+                cursor: 'pointer',
+                borderBottom: '1px solid #f3f4f6',
+                color: '#2563eb',
+                fontWeight: '500'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#dbeafe';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               + Add "{query}" as new city
             </li>

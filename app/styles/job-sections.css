@@ -1,0 +1,123 @@
+/* Job Sections Display Styles */
+.job-section-content {
+  line-height: 1.6;
+}
+
+.job-section-content h1,
+.job-section-content h2,
+.job-section-content h3,
+.job-section-content h4,
+.job-section-content h5,
+.job-section-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.job-section-content h1 {
+  font-size: 1.5rem;
+}
+
+.job-section-content h2 {
+  font-size: 1.375rem;
+}
+
+.job-section-content h3 {
+  font-size: 1.25rem;
+}
+
+.job-section-content h4 {
+  font-size: 1.125rem;
+}
+
+.job-section-content p {
+  margin-bottom: 1rem;
+}
+
+.job-section-content ul,
+.job-section-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.job-section-content li {
+  margin-bottom: 0.5rem;
+}
+
+.job-section-content ul li {
+  list-style-type: disc;
+}
+
+.job-section-content ol li {
+  list-style-type: decimal;
+}
+
+.job-section-content a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.job-section-content a:hover {
+  color: #1d4ed8;
+}
+
+.job-section-content strong {
+  font-weight: 600;
+}
+
+.job-section-content em {
+  font-style: italic;
+}
+
+.job-section-content blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Job Section Editor Styles */
+.job-section-editor .ql-toolbar {
+  border-top: 1px solid #d1d5db;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  border-bottom: none;
+  background: #f9fafb;
+}
+
+.job-section-editor .ql-container {
+  border-bottom: 1px solid #d1d5db;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  border-top: none;
+}
+
+.job-section-editor .ql-editor {
+  min-height: 150px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.job-section-editor .ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
+}
+
+/* Drag handle styles */
+.drag-handle {
+  transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+  color: #6b7280;
+}
+
+/* Line clamp utility for collapsed section preview */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

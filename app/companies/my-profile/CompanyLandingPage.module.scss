@@ -1,0 +1,685 @@
+/* Company Landing Page Styles */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fef7cd 0%, #fef3c7 50%, #fed7aa 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.backgroundDecorations {
+  position: absolute;
+  inset: 0;
+}
+
+.honeycombPattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+}
+
+.honeycombGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  transform: rotate(12deg) scale(1.5) translate(-2rem, -2rem);
+}
+
+.honeycombCell {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #fcd34d;
+  transform: rotate(45deg);
+}
+
+.floatingBee1 {
+  position: absolute;
+  top: 5rem;
+  right: 5rem;
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.6;
+}
+
+.floatingBee2 {
+  position: absolute;
+  bottom: 8rem;
+  left: 4rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.4;
+}
+
+.floatingBee3 {
+  position: absolute;
+  top: 33%;
+  left: 25%;
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.3;
+}
+
+.beeAnimation {
+  position: relative;
+  animation: bounce 4s infinite;
+}
+
+.beeAnimation2 {
+  animation-delay: 2s;
+  animation-duration: 5s;
+}
+
+.beeAnimation3 {
+  animation-delay: 1s;
+  animation-duration: 6s;
+}
+
+.bee {
+  font-size: 2rem;
+}
+
+.bee2 {
+  font-size: 1.25rem;
+}
+
+.bee3 {
+  font-size: 1.125rem;
+}
+
+.contentWrapper {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.heroSection {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3rem 0;
+  position: relative;
+}
+
+.floatingElement1 {
+  position: absolute;
+  top: 1rem;
+  left: 25%;
+  width: 4rem;
+  height: 4rem;
+  background: rgba(251, 191, 36, 0.2);
+  border-radius: 50%;
+  filter: blur(1rem);
+  animation: pulse 2s infinite;
+}
+
+.floatingElement2 {
+  position: absolute;
+  bottom: 1rem;
+  right: 25%;
+  width: 5rem;
+  height: 5rem;
+  background: rgba(253, 224, 71, 0.15);
+  border-radius: 50%;
+  filter: blur(1rem);
+  animation: pulse 2s infinite;
+  animation-delay: 1s;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  color: #92400e;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fde68a;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+  }
+}
+
+.badgeIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.badgeText {
+  font-size: 1.125rem;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  line-height: 1.25;
+
+  @media (min-width: 1024px) {
+    font-size: 3.75rem;
+  }
+}
+
+.heroTitleGradient {
+  display: block;
+  background: linear-gradient(to right, #f59e0b, #eab308, #f97316);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-top: 0.5rem;
+}
+
+.heroDescription {
+  font-size: 1.25rem;
+  color: #374151;
+  max-width: 48rem;
+  margin: 0 auto 3rem;
+  line-height: 1.75;
+}
+
+.connectSection {
+  margin-bottom: 4rem;
+}
+
+.connectButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 1.25rem 3rem;
+  background: linear-gradient(to right, #f59e0b, #eab308);
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-0.5rem);
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+.connectButtonOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #d97706, #ca8a04);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.connectButton:hover .connectButtonOverlay {
+  opacity: 1;
+}
+
+.connectButtonContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.connectButtonIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.75rem;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.connectButton:hover .connectButtonIcon {
+  transform: rotate(12deg);
+}
+
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.75rem;
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.connectDescription {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 1rem;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.decorativeLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.lineSegment1 {
+  width: 4rem;
+  height: 0.125rem;
+  background: linear-gradient(to right, transparent, #fbbf24);
+}
+
+.lineSegment2 {
+  width: 6rem;
+  height: 0.125rem;
+  background: linear-gradient(to right, #fbbf24, #eab308);
+}
+
+.lineSegment3 {
+  width: 4rem;
+  height: 0.125rem;
+  background: linear-gradient(to right, #eab308, transparent);
+}
+
+.lineDot1 {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #fbbf24;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.lineDot2 {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #eab308;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  animation-delay: 0.5s;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 80rem;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.featureCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fde68a;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-0.5rem);
+    border-color: #fbbf24;
+  }
+}
+
+.featureCardDecoration {
+  position: absolute;
+  top: -1rem;
+  right: -1rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+}
+
+.featureCardDecoration1 { background: rgba(251, 191, 36, 0.2); }
+.featureCardDecoration2 { background: rgba(253, 224, 71, 0.2); }
+.featureCardDecoration3 { background: rgba(251, 146, 60, 0.2); }
+.featureCardDecoration4 { background: rgba(34, 197, 94, 0.2); }
+.featureCardDecoration5 { background: rgba(168, 85, 247, 0.2); }
+.featureCardDecoration6 { background: rgba(236, 72, 153, 0.2); }
+
+.featureContent {
+  position: relative;
+}
+
+.featureIcon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+    color: white;
+  }
+}
+
+.featureIcon1 { background: linear-gradient(135deg, #fbbf24, #eab308); }
+.featureIcon2 { background: linear-gradient(135deg, #eab308, #f97316); }
+.featureIcon3 { background: linear-gradient(135deg, #f97316, #dc2626); }
+.featureIcon4 { background: linear-gradient(135deg, #22c55e, #059669); }
+.featureIcon5 { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+.featureIcon6 { background: linear-gradient(135deg, #ec4899, #be185d); }
+
+.featureTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.featureDescription {
+  color: #374151;
+  line-height: 1.75;
+}
+
+.ctaSection {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.ctaCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 2px solid #fde68a;
+  position: relative;
+  overflow: hidden;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.ctaCardDecoration1 {
+  position: absolute;
+  top: -2rem;
+  left: -2rem;
+  width: 6rem;
+  height: 6rem;
+  background: rgba(251, 191, 36, 0.15);
+  border-radius: 50%;
+}
+
+.ctaCardDecoration2 {
+  position: absolute;
+  bottom: -2rem;
+  right: -2rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(253, 224, 71, 0.1);
+  border-radius: 50%;
+}
+
+.ctaContent {
+  position: relative;
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 1024px) {
+    font-size: 3rem;
+  }
+}
+
+.ctaTitleGradient {
+  display: block;
+  background: linear-gradient(to right, #f59e0b, #eab308, #f97316);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-top: 0.5rem;
+}
+
+.ctaDescription {
+  font-size: 1.25rem;
+  color: #374151;
+  margin-bottom: 2rem;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(to right, #f59e0b, #eab308);
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+.ctaButtonOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #d97706, #ca8a04);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ctaButton:hover .ctaButtonOverlay {
+  opacity: 1;
+}
+
+.ctaButtonContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.ctaButtonIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.ctaButton:hover .ctaButtonIcon {
+  transform: rotate(12deg);
+}
+
+.ctaSpinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// Hexagon Clusters
+.topLeftHexCluster {
+  position: absolute;
+  top: -50px;
+  left: -100px;
+  z-index: 1;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.topRightHexCluster {
+  position: absolute;
+  top: 0;
+  right: -80px;
+  z-index: 1;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.bottomLeftHexCluster {
+  position: absolute;
+  bottom: 20px;
+  left: -50px;
+  z-index: 1;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+.bottomRightHexCluster {
+  position: absolute;
+  bottom: -100px;
+  right: -150px;
+  z-index: 1;
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
+}
+
+// Scattered Small Hexagons
+.scatteredHexagons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+
+  .topCenterHex {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .midLeftHex {
+    position: absolute;
+    top: 40%;
+    left: 5%;
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .midRightHex {
+    position: absolute;
+    top: 35%;
+    right: 8%;
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .bottomCenterHex {
+    position: absolute;
+    bottom: 15%;
+    left: 45%;
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

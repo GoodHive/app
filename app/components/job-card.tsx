@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageBoxModal } from "@/app/components/message-box-modal";
+import { JobApplicationPopup } from "@/app/components/job-application-popup";
 import "@/app/styles/rich-text.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import { FC, useState } from "react";
 import { Button } from "./button";
 
 interface Props {
-  id: number;
+  id: string; // UUID string
   type: string;
   title: string;
   postedBy: string;
@@ -84,61 +84,12 @@ export const JobCard: FC<Props> = ({
     (job) => job.value === duration,
   )?.label;
   const [isLoading, setIsLoading] = useState(false);
-  const [isCoverLetterModal, setIsCoverLetterModal] = useState(false);
+  const [isJobApplicationPopup, setIsJobApplicationPopup] = useState(false);
 
   const isOwner = owner_userId === user_id;
   const jobBalance =
     Number(escrowAmount) > 0 ? `${escrowAmount} USDC` : "0 USDC";
 
-  const onSubmitHandler = async (coverLetter: string) => {
-    if (!coverLetter) {
-      toast.error("Please enter your cover letter!");
-      return;
-    }
-    if (!logged_in_user_id) {
-      toast.error("Please login to your account first!");
-      return;
-    }
-    try {
-      setIsLoading(true);
-      setIsCoverLetterModal(false);
-      const userDataResponse = await fetch(
-        `/api/talents/my-profile?user_id=${logged_in_user_id}`,
-      );
-
-      if (!userDataResponse.ok) {
-        throw new Error(`HTTP error! status: ${userDataResponse.status}`);
-      }
-
-      const userProfile = await userDataResponse.json();
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        body: JSON.stringify({
-          name: userProfile?.first_name,
-          toUserName: postedBy,
-          email: companyEmail,
-          type: "job-applied",
-          subject: `Goodhive - ${userProfile?.first_name} applied for "${title}"`,
-          userEmail: userProfile?.email,
-          message: coverLetter,
-          userProfile: `${window.location.origin}/talents/${logged_in_user_id}`,
-          jobLink: `${window.location.origin}/companies/${walletAddress}?id=${id}`,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      } else {
-        setIsLoading(false);
-        toast.success("Applied successfully!");
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error("Something went wrong!");
-    }
-  };
 
   const onApplyClickHandler = async () => {
     const userDataResponse = await fetch(
@@ -156,12 +107,12 @@ export const JobCard: FC<Props> = ({
       );
       return;
     } else {
-      setIsCoverLetterModal(true);
+      setIsJobApplicationPopup(true);
     }
   };
 
-  const onCoverLetterModalCloseHandler = () => {
-    setIsCoverLetterModal(false);
+  const onJobApplicationPopupCloseHandler = () => {
+    setIsJobApplicationPopup(false);
   };
 
   return (
@@ -320,12 +271,15 @@ export const JobCard: FC<Props> = ({
           </div>
         </div>
       </div>
-      {isCoverLetterModal && (
-        <MessageBoxModal
-          title="Describe who you are and why you are a good fit for this job?"
-          messageLengthLimit={200}
-          onSubmit={onSubmitHandler}
-          onClose={onCoverLetterModalCloseHandler}
+      {isJobApplicationPopup && (
+        <JobApplicationPopup
+          isOpen={isJobApplicationPopup}
+          onClose={onJobApplicationPopupCloseHandler}
+          jobTitle={title}
+          companyName={postedBy}
+          companyEmail={companyEmail || ""}
+          jobId={id}
+          walletAddress={walletAddress}
         />
       )}
     </div>

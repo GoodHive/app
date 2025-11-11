@@ -1,15 +1,9 @@
-import postgres from "postgres";
+import sql from "@/lib/db";
 import { NextRequest } from "next/server";
 
 // Force the browser to always fetch the latest data from the server
 export const fetchCache = "force-no-store";
 export const revalidate = 0;
-
-const sql = postgres(process.env.DATABASE_URL || "", {
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useAuthCheck } from "@/app/hooks/useAuthCheck";
 
 const Signup = () => {
-  const router = useRouter();
   const referralCode = Cookies.get("referralCode");
+  const { openConnectModal } = useAuthCheck();
 
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -43,7 +43,8 @@ const Signup = () => {
     if (response.ok) {
       setIsLoading(false);
       Cookies.remove("referralCode");
-      router.push("/auth/login"); // Redirect to the login page after successful signup
+      window.alert("Account created! Please connect your wallet to continue.");
+      void openConnectModal?.();
     } else {
       setIsLoading(false);
       window.alert(responseBody.message || "Failed to sign up!");

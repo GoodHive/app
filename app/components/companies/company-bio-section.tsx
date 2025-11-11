@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import styles from "./company-bio-section.module.scss";
 
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/rich-text.css";
@@ -39,70 +40,44 @@ export const CompanyBio: React.FC<TruncatedBioProps> = ({
   };
 
   return (
-    <div className={`w-full rich-text-content transition-all duration-500 ${isVisible ? 'animate-slide-in-up' : 'opacity-0'}`}>
-      {/* Enhanced Bio Container */}
-      <div className="relative bg-gradient-to-br from-amber-50/50 to-yellow-50/50 rounded-2xl p-6 border border-amber-100 hover:border-amber-200 transition-all duration-300 group">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="honeycomb-pattern w-full h-full rounded-2xl"></div>
-        </div>
-        
+    <div className={`${styles.bioContainer} ${isVisible ? styles.visible : styles.hidden}`}>
+      {/* Clean Bio Container */}
+      <div className={styles.bioCard}>
         {/* Content */}
-        <div className="relative z-10 space-y-4">
+        <div className={styles.contentContainer}>
           {/* Bio Text */}
-          <div 
-            className={`prose prose-gray max-w-none leading-relaxed text-gray-700 transition-all duration-300 ${
-              isExpanded ? '' : 'line-clamp-4'
+          <div
+            className={`${styles.bioText} ${
+              isExpanded ? styles.expanded : styles.collapsed
             }`}
-            dangerouslySetInnerHTML={{ __html: displayHtml }} 
+            dangerouslySetInnerHTML={{ __html: displayHtml }}
           />
-          
-          {/* Enhanced Show More/Less Button */}
+
+          {/* Clean Show More/Less Button */}
           {shouldTruncate && (
-            <div className="flex justify-center pt-4">
+            <div className={styles.toggleButtonContainer}>
               <button
                 onClick={handleToggle}
-                className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 hover:from-amber-200 hover:to-yellow-200 text-amber-700 font-semibold rounded-full border border-amber-200 hover:border-amber-300 transition-all duration-300 transform hover:scale-105 shadow-sm hover:shadow-md"
+                className={styles.toggleButton}
               >
-                <span className="text-sm">
+                <span className={styles.buttonText}>
                   {isExpanded ? "Show Less" : "Read More"}
                 </span>
                 {isExpanded ? (
-                  <ChevronUp className="w-4 h-4 group-hover/btn:animate-bounce" />
+                  <ChevronUp className={`${styles.buttonIcon} ${styles.bounce}`} />
                 ) : (
-                  <ChevronDown className="w-4 h-4 group-hover/btn:animate-bounce" />
+                  <ChevronDown className={`${styles.buttonIcon} ${styles.bounce}`} />
                 )}
               </button>
             </div>
           )}
         </div>
-        
-        {/* Decorative Elements */}
-        <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-          <div className="w-6 h-6 animate-float-slow">
-            <span className="text-lg">🐝</span>
-          </div>
+
+        {/* Subtle Decorative Element */}
+        <div className={styles.decorativeBee}>
+          <span className={styles.beeIcon}>🐝</span>
         </div>
-        
-        {/* Floating particles */}
-        <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-30 transition-opacity duration-500">
-          <div className="bee-particle animate-float"></div>
-        </div>
-        
-        {/* Gradient hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/10 to-yellow-100/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"></div>
       </div>
-      
-      {/* Quote-style indicator */}
-      {text && (
-        <div className="flex items-center justify-center mt-4 opacity-60">
-          <div className="flex items-center gap-2 text-amber-600">
-            <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-            <span className="text-xs font-medium tracking-wider uppercase">Company Story</span>
-            <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import LastActiveStatus from "./LastActiveStatus";
 import { OptimizedJobBalance } from "./OptimizedJobBalance";
 
 interface Props {
-  jobId?: number;
+  jobId?: string; // UUID string
   blockId?: number;
   uniqueId: string;
   type: string;
@@ -76,6 +76,8 @@ export const Card: FC<Props> = ({
     title,
     "jobId:",
     jobId,
+    availability,
+    "availability...",
   );
   // Function to generate dynamic "Open to" text
   const getOpenToText = () => {
@@ -136,7 +138,10 @@ export const Card: FC<Props> = ({
 
   // Know more link
   const knowMoreLink =
-    type === "talent" ? `/talents/${uniqueId}` : `/companies/${uniqueId}`;
+    type === "talent" ? `/talents/${uniqueId}` :
+    type === "job" && jobId ? `/jobs/${jobId}` :
+    type === "job" ? `#` : // Disable link if jobId is missing (shouldn't happen)
+    `/companies/${uniqueId}`;
 
   // Flag & Escrow Icon - ensure all cards have flags
   const countryFlag = generateCountryFlag(country);
@@ -147,7 +152,7 @@ export const Card: FC<Props> = ({
   const hasMoreSkills = skills.length > 3;
 
   // Generate consistent badge for all job cards
-  const shouldShowBadge = type === "company"; // Only show badges for job cards
+  const shouldShowBadge = type === "company" || type === "job"; // Only show badges for job cards
 
   return (
     <div className="group relative bg-gradient-to-br from-white via-amber-50/30 to-yellow-50/40 rounded-2xl border border-amber-100/60 shadow-sm hover:shadow-2xl hover:border-[#FFC905]/30 transition-all duration-300 ease-in-out overflow-hidden cursor-pointer flex flex-col backdrop-blur-sm">
@@ -184,6 +189,7 @@ export const Card: FC<Props> = ({
             jobId={jobId}
             blockId={blockId}
             currency={currency}
+            amount={budget}
           />
         </div>
       )}
@@ -301,13 +307,13 @@ export const Card: FC<Props> = ({
             {type === "talent" && (
               <LastActiveStatus lastActiveTime={postedOn} />
             )}
-            {type === "company" && (
+            {(type === "company" || type === "job") && (
               <span className="text-xs text-gray-500 truncate">{postedOn}</span>
             )}
 
             {/* Open to status */}
             <div className="flex items-center gap-1 text-xs">
-              {type === "company" ? (
+              {(type === "company" || type === "job") ? (
                 <span className="text-blue-600 flex items-center gap-1 truncate bg-blue-50 px-2 py-1 rounded-md border border-blue-200">
                   <svg
                     className="w-3 h-3 flex-shrink-0"
@@ -337,7 +343,7 @@ export const Card: FC<Props> = ({
           </div>
 
           <Link
-            href={{ pathname: knowMoreLink, query: { id: jobId } }}
+            href={type === "job" ? knowMoreLink : { pathname: knowMoreLink, query: { id: jobId } }}
             className="flex-shrink-0 ml-3"
           >
             <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#FFC905] to-[#FFD93D] hover:from-[#FF8C05] hover:to-[#FFC905] rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FFC905]/50 focus:ring-offset-2 border border-[#FFC905]/20 shadow-md">

@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
-import { Button } from "./button";
-// import ReCAPTCHA from "react-google-recaptcha";
+import React, { FC, useState, useEffect } from "react";
+import { X, Send, MessageCircle } from "lucide-react";
+import styles from "./message-box-modal.module.scss";
 
 interface Props {
   title: string;
@@ -12,73 +12,150 @@ interface Props {
 export const MessageBoxModal: FC<Props> = (props) => {
   const { title, messageLengthLimit, onClose, onSubmit } = props;
   const [message, setMessage] = useState("");
-  const [isCaptchaValid, setIsCaptchaValid] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const googleSiteKey = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY || "";
+  useEffect(() => {
+    // Trigger entrance animation
+    setIsVisible(true);
 
-  const onChange = (value: any) => {
-    if (value) {
-      setIsCaptchaValid(true);
-    } else {
-      setIsCaptchaValid(false);
-    }
-  };
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   };
 
-  const onClickSubmitHandler = () => {
-    if (message.length < messageLengthLimit) {
-      alert(`Must be at least ${messageLengthLimit} characters!`);
-      return;
-    } else if (!isCaptchaValid) {
-      alert(`Please complete the captcha!`);
-      return;
-    }
-    onSubmit(message);
+  const handleClose = () => {
+    setIsVisible(false);
+    // Delay actual close to allow exit animation
+    setTimeout(() => {
+      onClose();
+    }, 300);
   };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
+  const onClickSubmitHandler = async () => {
+    if (message.length < messageLengthLimit) {
+      return; // Character count will show validation
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isValid = message.length >= messageLengthLimit;
+  const characterCountClass = message.length >= messageLengthLimit ? styles.valid : styles.invalid;
+
   return (
     <div
-      className="fixed z-50 inset-0 overflow-y-auto"
-      aria-labelledby="modal-title"
+      className={`${styles.modalOverlay} ${isVisible ? styles.modalEntering : styles.modalExiting}`}
+      onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="modal-title"
     >
-      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
-        <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-          aria-hidden="true"
-          onClick={onClose}
-        ></div>
+      <div className={styles.modalContainer}>
+        {/* Floating Bees Decoration */}
+        <div className={styles.floatingBees}>
+          <span className={`${styles.bee} ${styles.bee1}`}>🐝</span>
+          <span className={`${styles.bee} ${styles.bee2}`}>🐝</span>
+          <span className={`${styles.bee} ${styles.bee3}`}>🐝</span>
+        </div>
 
-        <div className="flex flex-col items-center min-w-[400px] bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:min-w-[350px]">
-          <div className="w-full bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div className="mt-3 text-center sm:mt-0 sm:text-left">
-              <h4
-                className="text-lg mb-5 font-medium text-gray-900"
-                id="modal-title"
-              >
-                {title}
-              </h4>
-
-              <textarea
-                className="w-full h-40 p-5 mt-2  border border-gray-300 rounded-md"
-                placeholder="Enter your cover letter here"
-                onChange={handleChange}
-              ></textarea>
-              <p className="text-left mt-2 text-sm text-gray-500">{`minimum ${messageLengthLimit} characters *`}</p>
+        {/* Enhanced Header */}
+        <div className={styles.modalHeader}>
+          <div className={styles.headerContent}>
+            <div className={styles.iconContainer}>
+              <span className={styles.beeIcon}>🍯</span>
+            </div>
+            <div className={styles.titleSection}>
+              <h2 id="modal-title" className={styles.title}>
+                Contact Company
+              </h2>
+              <p className={styles.subtitle}>
+                Send a message to the hive
+              </p>
             </div>
           </div>
-          {/* <ReCAPTCHA sitekey={googleSiteKey} onChange={onChange} /> */}
-          <div className="w-full flex justify-end px-4 py-2 mb-4 sm:px-6 sm:flex sm:flex-row-reverse">
-            <Button
-              text="Submit"
-              type="primary"
-              size="medium"
-              onClickHandler={onClickSubmitHandler}
-            ></Button>
+          <button
+            type="button"
+            className={styles.closeButton}
+            onClick={handleClose}
+            aria-label="Close modal"
+          >
+            <X />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className={styles.modalBody}>
+          <div className={styles.inputSection}>
+            <label htmlFor="message-textarea" className={styles.label}>
+              Your Message
+            </label>
+            <textarea
+              id="message-textarea"
+              className={styles.textarea}
+              placeholder="Share your thoughts, introduce yourself, or ask about opportunities. Make it personal and engaging..."
+              value={message}
+              onChange={handleChange}
+              rows={6}
+            />
+            <div className={styles.characterCount}>
+              <span className={styles.requirement}>
+                Minimum {messageLengthLimit} characters required
+              </span>
+              <span className={`${styles.count} ${characterCountClass}`}>
+                {message.length}/{messageLengthLimit}
+              </span>
+            </div>
           </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className={styles.modalFooter}>
+          <button
+            type="button"
+            className={styles.cancelButton}
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={styles.submitButton}
+            onClick={onClickSubmitHandler}
+            disabled={!isValid || isSubmitting}
+          >
+            <span className={styles.buttonContent}>
+              {isSubmitting ? (
+                <>
+                  <div className={styles.loadingSpinner} />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send size={16} />
+                  Send Message
+                </>
+              )}
+            </span>
+          </button>
         </div>
       </div>
     </div>
