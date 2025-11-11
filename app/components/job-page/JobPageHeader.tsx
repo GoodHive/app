@@ -207,7 +207,9 @@ export const JobPageHeader = ({ job }: JobPageHeaderProps) => {
         </div>
 
         {/* Job Summary */}
-        <div className={styles.jobMeta}>
+        <div className={styles.jobSummarySection}>
+          <h2 className={styles.jobSummaryTitle}>Job Summary</h2>
+          <div className={styles.jobMeta}>
           <div className={styles.metaItem}>
             <DollarSign className={styles.metaIcon} />
             <div className={styles.metaContent}>
@@ -249,6 +251,7 @@ export const JobPageHeader = ({ job }: JobPageHeaderProps) => {
               </div>
             </div>
           )}
+        </div>
         </div>
       </div>
 

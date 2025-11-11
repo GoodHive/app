@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { JobPageHeader } from "@/app/components/job-page/JobPageHeader";
 import { JobPageSidebar } from "@/app/components/job-page/JobPageSidebar";
+import { JobSectionsDisplay } from "@/app/components/job-sections-display/job-sections-display";
 import styles from "./page.module.scss";
 
 interface Job {
@@ -127,7 +128,10 @@ export async function generateMetadata({ params }: { params: { jobId: string } }
 export default async function JobPage({ params }: { params: { jobId: string } }) {
   const job = await getJob(params.jobId);
 
-  if (!job || !job.published) {
+  // In development, allow viewing unpublished jobs for testing
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  if (!job || (!job.published && !isDevelopment)) {
     notFound();
   }
 
@@ -141,8 +145,24 @@ export default async function JobPage({ params }: { params: { jobId: string } })
         <div className={styles.contentGrid}>
           {/* Job Content */}
           <main className={styles.mainContent}>
-            {/* Job Description */}
-            {job.description && (
+            {/* Job Sections - Modular Description */}
+            {job.sections && job.sections.length > 0 && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Job Description</h2>
+                <JobSectionsDisplay
+                  sections={job.sections.map(s => ({
+                    id: s.id,
+                    heading: s.heading,
+                    content: s.content,
+                    sort_order: s.sortOrder || 0
+                  }))}
+                  defaultExpanded={false}
+                />
+              </section>
+            )}
+
+            {/* Fallback Job Description - Only show if no sections exist */}
+            {job.description && (!job.sections || job.sections.length === 0) && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Job Description</h2>
                 <div
@@ -152,20 +172,6 @@ export default async function JobPage({ params }: { params: { jobId: string } })
               </section>
             )}
 
-            {/* Job Sections */}
-            {job.sections && job.sections.length > 0 && (
-              <div className={styles.jobSections}>
-                {job.sections.map((section) => (
-                  <section key={section.id} className={styles.section}>
-                    <h2 className={styles.sectionTitle}>{section.heading}</h2>
-                    <div
-                      className={styles.sectionContent}
-                      dangerouslySetInnerHTML={{ __html: section.content }}
-                    />
-                  </section>
-                ))}
-              </div>
-            )}
 
             {/* Skills */}
             {job.skills && job.skills.length > 0 && (

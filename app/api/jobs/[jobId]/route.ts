@@ -10,6 +10,9 @@ export async function GET(
   if (!jobId) {
     return new Response(JSON.stringify({ message: "Missing job ID" }), {
       status: 404,
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 
@@ -28,6 +31,9 @@ export async function GET(
     if (jobQuery.length === 0) {
       return new Response(JSON.stringify({ message: "Job not found" }), {
         status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
     }
 
@@ -129,6 +135,7 @@ export async function GET(
     return new Response(JSON.stringify(job), {
       status: 200,
       headers: {
+        "Content-Type": "application/json",
         "Cache-Control": "public, max-age=300, stale-while-revalidate=600", // Cache for 5 minutes
       },
     });
@@ -138,6 +145,9 @@ export async function GET(
       JSON.stringify({ message: "Error retrieving job data" }),
       {
         status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
     );
   }

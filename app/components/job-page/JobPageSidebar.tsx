@@ -55,71 +55,6 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
 
   return (
     <div className={styles.sidebarContainer}>
-      {/* Job Details Card */}
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}>Job Details</h3>
-        <div className={styles.detailsList}>
-          <div className={styles.detailItem}>
-            <DollarSign className={styles.detailIcon} />
-            <div className={styles.detailContent}>
-              <span className={styles.detailLabel}>Budget</span>
-              <span className={styles.detailValue}>
-                {formatBudget(job.budget, job.currency)}
-              </span>
-            </div>
-          </div>
-
-          <div className={styles.detailItem}>
-            <Building className={styles.detailIcon} />
-            <div className={styles.detailContent}>
-              <span className={styles.detailLabel}>Project Type</span>
-              <span className={styles.detailValue}>{job.projectType}</span>
-            </div>
-          </div>
-
-          {job.typeEngagement && (
-            <div className={styles.detailItem}>
-              <Clock className={styles.detailIcon} />
-              <div className={styles.detailContent}>
-                <span className={styles.detailLabel}>Engagement</span>
-                <span className={styles.detailValue}>{job.typeEngagement}</span>
-              </div>
-            </div>
-          )}
-
-          {job.duration && (
-            <div className={styles.detailItem}>
-              <Calendar className={styles.detailIcon} />
-              <div className={styles.detailContent}>
-                <span className={styles.detailLabel}>Duration</span>
-                <span className={styles.detailValue}>{job.duration}</span>
-              </div>
-            </div>
-          )}
-
-          <div className={styles.detailItem}>
-            <Calendar className={styles.detailIcon} />
-            <div className={styles.detailContent}>
-              <span className={styles.detailLabel}>Posted</span>
-              <span className={styles.detailValue}>
-                {getRelativeTime(job.postedAt)}
-              </span>
-            </div>
-          </div>
-
-          {job.applicationCount !== undefined && (
-            <div className={styles.detailItem}>
-              <Users className={styles.detailIcon} />
-              <div className={styles.detailContent}>
-                <span className={styles.detailLabel}>Applications</span>
-                <span className={styles.detailValue}>
-                  {job.applicationCount} applicants
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Company Card */}
       <div className={styles.card}>
@@ -146,7 +81,10 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
               {job.company.name}
             </Link>
             {job.company.headline && (
-              <p className={styles.companyHeadline}>{job.company.headline}</p>
+              <div
+                className={styles.companyHeadline}
+                dangerouslySetInnerHTML={{ __html: job.company.headline }}
+              />
             )}
           </div>
         </div>
@@ -162,51 +100,47 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
           </div>
         )}
 
-        {/* Company Links */}
+        {/* Enhanced Company Contact Information */}
         {(job.company.website || job.company.linkedin || job.company.twitter || job.company.email) && (
-          <div className={styles.companyLinks}>
-            {job.company.website && (
-              <a
-                href={job.company.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.companyLink}
-              >
-                <Globe size={16} />
-                Website
-              </a>
-            )}
-            {job.company.linkedin && (
-              <a
-                href={job.company.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.companyLink}
-              >
-                <Linkedin size={16} />
-                LinkedIn
-              </a>
-            )}
-            {job.company.twitter && (
-              <a
-                href={job.company.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.companyLink}
-              >
-                <Twitter size={16} />
-                Twitter
-              </a>
-            )}
-            {job.company.email && (
-              <a
-                href={`mailto:${job.company.email}`}
-                className={styles.companyLink}
-              >
-                <Mail size={16} />
-                Contact
-              </a>
-            )}
+          <div className={styles.companyContactSection}>
+            <h4 className={styles.contactSubtitle}>Connect with {job.company.name}</h4>
+            <div className={styles.contactGrid}>
+              {job.company.email && (
+                <div className={styles.contactItem}>
+                  <Mail className={styles.contactIcon} />
+                  <a href={`mailto:${job.company.email}`} className={styles.contactLink}>
+                    {job.company.email}
+                  </a>
+                </div>
+              )}
+
+              {job.company.website && (
+                <div className={styles.contactItem}>
+                  <Globe className={styles.contactIcon} />
+                  <a href={job.company.website} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
+                    {job.company.website.replace(/^https?:\/\//, '')}
+                  </a>
+                </div>
+              )}
+
+              {job.company.linkedin && (
+                <div className={styles.contactItem}>
+                  <Linkedin className={styles.contactIcon} />
+                  <a href={job.company.linkedin} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
+                    LinkedIn Profile
+                  </a>
+                </div>
+              )}
+
+              {job.company.twitter && (
+                <div className={styles.contactItem}>
+                  <Twitter className={styles.contactIcon} />
+                  <a href={job.company.twitter} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
+                    @{job.company.twitter.split('/').pop()}
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
