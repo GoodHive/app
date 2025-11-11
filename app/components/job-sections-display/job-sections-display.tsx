@@ -21,29 +21,29 @@ export const JobSectionDisplay: React.FC<JobSectionDisplayProps> = ({
   const handleToggle = onToggle || (() => setInternalExpanded(!internalExpanded));
 
   return (
-    <div className="border border-gray-200 rounded-lg mb-4 bg-white overflow-hidden">
+    <div className="border border-yellow-200 rounded-xl mb-6 bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:border-yellow-400">
       {/* Section Header */}
       <div
-        className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+        className="flex items-center justify-between p-6 cursor-pointer hover:bg-[#fef5cf] transition-all duration-300 border-b border-yellow-100"
         onClick={handleToggle}
       >
-        <h3 className="text-lg font-semibold text-gray-800 flex-1">
+        <h3 className="text-xl font-semibold text-gray-900 flex-1 leading-tight">
           {section.heading}
         </h3>
-        <div className="ml-4">
+        <div className="ml-4 p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors">
           {expanded ? (
-            <ChevronUpIcon className="w-5 h-5 text-gray-500" />
+            <ChevronUpIcon className="w-5 h-5 text-yellow-700" />
           ) : (
-            <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+            <ChevronDownIcon className="w-5 h-5 text-yellow-700" />
           )}
         </div>
       </div>
 
       {/* Section Content */}
       {expanded && (
-        <div className="px-4 pb-4">
+        <div className="px-6 pb-6 pt-4 bg-[#fef5cf]/30">
           <div
-            className="prose max-w-none text-gray-700 job-section-content"
+            className="prose prose-lg max-w-none text-gray-700 job-section-content leading-relaxed"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
         </div>
@@ -101,17 +101,16 @@ export const JobSectionsDisplay: React.FC<JobSectionsDisplayProps> = ({
     <div className={className}>
       {/* Control buttons - only show if there are multiple sections */}
       {sections.length > 1 && (
-        <div className="flex justify-end gap-2 mb-4">
+        <div className="flex justify-end gap-3 mb-6">
           <button
             onClick={expandAll}
-            className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+            className="text-sm font-medium text-yellow-600 hover:text-yellow-800 hover:bg-[#fef5cf] transition-all duration-200 px-3 py-2 rounded-lg border border-yellow-200 hover:border-yellow-400"
           >
             Expand All
           </button>
-          <span className="text-gray-300">|</span>
           <button
             onClick={collapseAll}
-            className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+            className="text-sm font-medium text-yellow-600 hover:text-yellow-800 hover:bg-[#fef5cf] transition-all duration-200 px-3 py-2 rounded-lg border border-yellow-200 hover:border-yellow-400"
           >
             Collapse All
           </button>
@@ -119,7 +118,7 @@ export const JobSectionsDisplay: React.FC<JobSectionsDisplayProps> = ({
       )}
 
       {/* Job Sections */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {sections
           .sort((a, b) => a.sort_order - b.sort_order)
           .map((section, index) => (

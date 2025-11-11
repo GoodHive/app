@@ -1,6 +1,8 @@
 /* Job Sections Display Styles */
 .job-section-content {
-  line-height: 1.6;
+  line-height: 1.7;
+  font-size: 1rem;
+  color: #374151;
 }
 
 .job-section-content h1,
@@ -9,73 +11,121 @@
 .job-section-content h4,
 .job-section-content h5,
 .job-section-content h6 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.job-section-content h1:first-child,
+.job-section-content h2:first-child,
+.job-section-content h3:first-child,
+.job-section-content h4:first-child,
+.job-section-content h5:first-child,
+.job-section-content h6:first-child {
+  margin-top: 0;
 }
 
 .job-section-content h1 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .job-section-content h2 {
-  font-size: 1.375rem;
+  font-size: 1.5rem;
 }
 
 .job-section-content h3 {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
 }
 
 .job-section-content h4 {
-  font-size: 1.125rem;
+  font-size: 1.15rem;
 }
 
 .job-section-content p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+}
+
+.job-section-content p:last-child {
+  margin-bottom: 0;
 }
 
 .job-section-content ul,
 .job-section-content ol {
-  margin: 1rem 0;
-  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  padding-left: 1.75rem;
 }
 
 .job-section-content li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
 }
 
 .job-section-content ul li {
   list-style-type: disc;
+  list-style-position: outside;
 }
 
 .job-section-content ol li {
   list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.job-section-content ul ul,
+.job-section-content ol ol,
+.job-section-content ul ol,
+.job-section-content ol ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
 }
 
 .job-section-content a {
-  color: #3b82f6;
+  color: #f59e0b;
   text-decoration: underline;
+  text-decoration-color: rgba(245, 158, 11, 0.4);
+  text-underline-offset: 2px;
+  transition: all 0.2s ease;
 }
 
 .job-section-content a:hover {
-  color: #1d4ed8;
+  color: #d97706;
+  text-decoration-color: #d97706;
 }
 
-.job-section-content strong {
+.job-section-content strong,
+.job-section-content b {
   font-weight: 600;
+  color: #111827;
 }
 
-.job-section-content em {
+.job-section-content em,
+.job-section-content i {
   font-style: italic;
+  color: #4b5563;
 }
 
 .job-section-content blockquote {
-  border-left: 4px solid #e5e7eb;
-  padding-left: 1rem;
-  margin: 1rem 0;
-  color: #6b7280;
+  border-left: 4px solid #f59e0b;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  color: #92400e;
   font-style: italic;
+  position: relative;
+}
+
+.job-section-content blockquote::before {
+  content: '"';
+  font-size: 3rem;
+  color: #f59e0b;
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  line-height: 1;
+  opacity: 0.3;
 }
 
 /* Job Section Editor Styles */
