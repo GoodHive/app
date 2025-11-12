@@ -808,14 +808,14 @@ export const JobForm = ({
             <div className="flex-1">
               <label
                 htmlFor="budget"
-                className="inline-block ml-3 text-base text-black form-label"
+                className="inline-block ml-3 text-base text-gray-800 form-label mb-2 font-medium"
               >
                 {projectType && projectType.value === "fixed"
                   ? "Budget*"
                   : "Expected Hourly Rate*"}
               </label>
               <input
-                className="form-control block w-full px-4 py-2 text-base font-normal text-gray-600 bg-white bg-clip-padding border border-solid border-[#FFC905] rounded-full hover:shadow-lg transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-[#FF8C05] focus:outline-none"
+                className="block w-full px-4 py-3 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-amber-300 rounded-xl hover:shadow-md transition ease-in-out m-0 focus:text-black focus:bg-white focus:border-amber-500 focus:outline-none"
                 type="number"
                 name="budget"
                 onChange={onBudgetChange}
