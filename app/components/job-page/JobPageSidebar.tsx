@@ -45,9 +45,18 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
   };
 
   const formatBudget = (amount: number, currency: string) => {
+    // Handle crypto token addresses and map to standard currency codes
+    const getCurrencyCode = (currency: string) => {
+      if (!currency) return 'USD';
+      if (currency === 'USDC' || currency.startsWith('0x')) return 'USD';
+      // List of valid currency codes for Intl.NumberFormat
+      const validCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY'];
+      return validCurrencies.includes(currency.toUpperCase()) ? currency.toUpperCase() : 'USD';
+    };
+
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency === 'USDC' ? 'USD' : currency,
+      currency: getCurrencyCode(currency),
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);

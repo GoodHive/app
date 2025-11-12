@@ -99,9 +99,19 @@ export async function generateMetadata({ params }: { params: { jobId: string } }
   }
 
   const jobLocation = job.city && job.country ? `${job.city}, ${job.country}` : job.city || job.country || 'Remote';
+
+  // Handle crypto token addresses and map to standard currency codes
+  const getCurrencyCode = (currency: string) => {
+    if (!currency) return 'USD';
+    if (currency === 'USDC' || currency.startsWith('0x')) return 'USD';
+    // List of valid currency codes for Intl.NumberFormat
+    const validCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY'];
+    return validCurrencies.includes(currency.toUpperCase()) ? currency.toUpperCase() : 'USD';
+  };
+
   const budgetText = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: job.currency === 'USDC' ? 'USD' : job.currency,
+    currency: getCurrencyCode(job.currency),
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(job.budget);
