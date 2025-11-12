@@ -11,7 +11,6 @@ import LabelOption from "@interfaces/label-option";
 import { IJobSection } from "@interfaces/job-offer";
 import { JobForm } from "./JobForm";
 import { JobModals } from "./JobModals";
-import BlockchainDebug from "@/app/components/BlockchainDebug";
 import { AiJobGeneratorModal } from "@/app/components/ai-job-generator/AiJobGeneratorModal";
 import { chains } from "@/app/constants/chains";
 import {
@@ -306,8 +305,6 @@ export default function CreateJob() {
             )}
           </div>
 
-          {/* Temporary debug component */}
-          <BlockchainDebug />
           
           <JobForm
             title={title}
