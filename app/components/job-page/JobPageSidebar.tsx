@@ -144,6 +144,39 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
           </div>
         )}
       </div>
+
+      {/* Follow Our Journey Section */}
+      <div className={styles.card}>
+        <h3 className={styles.cardTitle}>Follow Our Journey</h3>
+        <div className={styles.journeyContent}>
+          <p className={styles.journeyText}>Stay updated with our latest developments and opportunities</p>
+        </div>
+      </div>
+
+      {/* Get in Touch Section */}
+      <div className={styles.card}>
+        <h3 className={styles.cardTitle}>Get in Touch</h3>
+        <div className={styles.accessRestricted}>
+          <div className={styles.restrictedContent}>
+            <h4 className={styles.restrictedTitle}>Access Restricted</h4>
+            <p className={styles.restrictedText}>Contact details are available to validated talents.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact GoodHive Section */}
+      <div className={styles.card}>
+        <h3 className={styles.cardTitle}>Contact GoodHive</h3>
+        <div className={styles.contactGoodHive}>
+          <p className={styles.contactDescription}>
+            Have questions about {job.company.name}? Send us a message and we'll help you connect!
+          </p>
+          <button className={styles.sendMessageButton}>
+            <Mail className={styles.buttonIcon} />
+            Send us a Message
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
