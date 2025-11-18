@@ -36,6 +36,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
   onJobGenerated
 }) => {
   const [step, setStep] = useState<'input' | 'generating' | 'preview'>('input');
+  const [activeTab, setActiveTab] = useState<'quick-input' | 'job-proposal'>('job-proposal');
   const [formData, setFormData] = useState({
     jobTitle: '',
     briefDescription: '',
@@ -46,6 +47,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
     projectType: 'fixed' as 'fixed' | 'hourly',
     remote: true
   });
+  const [jobProposal, setJobProposal] = useState('');
   const [generatedData, setGeneratedData] = useState<GeneratedJobData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,9 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setStep('input');
+      setActiveTab('job-proposal');
       setGeneratedData(null);
+      setJobProposal('');
       setFormData({
         jobTitle: '',
         briefDescription: '',
@@ -100,21 +104,37 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
   };
 
   const validateInput = () => {
-    if (!formData.jobTitle.trim()) {
-      toast.error("Please enter a job title");
-      return false;
-    }
-    if (formData.jobTitle.length < 3) {
-      toast.error("Job title must be at least 3 characters");
-      return false;
-    }
-    if (!formData.briefDescription.trim()) {
-      toast.error("Please provide a brief description");
-      return false;
-    }
-    if (formData.briefDescription.length < 10) {
-      toast.error("Description must be at least 10 characters");
-      return false;
+    if (activeTab === 'quick-input') {
+      if (!formData.jobTitle.trim()) {
+        toast.error("Please enter a job title");
+        return false;
+      }
+      if (formData.jobTitle.length < 3) {
+        toast.error("Job title must be at least 3 characters");
+        return false;
+      }
+      if (!formData.briefDescription.trim()) {
+        toast.error("Please provide a brief description");
+        return false;
+      }
+      if (formData.briefDescription.length < 10) {
+        toast.error("Description must be at least 10 characters");
+        return false;
+      }
+    } else {
+      // Job Proposal validation
+      if (!jobProposal.trim()) {
+        toast.error("Please enter a job proposal");
+        return false;
+      }
+      if (jobProposal.length < 100) {
+        toast.error("Job proposal must be at least 100 characters");
+        return false;
+      }
+      if (jobProposal.length > 5000) {
+        toast.error("Job proposal must not exceed 5000 characters");
+        return false;
+      }
     }
     return true;
   };
@@ -126,20 +146,36 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
     setStep('generating');
 
     try {
-      const skillsArray = formData.specificSkills
-        ? formData.specificSkills.split(',').map(s => s.trim()).filter(s => s)
-        : [];
+      let response;
 
-      const response = await fetch('/api/companies/ai-generate-job', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          specificSkills: skillsArray
-        }),
-      });
+      if (activeTab === 'quick-input') {
+        // Use existing quick input endpoint
+        const skillsArray = formData.specificSkills
+          ? formData.specificSkills.split(',').map(s => s.trim()).filter(s => s)
+          : [];
+
+        response = await fetch('/api/companies/ai-generate-job', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            specificSkills: skillsArray
+          }),
+        });
+      } else {
+        // Use job proposal endpoint
+        response = await fetch('/api/companies/ai-generate-job-from-proposal', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jobProposal: jobProposal
+          }),
+        });
+      }
 
       const result = await response.json();
 
@@ -212,6 +248,33 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
           <div className="p-6">
             {step === 'input' && (
               <div className="space-y-6">
+                {/* Tab Navigation */}
+                <div className="flex border-b border-gray-200">
+                  <button
+                    onClick={() => setActiveTab('job-proposal')}
+                    className={`px-6 py-3 font-semibold text-sm transition-colors relative ${
+                      activeTab === 'job-proposal'
+                        ? 'text-yellow-600 border-b-2 border-yellow-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Job Proposal
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('quick-input')}
+                    className={`px-6 py-3 font-semibold text-sm transition-colors relative ${
+                      activeTab === 'quick-input'
+                        ? 'text-yellow-600 border-b-2 border-yellow-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Quick Input
+                  </button>
+                </div>
+
+                {/* Quick Input Tab */}
+                {activeTab === 'quick-input' && (
+                  <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Job Title */}
                   <div className="md:col-span-2">
@@ -223,7 +286,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                       placeholder="e.g., Senior Full Stack Developer"
                       value={formData.jobTitle}
                       onChange={(e) => handleInputChange('jobTitle', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                       maxLength={100}
                     />
                   </div>
@@ -237,7 +300,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                       placeholder="Describe what this role involves, key responsibilities, or what you're looking for..."
                       value={formData.briefDescription}
                       onChange={(e) => handleInputChange('briefDescription', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                       rows={4}
                       maxLength={1000}
                     />
@@ -254,7 +317,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                     <select
                       value={formData.companyIndustry}
                       onChange={(e) => handleInputChange('companyIndustry', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                     >
                       <option value="Technology">Technology</option>
                       <option value="Finance">Finance</option>
@@ -277,7 +340,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                     <select
                       value={formData.experienceLevel}
                       onChange={(e) => handleInputChange('experienceLevel', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                     >
                       <option value="entry">Entry Level (0-2 years)</option>
                       <option value="mid">Mid Level (3-5 years)</option>
@@ -296,7 +359,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                       placeholder="e.g., React, Node.js, Python (comma-separated)"
                       value={formData.specificSkills}
                       onChange={(e) => handleInputChange('specificSkills', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                     />
                     <div className="text-xs text-gray-500 mt-1">
                       Optional: Separate multiple skills with commas
@@ -313,7 +376,7 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                       placeholder="e.g., $2000-5000 or $50/hour"
                       value={formData.budgetRange}
                       onChange={(e) => handleInputChange('budgetRange', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all"
                     />
                     <div className="text-xs text-gray-500 mt-1">
                       Optional: AI will suggest budget if not provided
@@ -391,23 +454,114 @@ export const AiJobGeneratorModal: React.FC<AiJobGeneratorModalProps> = ({
                     Generate Job Posting
                   </button>
                 </div>
+                  </div>
+                )}
+
+                {/* Job Proposal Tab */}
+                {activeTab === 'job-proposal' && (
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-sm text-blue-800">
+                        <strong>Paste your complete job proposal below.</strong> Our AI will analyze it and extract all necessary details including title, responsibilities, requirements, skills, budget, and more.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Job Proposal *
+                      </label>
+                      <textarea
+                        placeholder="Paste your full job proposal here. Include details about the role, responsibilities, requirements, skills needed, project scope, budget (if applicable), and any other relevant information..."
+                        value={jobProposal}
+                        onChange={(e) => setJobProposal(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-yellow-500 focus:outline-none transition-all resize-y min-h-[300px]"
+                        maxLength={5000}
+                      />
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="text-xs text-gray-500">
+                          Minimum 100 characters required
+                        </div>
+                        <div className={`text-xs ${
+                          jobProposal.length < 100
+                            ? 'text-red-500'
+                            : jobProposal.length > 4500
+                            ? 'text-orange-500'
+                            : 'text-gray-500'
+                        }`}>
+                          {jobProposal.length}/5000 characters
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Examples */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Examples of what you can paste:</h4>
+                      <ul className="text-xs text-gray-600 space-y-1 list-disc list-inside">
+                        <li>Complete job descriptions from other platforms</li>
+                        <li>Internal job requisitions or hiring documents</li>
+                        <li>Project briefs with role requirements</li>
+                        <li>Informal job proposals or notes</li>
+                      </ul>
+                    </div>
+
+                    {/* Generate Button */}
+                    <div className="flex justify-end pt-4 border-t border-gray-200">
+                      <button
+                        onClick={handleGenerate}
+                        disabled={isLoading || jobProposal.length < 100}
+                        className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Generate from Proposal
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {step === 'generating' && (
               <div className="flex flex-col items-center justify-center py-16 space-y-6">
                 <div className="relative">
-                  <div className="w-16 h-16 border-4 border-yellow-200 rounded-full animate-spin">
-                    <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                  <style dangerouslySetInnerHTML={{
+                    __html: `
+                      @keyframes shine {
+                        0% {
+                          background-position: -200% center;
+                        }
+                        100% {
+                          background-position: 200% center;
+                        }
+                      }
+                      .shine-effect {
+                        background: linear-gradient(
+                          90deg,
+                          rgba(255, 201, 5, 0.3) 0%,
+                          rgba(255, 201, 5, 1) 50%,
+                          rgba(255, 201, 5, 0.3) 100%
+                        );
+                        background-size: 200% auto;
+                        animation: shine 2s linear infinite;
+                      }
+                      @keyframes pulse-glow {
+                        0%, 100% {
+                          box-shadow: 0 0 20px rgba(255, 201, 5, 0.3);
+                        }
+                        50% {
+                          box-shadow: 0 0 40px rgba(255, 201, 5, 0.6);
+                        }
+                      }
+                    `
+                  }} />
+                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shine-effect" style={{ animation: 'shine 2s linear infinite, pulse-glow 2s ease-in-out infinite' }}>
+                    <SparklesIcon className="w-10 h-10 text-white" />
                   </div>
-                  <SparklesIcon className="w-8 h-8 text-yellow-500 absolute top-4 left-4" />
                 </div>
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Generating Your Job Posting...
+                    Generating Your Job Description...
                   </h3>
                   <p className="text-gray-600">
-                    Our AI is crafting a professional job description for you
+                    Our AI is creating a professional Job Posting For You
                   </p>
                 </div>
                 <div className="flex space-x-2">
