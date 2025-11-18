@@ -7,8 +7,19 @@ const createProfileWithChatGPT = async (pdfText: string) => {
 
   const prompt = createPDFToProfilePrompt(pdfText);
 
+  // Check prompt length to avoid token limits
+  const promptLength = prompt.length;
+  console.log("Prompt length:", promptLength);
+
+  if (promptLength > 20000) {
+    console.warn("Prompt is very long, might hit token limits");
+  }
+
   try {
     // Make API call to ChatGPT
+    console.log("Making API call to OpenAI with model: gpt-4-1106-preview");
+    console.log("PDF text length:", pdfText.length);
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -21,7 +32,7 @@ const createProfileWithChatGPT = async (pdfText: string) => {
           {
             role: "system",
             content:
-              "You are an expert resume parser and professional profile generator. Always respond with valid JSON only.",
+              "You are an expert resume parser and professional profile generator. Extract ALL information from the resume and create a comprehensive JSON profile. Respond with valid JSON only.",
           },
           {
             role: "user",
@@ -29,29 +40,47 @@ const createProfileWithChatGPT = async (pdfText: string) => {
           },
         ],
         temperature: 0.3,
-        max_tokens: 2000,
+        max_tokens: 3000,
       }),
     });
 
-    console.log(response, "response from ai...");
+    console.log("API Response Status:", response.status);
+    console.log("API Response OK:", response.ok);
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error("OpenAI API Error Response:", errorText);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
+    console.log("API Response Data:", data);
+
     const generatedText = data.choices[0]?.message?.content;
+    console.log("Generated Text:", generatedText);
 
     if (!generatedText) {
       throw new Error("No response from ChatGPT");
     }
 
     // Parse the JSON response
-    const profileData = JSON.parse(generatedText);
+    let profileData;
+    try {
+      profileData = JSON.parse(generatedText);
+      console.log("Successfully parsed JSON profile data");
+    } catch (parseError) {
+      console.error("JSON Parse Error:", parseError);
+      console.error("Generated text that failed to parse:", generatedText);
+      throw new Error(`Failed to parse JSON response: ${parseError.message}`);
+    }
 
     return profileData;
   } catch (error) {
-    console.error("Error calling ChatGPT:", error);
+    console.error("Detailed Error calling ChatGPT:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
 
     // Fallback to basic parsing if ChatGPT fails
     return {
@@ -93,6 +122,9 @@ const createProfileWithChatGPT = async (pdfText: string) => {
           gpa: "3.8/4.0",
         },
       ],
+      certifications: [],
+      projects: [],
+      languages: []
     };
   }
 };

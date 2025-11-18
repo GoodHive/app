@@ -42,8 +42,8 @@ export default async function SearchTalentsPage({
   searchParams,
 }: {
   searchParams: {
-    items?: number;
-    page: number;
+    items?: string;
+    page?: string;
     search?: string;
     location?: string;
     name?: string;
@@ -58,7 +58,16 @@ export default async function SearchTalentsPage({
 }) {
   console.log("Search params received:", searchParams);
 
-  const query = { items: itemsPerPage, ...searchParams };
+  const currentPage = Number(searchParams.page) || 1;
+  const query = {
+    items: itemsPerPage,
+    page: currentPage,
+    ...Object.fromEntries(
+      Object.entries(searchParams).filter(([key, value]) =>
+        key !== 'page' && key !== 'items' && value !== undefined
+      )
+    )
+  };
   const { talents, count } = (await fetchTalents(query)) || {
     talents: [],
     count: 0,
@@ -236,7 +245,7 @@ export default async function SearchTalentsPage({
                   itemsPerPage={itemsPerPage}
                   totalItems={count}
                   query={query}
-                  activePage={Number(searchParams.page) || 1}
+                  activePage={currentPage}
                   isSearchTalent={true}
                 />
               </div>

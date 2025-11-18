@@ -1,19 +1,26 @@
 export const createPDFToProfilePrompt = (pdfText: string) => {
-  return `You are an expert resume parser and professional profile generator. Your task is to analyze the provided resume text and create a comprehensive, professional profile in JSON format.
+  return `You are an expert resume parser and professional profile generator with 15+ years of experience in comprehensive CV analysis. Your task is to meticulously analyze the provided resume text and create a comprehensive, professional profile in JSON format that captures EVERY piece of important information.
 
-Please extract and structure the following information from the resume text:
+**⚠️ CRITICAL REQUIREMENT: Do NOT omit ANY significant information from the CV. Include ALL details mentioned.**
 
 **RESUME TEXT TO ANALYZE:**
 ${pdfText}
 
-**INSTRUCTIONS:**
-1. Extract all personal information (name, email, phone, location)
-2. Identify professional title and experience
-3. Extract skills and technologies mentioned
-4. Find social media links (LinkedIn, GitHub, portfolio)
-5. Extract education details
-6. Create professional, enhanced descriptions
-7. Suggest an appropriate hourly rate based on experience level
+**COMPREHENSIVE EXTRACTION INSTRUCTIONS:**
+1. **Personal Information**: Extract ALL contact details (name, email, phone, location, social media)
+2. **Professional Identity**: Capture current title, specializations, and professional focus areas
+3. **Work Experience**: Document ALL jobs, internships, consulting work, and professional roles
+4. **Technical Skills**: List ALL programming languages, frameworks, tools, platforms, and technologies
+5. **Projects**: Include ALL personal projects, open-source contributions, and portfolio work
+6. **Education**: Capture ALL degrees, diplomas, certifications, courses, and training programs
+7. **Achievements**: Document awards, recognitions, publications, presentations, and accomplishments
+8. **Languages**: Note ALL spoken/written languages and proficiency levels
+9. **Soft Skills**: Extract leadership experience, teamwork, communication abilities
+10. **Specializations**: Highlight any niche expertise or domain knowledge
+11. **Professional Development**: Include workshops, conferences, bootcamps, online courses
+12. **Volunteer Work**: Document any community involvement or volunteer activities
+13. **Industry Focus**: Note specific industries or sectors of experience
+14. **Methodologies**: Include any specific development methodologies, frameworks, or approaches
 
 **REQUIRED OUTPUT FORMAT (JSON):**
 {
@@ -25,45 +32,104 @@ ${pdfText}
   "country": "string (country name)",
   "city": "string",
   "title": "string (professional title)",
-  "description": "Write a long-form, professionally styled personal summary for a Web3-focused job platform profile. The tone should be confident, polished, and written in the first person — as if the user is introducing themselves. The description should include at least 15–20 sentences and reflect the candidate's unique strengths and work history. Use React Quill-compatible formatting with semantic HTML and include emojis in section headings to make it visually engaging. Start with a warm introductory <h2> headline (e.g., 'Hello, I'm [Name]') followed by a paragraph overview of their role and focus area. Create 2–3 themed <h3> sections with short emoji titles based on CV content (e.g., '🚀 What Drives Me', '🌐 Beyond the Code', '🛠️ My Technical Toolbox'). Each section should elaborate on relevant skills, experience, values, achievements, or goals. Include lists or blockquotes where appropriate. End with a short, aspirational closing paragraph that invites recruiters to connect or collaborate.\n\nFormat with proper spacing:\n<h2><strong>Hello, I'm [Name]</strong></h2>\n<p>[Introduction paragraph]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🚀 What Drives Me</strong></h3>\n<p>[Content about motivation and goals]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🌐 Beyond the Code</strong></h3>\n<p>[Content about soft skills, languages, etc.]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🛠️ My Technical Toolbox</strong></h3>\n<p>[Content about technical skills and expertise]</p>",
-  "about_work": "Create a well-structured and visually organized 'About my work' section with proper spacing and sectioning:\n\n<h2><strong>Experience</strong></h2>\n<p>&nbsp;</p>\n<p>List each job experience with proper spacing:</p>\n<strong>[Job Title] – [Company]</strong><br>\n[City, Country] | [Start Date] – [End Date]<br>\n[2-3 sentence description of role, achievements, and technologies used]\n\n<p>&nbsp;</p>\n\n<strong>[Next Job Title] – [Company]</strong><br>\n[City, Country] | [Start Date] – [End Date]<br>\n[2-3 sentence description of role, achievements, and technologies used]\n\n<p>&nbsp;</p>\n\n<h2><strong>Key Skills</strong></h2>\n<p>&nbsp;</p>\n<p>Write a comprehensive paragraph highlighting the candidate's key technical and soft skills, emphasizing their expertise in blockchain, Web3, and relevant technologies. Include both hard skills (programming languages, frameworks, tools) and soft skills (leadership, collaboration, problem-solving).</p>\n\n<p>&nbsp;</p>\n\n<h2><strong>Education & Continuous Learning</strong></h2>\n<p>&nbsp;</p>\n<p>List educational background, certifications, and ongoing learning initiatives. Include degrees, relevant certifications, and any blockchain/Web3 specific training.</p>\n\nUse React Quill-compatible HTML formatting with <h2>, <strong>, <em>, <p>, and <br> tags. Add <p>&nbsp;</p> for proper spacing between sections. Keep the tone professional and first-person. Make it between 8-12 sentences total across all sections.",
+  "description": "Create a comprehensive, long-form professional summary that captures the candidate's COMPLETE professional identity. This must be a detailed, engaging narrative that includes: \n\n1. **Professional Overview**: Years of experience, current role, core specializations\n2. **Key Achievements**: Specific accomplishments, quantifiable results, notable projects\n3. **Technical Expertise**: ALL technical skills, programming languages, frameworks, tools\n4. **Industry Experience**: Specific sectors, domain knowledge, specialized areas\n5. **Educational Background**: Degrees, certifications, continuous learning\n6. **Languages & Soft Skills**: Communication abilities, leadership experience, collaboration\n7. **Professional Values**: Work philosophy, approach to problem-solving\n8. **Career Highlights**: Major projects, innovations, contributions to teams/companies\n\nWrite in first person with confidence and professionalism. Use React Quill-compatible HTML formatting with semantic tags. Structure with clear sections using <h2> and <h3> headings with emojis. Include ALL information from the CV - do not omit any significant details. The description should be comprehensive (20-30 sentences) and reflect the full scope of their professional capabilities.\n\nFormat with proper spacing:\n<h2><strong>Hello, I'm [Name]</strong></h2>\n<p>[Comprehensive introduction covering role, experience, and core focus areas]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🚀 My Professional Journey</strong></h3>\n<p>[Detailed career progression, key roles, major achievements, quantifiable impact]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🛠️ Technical Arsenal</strong></h3>\n<p>[Complete technical skill set, tools, frameworks, technologies, methodologies]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🎓 Education & Continuous Learning</strong></h3>\n<p>[List ALL educational achievements including degrees, certifications, professional training, bootcamps, online courses, workshops, conferences attended. Include institution names, dates, and any notable coursework or honors.]</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>🌟 Beyond the Code</strong></h3>\n<p>[Languages spoken, soft skills, industry knowledge, leadership experience, volunteer work, personal interests that relate to professional growth]</p>\n\n<p>&nbsp;</p>\n\n<p>[Closing paragraph about collaboration and future goals]</p>",
+  "about_work": "Create a comprehensive, well-structured 'About my work' section that focuses on professional experience, skills, and achievements:\n\n<h2><strong>Experience</strong></h2>\n<p>&nbsp;</p>\n[List EVERY job, consulting role, freelance work, and professional experience with detailed descriptions]\n<strong>[Job Title] – [Company/Organization]</strong><br>\n[City, Country] | [Start Date] – [End Date]<br>\n[Detailed 3-4 sentence description covering: role responsibilities, key achievements, technologies used, impact/results, team size if mentioned, notable projects]\n\n<p>&nbsp;</p>\n\n[Continue for ALL roles - do not omit any professional experience]\n\n<h2><strong>Key Skills</strong></h2>\n<p>&nbsp;</p>\n<p>Write a comprehensive overview covering: ALL technical skills (programming languages, frameworks, databases, cloud platforms, tools, methodologies), soft skills (leadership, communication, project management), domain expertise (blockchain, AI, Web3, etc.), and any specialized knowledge areas. Include proficiency levels where mentioned and group related skills logically.</p>\n\n<p>&nbsp;</p>\n\n<h2><strong>Projects & Achievements</strong></h2>\n<p>&nbsp;</p>\n[If projects, publications, awards, or notable achievements are mentioned, include them here with descriptions]\n\n<p>&nbsp;</p>\n\n<h2><strong>Skills</strong></h2>\n<p>&nbsp;</p>\n<p><strong>🔹 Open to All Opportunities</strong> | <strong>🔹 Open to On-site</strong></p>\n\nUse React Quill-compatible HTML formatting. Include ALL information from the CV - do not omit any professional details, no matter how minor they seem.",
   "linkedin": "string (URL if found)",
   "github": "string (URL if found)", 
   "portfolio": "string (URL if found)",
-  "skills": "string (comma-separated list of skills and technologies)",
-  "rate": "number (suggested hourly rate in USD based on experience)",
+  "skills": "string (comprehensive comma-separated list including ALL technical skills, programming languages, frameworks, tools, databases, cloud platforms, methodologies, soft skills, languages, and domain expertise)",
+  "rate": "number (suggested hourly rate in USD based on experience level and expertise)",
   "experience": [
     {
       "title": "string",
-      "company": "string", 
+      "company": "string",
       "location": "string",
       "startDate": "string (YYYY-MM format)",
       "endDate": "string (YYYY-MM or 'Present')",
-      "description": "string (enhanced job description)"
+      "description": "string (detailed, enhanced job description covering responsibilities, achievements, technologies, impact, and notable projects)"
     }
   ],
   "education": [
     {
       "degree": "string",
       "institution": "string",
-      "location": "string", 
+      "location": "string",
       "startDate": "string (YYYY-MM format)",
       "endDate": "string (YYYY-MM format)",
       "gpa": "string (if available)"
     }
+  ],
+  "certifications": [
+    {
+      "name": "string",
+      "issuer": "string",
+      "date": "string (YYYY-MM format if available)",
+      "description": "string (brief description if provided)"
+    }
+  ],
+  "projects": [
+    {
+      "name": "string",
+      "description": "string",
+      "technologies": "string (comma-separated)",
+      "url": "string (if available)"
+    }
+  ],
+  "languages": [
+    {
+      "language": "string",
+      "proficiency": "string (Native, Fluent, Conversational, Basic, or as specified)"
+    }
   ]
 }
 
-**SPECIAL REQUIREMENTS:**
-- For description: Create a compelling and detailed professional summary that highlights their top achievements, years of experience, key skills, industries they've worked in, and what sets them apart. The tone should be confident, first-person, and professional (e.g., "I bring over 7 years of experience...", "I specialize in..."). This summary should showcase both technical and strategic abilities, and reflect their professional identity. It should read like a personal introduction for a top-tier online profile or portfolio. Make it rich, engaging, and between **10 to 12 or 15 sentences long based on experience and other things on resume**. Use <strong> tags to make all headings bold and add proper spacing with <p>&nbsp;</p> between sections.
-- For about_work: Create a visually organized section with proper spacing. Use <h2><strong> tags for main section headings (Experience, Key Skills, Education & Continuous Learning) to make them bold. Add <p>&nbsp;</p> for spacing between sections and after each job entry. Use <strong> for job titles and <br> for line breaks. Make each section clearly separated and easy to read.
-- For experience descriptions: Enhance the job descriptions to sound more professional and impactful.
-- For skills: Include both technical skills and soft skills, separated by commas.
-- For rate: Suggest a competitive hourly rate based on their experience level and skills.
-- If any information is not found in the resume, use reasonable defaults or omit the field.
-- Ensure all dates are in YYYY-MM format.
-- Make sure the JSON is valid and properly formatted.
+**🚨 CRITICAL COMPLETENESS REQUIREMENTS:**
 
-Please analyze the resume text and return ONLY the JSON object with no additional text or explanations.
+1. **ABSOLUTE COMPLETENESS**: You MUST include EVERY piece of significant information from the CV. Do NOT omit any:
+   - Work experiences (including internships, consulting, freelance work)
+   - Technical skills (every programming language, framework, tool, platform)
+   - Educational qualifications (degrees, certifications, courses, training)
+   - Projects (personal, professional, open-source, academic)
+   - Achievements (awards, recognitions, publications, presentations)
+   - Languages spoken and proficiency levels
+   - Soft skills and leadership experience
+   - Volunteer work or community involvement
+   - Professional development activities
+
+2. **DESCRIPTION REQUIREMENTS**:
+   - Must be 25-35 sentences long and capture their COMPLETE professional identity
+   - Include ALL work experiences, not just recent ones
+   - Mention ALL technical skills and expertise areas
+   - Include educational background and certifications
+   - Highlight specific industries, projects, and achievements
+   - Mention languages, methodologies, and specialized knowledge
+   - Use first-person, confident, professional tone
+   - Structure with clear HTML sections and proper spacing
+
+3. **ABOUT_WORK REQUIREMENTS**:
+   - List ALL job experiences with detailed descriptions (3-4 sentences each)
+   - Include ALL technical skills in comprehensive detail
+   - Document ALL education, certifications, and training
+   - Add Projects & Achievements section if applicable
+   - Use proper HTML formatting with clear section breaks
+
+4. **DATA EXTRACTION REQUIREMENTS**:
+   - Experience array: Include EVERY job, role, or position mentioned
+   - Education array: Include ALL degrees, diplomas, and formal education
+   - Certifications array: Include ALL certifications, licenses, and professional credentials
+   - Projects array: Include ALL notable projects mentioned
+   - Languages array: Include ALL languages with proficiency levels
+   - Skills string: Comprehensive list of ALL technical and soft skills
+
+5. **QUALITY STANDARDS**:
+   - Enhanced job descriptions that sound professional and impactful
+   - Competitive hourly rate based on experience level and market standards
+   - Proper date formatting (YYYY-MM)
+   - Valid JSON structure
+   - No information gaps or omissions
+
+**⚠️ FINAL VALIDATION**: Before generating the JSON, verify you have included ALL information from the CV. If the CV mentions something, it MUST appear in your output.
+
+Please analyze the resume text thoroughly and return ONLY the complete JSON object with no additional text or explanations.
 `;
 };
