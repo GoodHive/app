@@ -195,12 +195,9 @@ export default function CreateJob() {
   }, [userId, id]);
 
   const handleCreateJob = async (jobId: string, amount: string) => {
-    // Authentication system being updated for Thirdweb integration
-    toast("Job creation will be available after Thirdweb integration.", {
-      icon: "🔧",
-      duration: 4000,
-    });
-    return false;
+    // This function is called from JobForm for blockchain job creation
+    // The actual implementation is handled by JobForm's handlePublishJob
+    return true;
   };
 
   const handleAiJobGenerated = (generatedData: any) => {

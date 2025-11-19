@@ -8,16 +8,20 @@ import { ClientLayout } from "./client-layout";
 import { GAListener } from "./ga-listener";
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
+const isProduction = process.env.NODE_ENV === 'production';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <Script
-          id="contentsquare"
-          strategy="afterInteractive"
-          src="https://t.contentsquare.net/uxa/68a7572467a44.js"
-        />
+        {/* Only load ContentSquare in production, not in development */}
+        {isProduction && (
+          <Script
+            id="contentsquare"
+            strategy="afterInteractive"
+            src="https://t.contentsquare.net/uxa/68a7572467a44.js"
+          />
+        )}
       </head>
       <body className="min-h-screen">
         {!!GA_TRACKING_ID && (

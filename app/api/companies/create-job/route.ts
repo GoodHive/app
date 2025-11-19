@@ -29,6 +29,10 @@ export async function POST(request: Request) {
   try {
     const postedAt = new Date().toISOString();
 
+    // Generate unique block_id for blockchain operations
+    // Format: timestamp + random 6-digit number for uniqueness
+    const blockId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
+
     // First check if user exists and is approved
     const userCheck = await sql`
       SELECT approved 
@@ -56,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert the job offer
+    // Insert the job offer with block_id
     const insertResult = await sql`
       INSERT INTO goodhive.job_offers (
         user_id,
@@ -79,7 +83,8 @@ export async function POST(request: Request) {
         mentor,
         wallet_address,
         posted_at,
-        in_saving_stage
+        in_saving_stage,
+        block_id
       ) VALUES (
         ${userId},
         ${title},
@@ -101,13 +106,15 @@ export async function POST(request: Request) {
         ${mentor},
         ${walletAddress},
         ${postedAt},
-        ${in_saving_stage}
-      ) RETURNING id;
+        ${in_saving_stage},
+        ${blockId}
+      ) RETURNING id, block_id;
     `;
 
     const jobId = insertResult[0]?.id;
+    const jobBlockId = insertResult[0]?.block_id;
 
-    if (!jobId) {
+    if (!jobId || !jobBlockId) {
       throw new Error("Failed to create job - no ID returned");
     }
 
@@ -149,6 +156,7 @@ export async function POST(request: Request) {
     return new Response(
       JSON.stringify({
         jobId,
+        blockId: jobBlockId,
         message: "Job created successfully",
       }),
       { status: 200 },

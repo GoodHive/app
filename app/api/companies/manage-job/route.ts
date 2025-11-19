@@ -35,6 +35,7 @@ export async function PATCH(request: Request) {
       return Number.isNaN(parsedValue) ? undefined : parsedValue;
     })();
 
+    // Update only core fields that should exist in the basic schema
     await sql`
       UPDATE goodhive.job_offers
       SET published = ${publish},
@@ -42,19 +43,34 @@ export async function PATCH(request: Request) {
             in_saving_stage !== undefined
               ? in_saving_stage
               : sql`in_saving_stage`
-          },
-          blockchain_job_id = ${
-            normalizedBlockchainJobId !== undefined
-              ? normalizedBlockchainJobId
-              : sql`blockchain_job_id`
-          },
-          payment_token_address = ${
-            paymentTokenAddress !== undefined
-              ? paymentTokenAddress || null
-              : sql`payment_token_address`
           }
       WHERE id = ${jobId};
     `;
+
+    // Try to update blockchain-related fields if they exist
+    if (normalizedBlockchainJobId !== undefined) {
+      try {
+        await sql`
+          UPDATE goodhive.job_offers
+          SET block_id = ${normalizedBlockchainJobId}
+          WHERE id = ${jobId};
+        `;
+      } catch (blockIdError) {
+        console.warn("Could not update block_id, column may not exist:", blockIdError.message);
+      }
+    }
+
+    if (paymentTokenAddress !== undefined) {
+      try {
+        await sql`
+          UPDATE goodhive.job_offers
+          SET payment_token_address = ${paymentTokenAddress || null}
+          WHERE id = ${jobId};
+        `;
+      } catch (tokenAddressError) {
+        console.warn("Could not update payment_token_address, column may not exist:", tokenAddressError.message);
+      }
+    }
 
     const responsePayload: Record<string, unknown> = {
       jobId,
@@ -66,7 +82,7 @@ export async function PATCH(request: Request) {
     };
 
     if (normalizedBlockchainJobId !== undefined) {
-      responsePayload.blockchain_job_id = normalizedBlockchainJobId;
+      responsePayload.block_id = normalizedBlockchainJobId;
     }
 
     if (paymentTokenAddress !== undefined) {
