@@ -200,6 +200,20 @@ export default function CreateJob() {
     return true;
   };
 
+  const refreshJobData = async () => {
+    if (id) {
+      try {
+        const response = await fetch(`/api/companies/job-data?id=${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setJobData(data);
+        }
+      } catch (error) {
+        console.error("Error refreshing job data:", error);
+      }
+    }
+  };
+
   const handleAiJobGenerated = (generatedData: any) => {
     try {
       // Populate form with AI-generated data
@@ -337,6 +351,7 @@ export default function CreateJob() {
             setIsPopupModalOpen={setIsPopupModalOpen}
             setPopupModalType={setPopupModalType}
             handleCreateJob={handleCreateJob}
+            onRefreshJobData={refreshJobData}
           />
 
           <JobModals

@@ -3,6 +3,7 @@
 import { MapPin, DollarSign, Clock, Calendar, Building, Users, Globe, Linkedin, Twitter, Mail } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import JobBalance from "@/app/components/JobBalance";
 import styles from "./JobPageSidebar.module.scss";
 
 interface JobPageSidebarProps {
@@ -15,6 +16,8 @@ interface JobPageSidebarProps {
     duration?: string;
     postedAt: string;
     applicationCount?: number;
+    blockchainJobId?: string | null;
+    block_id?: string;
     company: {
       id: string;
       name: string;
@@ -64,6 +67,24 @@ export const JobPageSidebar = ({ job }: JobPageSidebarProps) => {
 
   return (
     <div className={styles.sidebarContainer}>
+
+      {/* Job Balance Card */}
+      {(job.blockchainJobId || job.block_id) && (
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}>Job Balance</h3>
+          <div className="text-center py-4">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+              <div className="text-2xl font-bold text-green-600">
+                <JobBalance
+                  jobId={job.blockchainJobId || job.block_id || ''}
+                  currency={job.currency || 'USDC'}
+                />
+              </div>
+              <div className="text-sm text-gray-600 mt-1">Available Funds</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Company Card */}
       <div className={styles.card}>
