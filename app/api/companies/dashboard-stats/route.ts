@@ -1,0 +1,134 @@
+import type { NextRequest } from "next/server";
+import sql from "@/lib/db";
+
+export async function GET(request: NextRequest) {
+  const searchParamsEntries = request.nextUrl.searchParams.entries();
+  const searchParams = Object.fromEntries(searchParamsEntries);
+
+  const { userId } = searchParams;
+
+  if (!userId) {
+    return new Response(
+      JSON.stringify({ message: "Missing userId parameter" }),
+      {
+        status: 400,
+      },
+    );
+  }
+
+  try {
+    // Get all jobs for the company
+    const jobsQuery = await sql`
+      SELECT *
+      FROM goodhive.job_offers
+      WHERE user_id = ${userId}
+    `;
+
+    const jobs = jobsQuery.map((item) => ({
+      id: item.id,
+      title: item.title,
+      companyName: item.company_name,
+      typeEngagement: item.type_engagement,
+      description: item.description,
+      duration: item.duration,
+      budget: item.budget,
+      projectType: item.project_type,
+      skills: item.skills?.split(",") || [],
+      country: item.country,
+      city: item.city,
+      chain: item.chain,
+      jobType: item.job_type,
+      image_url: item.image_url,
+      walletAddress: item.wallet_address,
+      escrowAmount: parseFloat(item.escrow_amount) || 0,
+      mentor: item.mentor === "true" || item.mentor === true,
+      recruiter: item.recruiter === "true" || item.recruiter === true,
+      talent: item.talent === "true" || item.talent === true,
+      postedAt: item.posted_at,
+      block_id: item.block_id,
+      currency: item.currency || 'USDC',
+    }));
+
+    // Calculate statistics
+    const totalJobs = jobs.length;
+    const publishedJobs = jobs.filter(job => job.block_id).length;
+    const draftJobs = jobs.filter(job => !job.block_id).length;
+    const fundedJobs = jobs.filter(job => job.escrowAmount > 0).length;
+
+    // Calculate total funding across all jobs
+    const totalFunded = jobs.reduce((sum, job) => sum + job.escrowAmount, 0);
+
+    // Get recent jobs (last 5)
+    const recentJobs = jobs
+      .sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime())
+      .slice(0, 5);
+
+    // Job status distribution
+    const statusDistribution = {
+      draft: draftJobs,
+      published: publishedJobs - fundedJobs, // Published but not funded
+      funded: fundedJobs,
+    };
+
+    // Calculate blockchain distribution
+    const chainDistribution = jobs.reduce((acc, job) => {
+      const chain = job.chain || 'unknown';
+      acc[chain] = (acc[chain] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Calculate average job budget
+    const averageBudget = jobs.length > 0
+      ? jobs.reduce((sum, job) => sum + job.budget, 0) / jobs.length
+      : 0;
+
+    // Performance metrics (placeholders for now)
+    const performanceMetrics = {
+      totalViews: 0, // TODO: Implement job views tracking
+      totalApplications: 0, // TODO: Implement applications tracking
+      conversionRate: 0, // applications / views
+      averageTimeToHire: 0, // TODO: Implement hiring tracking
+    };
+
+    const dashboardStats = {
+      overview: {
+        totalJobs,
+        publishedJobs,
+        draftJobs,
+        fundedJobs,
+        totalFunded: totalFunded.toFixed(2),
+        averageBudget: averageBudget.toFixed(2),
+      },
+      statusDistribution,
+      chainDistribution,
+      performanceMetrics,
+      recentJobs,
+      insights: {
+        mostUsedSkills: [], // TODO: Extract and count skills
+        topPerformingJobs: [], // TODO: Rank jobs by applications/views
+        fundingEfficiency: 0, // TODO: Calculate funding vs hiring success
+      }
+    };
+
+    return new Response(JSON.stringify(dashboardStats), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error("Error retrieving dashboard stats:", error);
+    return new Response(
+      JSON.stringify({
+        message: "Error retrieving dashboard stats",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  }
+}
