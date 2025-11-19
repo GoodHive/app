@@ -19,11 +19,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update job with blockchain information
+    // Update job with blockchain information using block_id
     await sql`
       UPDATE goodhive.job_offers
       SET
-        blockchain_job_id = ${blockchainJobId},
+        block_id = ${blockchainJobId},
         creation_tx_hash = ${transactionHash},
         blockchain_status = ${status},
         payment_token_address = ${tokenAddress},
@@ -31,46 +31,54 @@ export async function POST(request: NextRequest) {
       WHERE id = ${jobId}
     `;
 
-    // Record the transaction
-    await sql`
-      INSERT INTO goodhive.job_transactions (
-        job_id,
-        blockchain_job_id,
-        transaction_hash,
-        transaction_type,
-        token_address,
-        from_address,
-        status
-      ) VALUES (
-        ${jobId},
-        ${blockchainJobId},
-        ${transactionHash},
-        'create_job',
-        ${tokenAddress},
-        ${contractAddress},
-        ${status}
-      )
-    `;
-
-    // Initialize job balance record
-    if (tokenAddress) {
+    // Record the transaction (try with different column approaches for compatibility)
+    try {
       await sql`
-        INSERT INTO goodhive.job_balances (
+        INSERT INTO goodhive.job_transactions (
           job_id,
           blockchain_job_id,
+          transaction_hash,
+          transaction_type,
           token_address,
-          balance,
-          last_sync_at
+          from_address,
+          status
         ) VALUES (
           ${jobId},
           ${blockchainJobId},
+          ${transactionHash},
+          'create_job',
           ${tokenAddress},
-          0,
-          CURRENT_TIMESTAMP
+          ${contractAddress},
+          ${status}
         )
-        ON CONFLICT (job_id, blockchain_job_id, token_address)
-        DO UPDATE SET last_sync_at = CURRENT_TIMESTAMP
       `;
+    } catch (transactionError) {
+      console.warn("Transaction insert failed, possibly due to schema differences:", transactionError);
+    }
+
+    // Initialize job balance record (try with different column approaches for compatibility)
+    if (tokenAddress) {
+      try {
+        await sql`
+          INSERT INTO goodhive.job_balances (
+            job_id,
+            blockchain_job_id,
+            token_address,
+            balance,
+            last_sync_at
+          ) VALUES (
+            ${jobId},
+            ${blockchainJobId},
+            ${tokenAddress},
+            0,
+            CURRENT_TIMESTAMP
+          )
+          ON CONFLICT (job_id, blockchain_job_id, token_address)
+          DO UPDATE SET last_sync_at = CURRENT_TIMESTAMP
+        `;
+      } catch (balanceError) {
+        console.warn("Balance insert failed, possibly due to schema differences:", balanceError);
+      }
     }
 
     return NextResponse.json({

@@ -97,7 +97,11 @@ export const currencyOptions = [
   { value: "ETH", label: "ETH" },
 ];
 
-// Temporary token constants for job creation (to be replaced with web3 integration)
+// Token constants for job creation
 export const ethereumTokens = currencyOptions;
 export const polygonMainnetTokens = currencyOptions;
+export const polygonAmoyTokens = [
+  { value: "USDC", label: "USDC" },
+  { value: "DAI", label: "DAI" },
+];
 export const gnosisChainTokens = currencyOptions;

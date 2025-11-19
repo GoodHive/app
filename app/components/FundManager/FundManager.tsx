@@ -11,7 +11,7 @@ import type { DatabaseIdentifier } from '@/lib/contracts/jobManager';
 
 interface FundManagerProps {
   jobId: DatabaseIdentifier;
-  databaseJobId: number;
+  databaseJobId: number | string;
   tokenAddress: string;
   jobChainId?: number | null;
   jobChainLabel?: string;
@@ -188,7 +188,7 @@ export default function FundManager({
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Fund Manager - Job #{databaseJobId}
+            Fund Manager - Block ID: {databaseJobId}
           </h2>
           <button
             onClick={onClose}

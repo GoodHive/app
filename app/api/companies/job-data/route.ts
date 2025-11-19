@@ -15,11 +15,44 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const jobsQuery = await sql`
+    let jobsQuery;
+    console.log(`Looking for job with id: ${id}`);
+
+    // First priority: Try database id (most common case)
+    jobsQuery = await sql`
       SELECT *
       FROM goodhive.job_offers
       WHERE id = ${id}
       `;
+    console.log(`Database ID search result: ${jobsQuery.length} jobs found`);
+
+    // Second priority: Try block_id if it exists and no job found
+    if (jobsQuery.length === 0) {
+      try {
+        jobsQuery = await sql`
+          SELECT *
+          FROM goodhive.job_offers
+          WHERE block_id = ${id}
+          `;
+        console.log(`Block ID search result: ${jobsQuery.length} jobs found`);
+      } catch (blockIdError) {
+        console.warn("Block ID column may not exist:", blockIdError.message);
+      }
+    }
+
+    // Third priority: Try other fields for backward compatibility
+    if (jobsQuery.length === 0) {
+      try {
+        jobsQuery = await sql`
+          SELECT *
+          FROM goodhive.job_offers
+          WHERE job_id = ${id}
+          `;
+        console.log(`Job ID search result: ${jobsQuery.length} jobs found`);
+      } catch (jobIdError) {
+        console.warn("Job ID column may not exist:", jobIdError.message);
+      }
+    }
 
     if (jobsQuery.length === 0) {
       return new Response(JSON.stringify({ message: "Job not found" }), {
@@ -28,12 +61,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch job sections
-    const sectionsQuery = await sql`
-      SELECT id, heading, content, sort_order, created_at, updated_at
-      FROM goodhive.job_sections
-      WHERE job_id = ${id}
-      ORDER BY sort_order ASC
-    `;
+    let sectionsQuery = [];
+    try {
+      sectionsQuery = await sql`
+        SELECT id, heading, content, sort_order, created_at, updated_at
+        FROM goodhive.job_sections
+        WHERE job_id = ${id}
+        ORDER BY sort_order ASC
+      `;
+      console.log(`Found ${sectionsQuery.length} job sections`);
+    } catch (sectionsError) {
+      console.warn("Could not fetch job sections:", sectionsError.message);
+      sectionsQuery = []; // Fallback to empty array
+    }
     const singleJob = jobsQuery.map((item) => ({
       id: item.id,
       user_id: item.user_id,
@@ -63,7 +103,7 @@ export async function GET(request: NextRequest) {
       payment_token_address: item.payment_token_address,
       blockchain_job_id: item.blockchain_job_id,
       blockchainJobId:
-        item.blockchain_job_id ?? item.block_id ?? item.job_id ?? null,
+        item.block_id ?? item.blockchain_job_id ?? item.job_id ?? null,
       published: item.published,
       sections: sectionsQuery.map(section => ({
         id: section.id.toString(),

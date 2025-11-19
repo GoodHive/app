@@ -21,6 +21,7 @@ import {
   gnosisChainTokens,
   jobTypes,
   polygonMainnetTokens,
+  polygonAmoyTokens,
   projectDuration,
   projectTypes,
   typeEngagements,
@@ -176,11 +177,12 @@ export const JobForm = ({
     }
 
     const rawId =
+      jobData.block_id ??
       jobData.blockchainJobId ??
       jobData.blockchain_job_id ??
-      jobData.block_id ??
       jobData.job_id ??
-      null;
+      // Generate fallback if all blockchain IDs are missing
+      `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
 
     if (rawId === null || rawId === undefined || rawId === "") {
       return null;
@@ -307,7 +309,7 @@ export const JobForm = ({
         duration: duration?.value || "moreThanSevenDays",
         budget: budget,
         skills: selectedSkills.join(", "),
-        chain: selectedChain?.value || "polygon",
+        chain: selectedChain?.value || "polygon-amoy",
         currency: selectedCurrency?.value || "USD",
         walletAddress: companyData.wallet_address || "",
         city: companyData.city || "",
@@ -526,7 +528,7 @@ export const JobForm = ({
           duration: duration?.value || "moreThanSevenDays",
           budget: budget,
           skills: selectedSkills.join(", "),
-          chain: selectedChain?.value || "polygon",
+          chain: selectedChain?.value || "polygon-amoy",
           currency: selectedCurrency?.value || "USD",
           walletAddress: account.address,
           city: companyData.city || "",
@@ -566,9 +568,7 @@ export const JobForm = ({
       // Now create the job on blockchain
       toast.loading("Creating job on blockchain...");
 
-      const supportedTokens = getSupportedTokensForChain(
-        selectedChain?.value === "polygon" ? 137 : 80002,
-      );
+      const supportedTokens = getSupportedTokensForChain(80002); // Always use Polygon Amoy
 
       const tokenAddress =
         selectedCurrency?.value === "USDC"
@@ -579,8 +579,31 @@ export const JobForm = ({
         throw new Error("Selected token not supported on this chain");
       }
 
+      // Use the stored block_id from database, or generate one as fallback
+      let blockId = jobData?.block_id;
+
+      if (!blockId) {
+        // Fallback: Generate block_id if missing (for backward compatibility)
+        blockId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
+        console.warn("Job block_id not found, generated fallback:", blockId);
+
+        // Update the job with the generated block_id
+        try {
+          await fetch("/api/companies/update-job", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: jobData.id,
+              block_id: blockId,
+            }),
+          });
+        } catch (updateError) {
+          console.error("Failed to update job with block_id:", updateError);
+        }
+      }
+
       const blockchainJobId = await createJobOnChain({
-        databaseId: databaseJobId,
+        databaseId: blockId,
         tokenAddress,
         chain: selectedChain?.value || "polygon-amoy",
         talentService: jobServices.talent,
@@ -1054,16 +1077,18 @@ export const JobForm = ({
                   ? ethereumTokens
                   : selectedChain?.value === "polygon"
                     ? polygonMainnetTokens
-                    : selectedChain?.value === "gnosis-chain"
-                      ? gnosisChainTokens
-                      : []
+                    : selectedChain?.value === "polygon-amoy"
+                      ? polygonAmoyTokens
+                      : selectedChain?.value === "gnosis-chain"
+                        ? gnosisChainTokens
+                        : polygonAmoyTokens // Default to Polygon Amoy tokens
               }
               defaultValue={
-                polygonMainnetTokens[
-                  polygonMainnetTokens.findIndex(
+                polygonAmoyTokens[
+                  polygonAmoyTokens.findIndex(
                     (token) => token.value === jobData?.currency,
                   )
-                ]
+                ] || polygonAmoyTokens[0]
               }
             />
           </div>
@@ -1192,7 +1217,7 @@ export const JobForm = ({
       {showFundManager && currentBlockchainJobId && (
         <FundManager
           jobId={currentBlockchainJobId}
-          databaseJobId={jobData.id}
+          databaseJobId={jobData.block_id || jobData.id}
           tokenAddress={fundManagerTokenAddress}
           jobChainId={jobChainId}
           jobChainLabel={jobChainLabel ?? undefined}

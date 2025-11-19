@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     mentor,
     in_saving_stage,
     sections, // New field for job sections
+    block_id, // Add block_id support
   } = await request.json();
 
   console.log(in_saving_stage, "in_saving_stage....");
@@ -35,7 +36,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sql`
+    // Update job with optional block_id
+    if (block_id) {
+      await sql`
+        UPDATE goodhive.job_offers
+        SET
+            title = ${title},
+            type_engagement = ${typeEngagement},
+            description = ${description},
+            duration = ${duration},
+            budget = ${budget},
+            chain = ${chain},
+            currency = ${currency},
+            skills = ${skills},
+            city = ${city},
+            country = ${country},
+            company_name = ${companyName},
+            image_url = ${imageUrl},
+            job_type = ${jobType},
+            project_type = ${projectType},
+            talent = ${talent},
+            recruiter = ${recruiter},
+            mentor = ${mentor},
+            wallet_address = ${walletAddress},
+            in_saving_stage = ${in_saving_stage},
+            block_id = ${block_id}
+        WHERE id = ${id}
+        `;
+    } else {
+      await sql`
         UPDATE goodhive.job_offers
         SET
             title = ${title},
@@ -59,6 +88,7 @@ export async function POST(request: Request) {
             in_saving_stage = ${in_saving_stage}
         WHERE id = ${id}
         `;
+    }
 
     // Update job sections if provided
     if (sections && Array.isArray(sections)) {
