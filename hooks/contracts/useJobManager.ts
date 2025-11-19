@@ -413,7 +413,7 @@ export function useJobManager() {
 // Hook for reading job data
 export function useJobData(jobId: DatabaseIdentifier | null) {
   const [jobData, setJobData] = useState<JobData | null>(null);
-  const [balance, setBalance] = useState<bigint | null>(null);
+  const [balance, setBalance] = useState<string>('0');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -432,7 +432,20 @@ export function useJobData(jobId: DatabaseIdentifier | null) {
       ]);
 
       setJobData(job);
-      setBalance(jobBalance);
+
+      // Convert balance from wei to token units
+      // Ensure jobBalance is a bigint
+      const balanceBigInt = typeof jobBalance === 'bigint' ? jobBalance : BigInt(jobBalance);
+
+      if (job && job.tokenAddress) {
+        const tokenInfo = await getTokenInfo(job.tokenAddress);
+        const formattedBalance = formatTokenBalance(balanceBigInt, tokenInfo.decimals);
+        setBalance(formattedBalance);
+      } else {
+        // Fallback: assume 6 decimals for USDC/DAI
+        const formattedBalance = formatTokenBalance(balanceBigInt, 6);
+        setBalance(formattedBalance);
+      }
     } catch (err: any) {
       console.error('Failed to fetch job data:', err);
       setError(err.message || 'Failed to fetch job data');

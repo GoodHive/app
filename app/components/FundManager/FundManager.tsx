@@ -41,6 +41,12 @@ export default function FundManager({
   const [userBalance, setUserBalance] = useState<bigint>(0n);
   const [isLoading, setIsLoading] = useState(false);
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successDetails, setSuccessDetails] = useState<{
+    action: 'add' | 'withdraw' | 'fees';
+    amount: string;
+    tokenSymbol: string;
+  } | null>(null);
 
   const friendlyChainName = jobChainLabel
     ? jobChainLabel
@@ -83,6 +89,13 @@ export default function FundManager({
 
     const success = await addFunds(jobId, amount, tokenAddress);
     if (success) {
+      // Show success screen
+      setSuccessDetails({
+        action: 'add',
+        amount,
+        tokenSymbol: tokenInfo.symbol
+      });
+      setShowSuccess(true);
       setAmount('');
       refetchJobData();
       // Refresh user balance
@@ -98,6 +111,13 @@ export default function FundManager({
 
     const success = await withdrawFunds(jobId, withdrawAll ? '0' : amount, withdrawAll);
     if (success) {
+      // Show success screen
+      setSuccessDetails({
+        action: 'withdraw',
+        amount: withdrawAll ? 'all funds' : amount,
+        tokenSymbol: tokenInfo.symbol
+      });
+      setShowSuccess(true);
       setAmount('');
       refetchJobData();
       // Refresh user balance
@@ -113,16 +133,30 @@ export default function FundManager({
 
     const success = await payFees(jobId, amount);
     if (success) {
+      // Show success screen
+      setSuccessDetails({
+        action: 'fees',
+        amount,
+        tokenSymbol: tokenInfo.symbol
+      });
+      setShowSuccess(true);
       setAmount('');
       refetchJobData();
     }
   };
 
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+    setSuccessDetails(null);
+    onClose();
+  };
+
   const getMaxAmount = () => {
     if (activeTab === 'add') {
-      return tokenInfo ? formatTokenBalance(userBalance, tokenInfo.decimals) : '0';
+      return tokenInfo ? formatTokenBalance(typeof userBalance === 'bigint' ? userBalance : BigInt(userBalance), tokenInfo.decimals) : '0';
     } else if (activeTab === 'withdraw') {
-      return tokenInfo && jobBalance ? formatTokenBalance(jobBalance, tokenInfo.decimals) : '0';
+      // For withdraw, jobBalance is already formatted as a string from useJobData hook
+      return jobBalance || '0';
     }
     return '0';
   };
@@ -182,6 +216,73 @@ export default function FundManager({
     );
   }
 
+  // Show success screen
+  if (showSuccess && successDetails) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+          {/* Success Animation */}
+          <div className="text-center">
+            <div className="mx-auto mb-6 w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center relative overflow-hidden">
+              <style jsx>{`
+                @keyframes shine {
+                  0% { transform: translateX(-100%) skewX(-12deg); }
+                  100% { transform: translateX(300%) skewX(-12deg); }
+                }
+                .shine-animation {
+                  animation: shine 2s ease-in-out infinite;
+                }
+              `}</style>
+              <div className="animate-pulse">
+                <svg className="w-10 h-10 text-yellow-500 drop-shadow-lg filter drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              {/* Shining effect overlay */}
+              <div className="absolute inset-0 rounded-full">
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent shine-animation"></div>
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              🎉 Congratulations!
+            </h2>
+
+            <div className="mb-6">
+              <p className="text-lg text-gray-700 mb-2">
+                {successDetails.action === 'add' && 'Funds successfully added to job!'}
+                {successDetails.action === 'withdraw' && 'Funds successfully withdrawn from job!'}
+                {successDetails.action === 'fees' && 'Fees successfully paid for job!'}
+              </p>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p className="text-yellow-800 font-semibold">
+                  {successDetails.action === 'add' && `Added: ${successDetails.amount} ${successDetails.tokenSymbol}`}
+                  {successDetails.action === 'withdraw' && `Withdrawn: ${successDetails.amount} ${successDetails.tokenSymbol}`}
+                  {successDetails.action === 'fees' && `Paid: ${successDetails.amount} ${successDetails.tokenSymbol}`}
+                </p>
+                <p className="text-yellow-700 text-sm mt-1">
+                  Transaction completed successfully on blockchain
+                </p>
+              </div>
+
+              <p className="text-sm text-gray-600">
+                Your transaction has been confirmed and the job balance has been updated.
+              </p>
+            </div>
+
+            <button
+              onClick={handleCloseSuccess}
+              className="w-full px-6 py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -191,8 +292,9 @@ export default function FundManager({
             Fund Manager - Block ID: {databaseJobId}
           </h2>
           <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl"
+            onClick={isLoading || isContractLoading ? undefined : onClose}
+            className={`text-xl ${isLoading || isContractLoading ? 'text-gray-300 cursor-not-allowed' : 'text-gray-400 hover:text-gray-600'}`}
+            disabled={isLoading || isContractLoading}
           >
             ✕
           </button>
@@ -217,22 +319,25 @@ export default function FundManager({
           </div>
         )}
 
-        {/* Job Balance Display */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Current Job Balance</h3>
-              <p className="text-sm text-gray-600">Available funds in the smart contract</p>
-            </div>
-            <div className="text-right">
-              {tokenInfo && jobBalance ? (
-                <p className="text-2xl font-bold text-green-600">
-                  {formatTokenBalance(jobBalance, tokenInfo.decimals)} {tokenInfo.symbol}
+        {/* Job Balance Display - Enhanced */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 mb-6">
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Current Job Balance</h3>
+            <div className="mb-2">
+              {tokenInfo && jobBalance !== null && jobBalance !== undefined ? (
+                <p className="text-3xl font-bold text-green-600">
+                  {jobBalance} {tokenInfo.symbol}
                 </p>
               ) : (
-                <p className="text-gray-400">Loading...</p>
+                <p className="text-2xl text-gray-400">Loading...</p>
               )}
             </div>
+            <p className="text-sm text-gray-600">
+              Available funds in the smart contract
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Block ID: {databaseJobId}
+            </p>
           </div>
         </div>
 
@@ -246,7 +351,7 @@ export default function FundManager({
             <div className="text-right">
               {tokenInfo ? (
                 <p className="text-xl font-bold text-blue-600">
-                  {formatTokenBalance(userBalance, tokenInfo.decimals)} {tokenInfo.symbol}
+                  {formatTokenBalance(typeof userBalance === 'bigint' ? userBalance : BigInt(userBalance), tokenInfo.decimals)} {tokenInfo.symbol}
                 </p>
               ) : (
                 <p className="text-gray-400">Loading...</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { JobApplicationPopup } from "@/app/components/job-application-popup";
+import { InlineJobBalance } from "@/app/components/JobBalance";
 import "@/app/styles/rich-text.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +37,8 @@ interface Props {
   mentor?: boolean;
   recruiter?: boolean;
   talent?: boolean;
+  blockchainJobId?: string | null;
+  currency?: string;
 }
 
 export const JobCard: FC<Props> = ({
@@ -60,6 +63,8 @@ export const JobCard: FC<Props> = ({
   mentor,
   recruiter,
   talent,
+  blockchainJobId,
+  currency = 'USDC',
 }) => {
   // Function to generate dynamic "Open to" text
   const getOpenToText = () => {
@@ -87,8 +92,8 @@ export const JobCard: FC<Props> = ({
   const [isJobApplicationPopup, setIsJobApplicationPopup] = useState(false);
 
   const isOwner = owner_userId === user_id;
-  const jobBalance =
-    Number(escrowAmount) > 0 ? `${escrowAmount} USDC` : "0 USDC";
+  // Dynamic balance display using blockchain data
+  const hasBlockchainBalance = blockchainJobId && blockchainJobId !== null;
 
 
   const onApplyClickHandler = async () => {
@@ -137,7 +142,18 @@ export const JobCard: FC<Props> = ({
               </div>
             )}
             <div className="flex gap-4">
-              <p className="text-sm">{jobBalance}</p>
+              <div className="text-sm font-medium">
+                {hasBlockchainBalance ? (
+                  <InlineJobBalance
+                    jobId={blockchainJobId}
+                    currency={currency}
+                  />
+                ) : (
+                  <span className="text-gray-500">
+                    {Number(escrowAmount) > 0 ? `${escrowAmount} ${currency}` : `0 ${currency}`}
+                  </span>
+                )}
+              </div>
               <div className="relative mt-1 h-3 w-5 mb-4">
                 <Image src={countryFlag} alt="country" fill />
               </div>

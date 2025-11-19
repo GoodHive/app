@@ -1,4 +1,5 @@
 import FundManager from "@/app/components/FundManager";
+import JobBalance from "@/app/components/JobBalance";
 import JobSectionsManager from "@/app/components/job-sections-manager/job-sections-manager";
 import ProfileImageUpload from "@/app/components/profile-image-upload";
 import { useProtectedNavigation } from "@/app/hooks/useProtectedNavigation";
@@ -120,6 +121,7 @@ interface JobFormProps {
   setIsPopupModalOpen: (open: boolean) => void;
   setPopupModalType: (type: string) => void;
   handleCreateJob: (jobId: string, amount: string) => Promise<boolean>;
+  onRefreshJobData?: () => Promise<void>;
 }
 
 export const JobForm = ({
@@ -156,6 +158,7 @@ export const JobForm = ({
   setIsPopupModalOpen,
   setPopupModalType,
   handleCreateJob,
+  onRefreshJobData,
 }: JobFormProps) => {
   const [isCommissionExpanded, setIsCommissionExpanded] = useState(false);
   const [showFundManager, setShowFundManager] = useState(false);
@@ -669,6 +672,29 @@ export const JobForm = ({
               </p>
             </div>
           </div>
+
+          {/* Job Balance Display */}
+          {currentBlockchainJobId && (
+            <div className="mt-6 mb-4 flex justify-center">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 max-w-md w-full">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Current Job Balance</h3>
+                  <div className="text-2xl font-bold text-green-600">
+                    <JobBalance
+                      jobId={currentBlockchainJobId}
+                      currency={selectedCurrency?.value || jobData?.currency || 'USDC'}
+                      className="text-2xl font-bold text-green-600"
+                      showLabel={false}
+                      showCurrency={true}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Available funds in smart contract
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex-1">
             <label
               htmlFor="title"
@@ -1221,7 +1247,12 @@ export const JobForm = ({
           tokenAddress={fundManagerTokenAddress}
           jobChainId={jobChainId}
           jobChainLabel={jobChainLabel ?? undefined}
-          onClose={() => setShowFundManager(false)}
+          onClose={() => {
+            setShowFundManager(false);
+            if (onRefreshJobData) {
+              onRefreshJobData();
+            }
+          }}
         />
       )}
     </form>
