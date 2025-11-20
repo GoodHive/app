@@ -388,7 +388,7 @@ export default function ProfilePage() {
           user_id,
         };
 
-        if (validate && user?.referred_by) {
+        if (user?.referred_by) {
           formData.referred_by = user.referred_by;
         }
 

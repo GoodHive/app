@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { walletAddress, email, isThirdwebWallet, walletType } =
+    const { walletAddress, email, isThirdwebWallet, walletType, referred_by } =
       await req.json();
 
     if (!walletAddress) {
@@ -158,8 +158,7 @@ export async function POST(req: Request) {
                     WHEN wallet_address IS NOT NULL THEN 'both'
                     ELSE 'in-app'
                   END,
-                  email = COALESCE(email, ${extractedEmail ? extractedEmail.toLowerCase() : null}),
-                  updated_at = NOW()
+                  email = COALESCE(email, ${extractedEmail ? extractedEmail.toLowerCase() : null})
                 WHERE userid = ${user.userid}
               `;
 
@@ -199,8 +198,7 @@ export async function POST(req: Request) {
                   wallet_type = CASE
                     WHEN thirdweb_wallet_address IS NOT NULL THEN 'both'
                     ELSE 'external'
-                  END,
-                  updated_at = NOW()
+                  END
                 WHERE userid = ${user.userid}
               `;
 
@@ -267,8 +265,7 @@ export async function POST(req: Request) {
                     auth_method = CASE
                       WHEN wallet_address IS NOT NULL THEN 'hybrid'
                       ELSE 'email'
-                    END,
-                    updated_at = NOW()
+                    END
                   WHERE userid = ${user.userid}
                 `;
               } else {
@@ -280,8 +277,7 @@ export async function POST(req: Request) {
                       WHEN thirdweb_wallet_address IS NOT NULL THEN 'both'
                       ELSE 'external'
                     END,
-                    auth_method = 'hybrid',
-                    updated_at = NOW()
+                    auth_method = 'hybrid'
                   WHERE userid = ${user.userid}
                 `;
               }
@@ -339,8 +335,7 @@ export async function POST(req: Request) {
                   auth_method = CASE
                     WHEN wallet_address IS NOT NULL OR thirdweb_wallet_address IS NOT NULL THEN 'hybrid'
                     ELSE 'email'
-                  END,
-                  updated_at = NOW()
+                  END
                 WHERE userid = ${user.userid}
               `;
 
@@ -352,6 +347,22 @@ export async function POST(req: Request) {
             }
           } else {
             // Create new user only if we have email or it's external wallet
+            // Validate referral code if provided
+            let validReferralCode = null;
+            if (referred_by) {
+              const referralCheck = await sql`
+                SELECT referral_code 
+                FROM goodhive.referrals 
+                WHERE referral_code = ${referred_by}
+              `;
+              
+              if (referralCheck.length > 0) {
+                validReferralCode = referred_by;
+              } else {
+                console.warn(`Invalid referral code provided: ${referred_by}`);
+              }
+            }
+
             try {
               const insertResult = await sql`
                 INSERT INTO goodhive.users (
@@ -361,8 +372,7 @@ export async function POST(req: Request) {
                   auth_method,
                   email,
                   email_verified,
-                  created_at,
-                  updated_at
+                  referred_by
                 ) VALUES (
                   ${isThirdwebWallet ? null : normalizedAddress},
                   ${isThirdwebWallet ? normalizedAddress : null},
@@ -370,8 +380,7 @@ export async function POST(req: Request) {
                   ${extractedEmail ? "hybrid" : "wallet"},
                   ${extractedEmail ? extractedEmail.toLowerCase() : null},
                   ${extractedEmail ? false : null},
-                  NOW(),
-                  NOW()
+                  ${validReferralCode}
                 )
                 RETURNING *
               `;
