@@ -40,6 +40,7 @@ const talentsLinks = [
 
 const companiesLinks = [
   { href: "/companies/search-talents", label: "Search Talents", protected: false },
+  { href: "/companies/dashboard", label: "Dashboard", protected: true },
   { href: "/companies/my-profile", label: "My Company Profile", protected: true },
 ];
 

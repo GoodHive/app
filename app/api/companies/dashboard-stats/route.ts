@@ -82,6 +82,43 @@ export async function GET(request: NextRequest) {
       ? jobs.reduce((sum, job) => sum + job.budget, 0) / jobs.length
       : 0;
 
+    // Skills analysis
+    const skillsMap = new Map<string, number>();
+    jobs.forEach(job => {
+      job.skills.forEach(skill => {
+        const trimmedSkill = skill.trim();
+        if (trimmedSkill) {
+          skillsMap.set(trimmedSkill, (skillsMap.get(trimmedSkill) || 0) + 1);
+        }
+      });
+    });
+
+    const mostUsedSkills = Array.from(skillsMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([skill, count]) => ({ skill, count }));
+
+    // Duration analysis
+    const durationDistribution = jobs.reduce((acc, job) => {
+      const duration = job.duration || 'unknown';
+      acc[duration] = (acc[duration] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Job type analysis
+    const jobTypeDistribution = jobs.reduce((acc, job) => {
+      const type = job.jobType || 'unknown';
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Engagement type analysis
+    const engagementDistribution = jobs.reduce((acc, job) => {
+      const engagement = job.typeEngagement || 'unknown';
+      acc[engagement] = (acc[engagement] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
     // Performance metrics (placeholders for now)
     const performanceMetrics = {
       totalViews: 0, // TODO: Implement job views tracking
@@ -101,12 +138,20 @@ export async function GET(request: NextRequest) {
       },
       statusDistribution,
       chainDistribution,
+      durationDistribution,
+      jobTypeDistribution,
+      engagementDistribution,
       performanceMetrics,
       recentJobs,
       insights: {
-        mostUsedSkills: [], // TODO: Extract and count skills
+        mostUsedSkills,
         topPerformingJobs: [], // TODO: Rank jobs by applications/views
         fundingEfficiency: 0, // TODO: Calculate funding vs hiring success
+        totalBudget: jobs.reduce((sum, job) => sum + job.budget, 0),
+        skillsCount: skillsMap.size,
+        averageJobsPerMonth: totalJobs > 0 ? (totalJobs / Math.max(1,
+          Math.ceil((new Date().getTime() - new Date(Math.min(...jobs.map(j => new Date(j.postedAt).getTime()))).getTime()) / (1000 * 60 * 60 * 24 * 30))
+        )).toFixed(1) : 0,
       }
     };
 
