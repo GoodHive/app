@@ -24,6 +24,22 @@ export async function GET(request: NextRequest) {
       WHERE user_id = ${userId}
     `;
 
+    // Helper function to normalize budget values that might be in wei format
+    const normalizeBudget = (budget: any): number => {
+      if (!budget) return 0;
+
+      const budgetNum = typeof budget === 'string' ? parseFloat(budget) : Number(budget);
+
+      // If budget is extremely large (likely in wei format), convert to dollars
+      // Wei format typically has 18 decimals, but USDC has 6 decimals
+      if (budgetNum > 1000000000000) { // More than 1 trillion = likely wei format
+        // Assume USDC format (6 decimals) for most job budgets
+        return budgetNum / 1000000; // Convert from micro-units to dollars
+      }
+
+      return budgetNum;
+    };
+
     const jobs = jobsQuery.map((item) => ({
       id: item.id,
       title: item.title,
@@ -31,7 +47,7 @@ export async function GET(request: NextRequest) {
       typeEngagement: item.type_engagement,
       description: item.description,
       duration: item.duration,
-      budget: item.budget,
+      budget: normalizeBudget(item.budget),
       projectType: item.project_type,
       skills: item.skills?.split(",") || [],
       country: item.country,
