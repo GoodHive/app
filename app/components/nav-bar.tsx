@@ -415,8 +415,8 @@ export const NavBar = () => {
         </Link>
 
         <div className="flex items-center sm:justify-end flex-1 justify-between">
-          <nav aria-label="Site Nav" className="block sm:hidden">
-            <ul className="flex items-center gap-6 text-sm">
+          <nav aria-label="Site Nav" className="hidden sm:block">
+            <ul className="flex items-center gap-8 text-sm">
               {links.map(({ href, label, protected: isProtected }) => (
                 <li key={`${href}${label}`}>
                   {isProtected ? (
@@ -473,7 +473,7 @@ export const NavBar = () => {
 
             <button
               onClick={() => setIsOpenMobileMenu(!isOpenMobileMenu)}
-              className="hidden sm:block rounded-lg bg-amber-200 border border-amber-300 p-2.5 text-amber-800 transition hover:bg-amber-300 hover:text-amber-900 hover:scale-105 active:scale-95"
+              className="block sm:hidden rounded-lg bg-amber-200 border border-amber-300 p-2.5 text-amber-800 transition hover:bg-amber-300 hover:text-amber-900 hover:scale-105 active:scale-95"
             >
               <span className="sr-only">Toggle menu</span>
               <svg
@@ -505,7 +505,7 @@ export const NavBar = () => {
 
       {isOpenMobileMenu && (
         <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-t border-amber-200 shadow-inner">
-          <nav aria-label="Site Nav" className="hidden sm:block">
+          <nav aria-label="Site Nav" className="block sm:hidden">
             <ul className="flex flex-col items-center justify-center gap-4 py-4 text-sm">
               {links.map(({ href, label, protected: isProtected }) => (
                 <li key={`${href}${label}`}>
