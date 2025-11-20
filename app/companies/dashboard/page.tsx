@@ -133,18 +133,36 @@ export default function CompanyDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="stats-grid grid grid-cols-1 gap-4 lg:gap-6">
+        <style jsx>{`
+          @media (min-width: 640px) {
+            .stats-grid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+          @media (min-width: 863px) {
+            .stats-grid {
+              grid-template-columns: repeat(4, 1fr);
+            }
+          }
+        `}</style>
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+            <div key={index} className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-full ${stat.bgColor} ring-4 ring-opacity-20 ${stat.bgColor.replace('bg-', 'ring-')}`}>
+                  <Icon className={`w-7 h-7 ${stat.textColor}`} />
                 </div>
-                <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                  <Icon className={`w-6 h-6 ${stat.textColor}`} />
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{stat.title}</p>
+                  <p className="text-2xl xl:text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                </div>
+              </div>
+              <div className="border-t border-gray-100 pt-3">
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className={`w-2 h-2 rounded-full ${stat.color} mr-2`}></div>
+                  <span className="text-xs">Updated now</span>
                 </div>
               </div>
             </div>
