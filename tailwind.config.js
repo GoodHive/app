@@ -23,22 +23,11 @@ module.exports = {
   			}
   		},
   		screens: {
-  			sm: {
-  				min: '140px',
-  				max: '639px'
-  			},
-  			md: {
-  				min: '640px',
-  				max: '862px'
-  			},
-  			lg: {
-  				min: '863px',
-  				max: '1079px'
-  			},
-  			xl: {
-  				min: '1081px',
-  				max: '1280px'
-  			}
+  			sm: '640px',
+  			md: '768px',
+  			lg: '1024px',
+  			xl: '1280px',
+  			'2xl': '1536px'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

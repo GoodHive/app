@@ -133,19 +133,7 @@ export default function CompanyDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="stats-grid grid grid-cols-1 gap-4 lg:gap-6">
-        <style jsx>{`
-          @media (min-width: 640px) {
-            .stats-grid {
-              grid-template-columns: repeat(2, 1fr);
-            }
-          }
-          @media (min-width: 863px) {
-            .stats-grid {
-              grid-template-columns: repeat(4, 1fr);
-            }
-          }
-        `}</style>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (

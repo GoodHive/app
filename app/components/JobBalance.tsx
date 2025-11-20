@@ -56,7 +56,10 @@ export default function JobBalance({
 
   const getDisplayText = (): string => {
     if (isLoading) return 'Loading...';
-    if (error) return 'Error loading balance';
+    if (error) {
+      console.warn('JobBalance error for jobId:', jobId, 'Error:', error);
+      return `0 ${currency}`;  // Show 0 instead of error message
+    }
 
     const formattedBalance = formatBalance(balance);
     const currencyText = showCurrency ? ` ${currency}` : '';
@@ -67,7 +70,7 @@ export default function JobBalance({
 
   const getStatusColor = (): string => {
     if (isLoading) return 'text-gray-500';
-    if (error) return 'text-red-500';
+    if (error) return 'text-gray-600';  // Changed from red to gray for less alarm
 
     const numBalance = parseFloat(balance);
     if (numBalance === 0) return 'text-gray-600';
