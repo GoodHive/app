@@ -34,23 +34,17 @@ export default function CompanyDashboard() {
 
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/companies/jobs?userId=${userId}`);
+        const response = await fetch(`/api/companies/dashboard-stats?userId=${userId}`);
 
         if (response.ok) {
-          const jobs = await response.json();
-
-          // Calculate stats from jobs data
-          const totalJobs = jobs.length;
-          const activeJobs = jobs.filter((job: any) => job.block_id).length;
-          const totalFunded = jobs.reduce((sum: number, job: any) => sum + (parseFloat(job.escrowAmount) || 0), 0);
-          const recentJobs = jobs.slice(0, 5); // Get 5 most recent jobs
+          const data = await response.json();
 
           setStats({
-            totalJobs,
-            activeJobs,
-            totalFunded: totalFunded.toFixed(2),
-            totalApplications: 0, // TODO: Add applications count when API is available
-            recentJobs
+            totalJobs: data.overview.totalJobs,
+            activeJobs: data.overview.publishedJobs,
+            totalFunded: data.overview.totalFunded,
+            totalApplications: data.performanceMetrics.totalApplications,
+            recentJobs: data.recentJobs
           });
         }
       } catch (error) {
@@ -81,16 +75,18 @@ export default function CompanyDashboard() {
       textColor: "text-blue-700"
     },
     {
-      title: "Active Jobs",
+      title: "Published Jobs",
       value: stats?.activeJobs || 0,
+      subtitle: "On blockchain",
       icon: TrendingUp,
       color: "bg-green-500",
       bgColor: "bg-green-50",
       textColor: "text-green-700"
     },
     {
-      title: "Total Funded",
+      title: "Database Funding",
       value: `$${stats?.totalFunded || "0.00"}`,
+      subtitle: "View jobs for live balances",
       icon: DollarSign,
       color: "bg-yellow-500",
       bgColor: "bg-yellow-50",
@@ -145,6 +141,9 @@ export default function CompanyDashboard() {
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{stat.title}</p>
                   <p className="text-2xl xl:text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                  {stat.subtitle && (
+                    <p className="text-xs text-gray-400 mt-1">{stat.subtitle}</p>
+                  )}
                 </div>
               </div>
               <div className="border-t border-gray-100 pt-3">
