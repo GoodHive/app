@@ -1,6 +1,7 @@
 import { isAddress } from "thirdweb";
 import { getUserEmail } from "thirdweb/wallets/in-app";
 import type { ThirdwebClient } from "thirdweb";
+import Cookies from "js-cookie";
 
 export interface WalletAuthData {
   address: string;
@@ -133,6 +134,9 @@ export async function authenticateWithWallet(
   requiresEmailVerification?: boolean;
 }> {
   try {
+    // Get referral code from cookies if available
+    const referralCode = typeof window !== "undefined" ? Cookies.get("referralCode") : undefined;
+    
     const response = await fetch("/api/auth/thirdweb-login", {
       method: "POST",
       headers: {
@@ -143,6 +147,7 @@ export async function authenticateWithWallet(
         email: walletData.email,
         isThirdwebWallet: walletData.isThirdwebWallet,
         walletType: walletData.walletType,
+        referred_by: referralCode || undefined,
       }),
     });
 
