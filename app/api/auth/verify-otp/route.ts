@@ -7,7 +7,7 @@ import { sendWelcomeEmail } from "@/lib/email/emailService";
 
 export async function POST(req: Request) {
   try {
-    const { email, otp, walletAddress } = await req.json();
+    const { email, otp, walletAddress, referred_by } = await req.json();
 
     // Validate input
     if (!email || !otp || !walletAddress) {
@@ -61,8 +61,7 @@ export async function POST(req: Request) {
             auth_method = CASE
               WHEN wallet_address IS NOT NULL THEN 'hybrid'
               ELSE 'hybrid'
-            END,
-            updated_at = NOW()
+            END
           WHERE userid = ${user.userid}
         `;
       } else {
@@ -77,8 +76,7 @@ export async function POST(req: Request) {
               WHEN thirdweb_wallet_address IS NOT NULL THEN 'both'
               ELSE 'external'
             END,
-            auth_method = 'hybrid',
-            updated_at = NOW()
+            auth_method = 'hybrid'
           WHERE userid = ${user.userid}
         `;
       }
@@ -111,8 +109,7 @@ export async function POST(req: Request) {
             email_verified = TRUE,
             email_verification_token = NULL,
             email_verification_sent_at = NULL,
-            auth_method = 'hybrid',
-            updated_at = NOW()
+            auth_method = 'hybrid'
           WHERE userid = ${user.userid}
         `;
         
@@ -126,6 +123,22 @@ export async function POST(req: Request) {
         // Create new user
         const isThirdwebWallet = !walletAddress.startsWith("0x") || walletAddress.length !== 42;
         
+        // Validate referral code if provided
+        let validReferralCode = null;
+        if (referred_by) {
+          const referralCheck = await sql`
+            SELECT referral_code 
+            FROM goodhive.referrals 
+            WHERE referral_code = ${referred_by}
+          `;
+          
+          if (referralCheck.length > 0) {
+            validReferralCode = referred_by;
+          } else {
+            console.warn(`Invalid referral code provided: ${referred_by}`);
+          }
+        }
+        
         const newUser = await sql`
           INSERT INTO goodhive.users (
             email,
@@ -133,16 +146,14 @@ export async function POST(req: Request) {
             wallet_type,
             auth_method,
             email_verified,
-            created_at,
-            updated_at
+            referred_by
           ) VALUES (
             ${normalizedEmail},
             ${normalizedWallet},
             ${isThirdwebWallet ? 'in-app' : 'external'},
             'hybrid',
             TRUE,
-            NOW(),
-            NOW()
+            ${validReferralCode}
           )
           RETURNING *
         `;
