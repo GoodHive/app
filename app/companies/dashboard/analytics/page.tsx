@@ -112,11 +112,15 @@ export default function AnalyticsPage() {
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Budget</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">${data.insights.totalBudget.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                ${typeof data.insights.totalBudget === 'number' ?
+                  data.insights.totalBudget.toLocaleString(undefined, { maximumFractionDigits: 0 }) :
+                  '0'}
+              </p>
             </div>
           </div>
           <div className="text-sm text-gray-600">
-            Avg: ${parseFloat(data.overview.averageBudget).toLocaleString()}
+            Avg: ${parseFloat(data.overview.averageBudget).toLocaleString(undefined, { maximumFractionDigits: 0 })}
           </div>
         </div>
 
@@ -347,7 +351,7 @@ export default function AnalyticsPage() {
           <div className="bg-green-50 rounded-lg p-3">
             <p className="font-medium text-green-900">Average Budget</p>
             <p className="text-green-700">
-              ${parseFloat(data.overview.averageBudget).toLocaleString()} per job on average
+              ${parseFloat(data.overview.averageBudget).toLocaleString(undefined, { maximumFractionDigits: 0 })} per job on average
             </p>
           </div>
           <div className="bg-yellow-50 rounded-lg p-3">
