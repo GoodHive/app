@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Modal from "./modal";
 import { Mail, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 interface EmailVerificationModalProps {
   open: boolean;
@@ -136,6 +137,9 @@ export default function EmailVerificationModal({
     setError("");
 
     try {
+      // Get referral code from cookies if available
+      const referralCode = Cookies.get("referralCode");
+      
       const response = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -143,6 +147,7 @@ export default function EmailVerificationModal({
           email,
           otp: code,
           walletAddress,
+          referred_by: referralCode || undefined,
         }),
       });
 
