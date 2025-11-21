@@ -15,6 +15,7 @@ export const Pagination: FC<PaginationProps> = (props) => {
     isSearchTalent = false,
   } = props;
 
+
   const numberOfPages = Math.ceil(totalItems / itemsPerPage);
 
   if (numberOfPages === 1) return null;
