@@ -865,20 +865,14 @@ export default function ProfilePage() {
           isLoading={isLinkedInImporting}
         /> */}
 
-        {/* Modern Availability Toggle */}
-        <div className="flex w-full justify-center mt-8 mb-8">
-          <div className="bg-gradient-to-br from-amber-50 via-white to-yellow-50/80 backdrop-blur-xl border border-amber-200/60 shadow-2xl rounded-2xl p-8">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Set Your Availability</h3>
-              <p className="text-sm text-gray-600">Let employers know if you're open to new opportunities</p>
-            </div>
-            <AvailabilityToggle
-              name="availability"
-              checked={profileData.availability === true || profileData.availability === "Available"}
-              onChange={handleToggleChange}
-              errorMessage={errors.availability}
-            />
-          </div>
+        {/* Availability Toggle */}
+        <div className="flex w-full justify-center mt-5">
+          <AvailabilityToggle
+            name="availability"
+            checked={profileData.availability === true || profileData.availability === "Available"}
+            onChange={handleToggleChange}
+            errorMessage={errors.availability}
+          />
         </div>
 
         {/* Profile Header */}
