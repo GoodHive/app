@@ -283,8 +283,16 @@ export const SearchFilters = ({
       const params = new URLSearchParams(searchParams.toString());
       const shouldResetPage = options.resetPage !== false;
 
+      // Preserve items parameter if it exists
+      const currentItems = searchParams.get("items");
+
       if (shouldResetPage) {
         params.delete("page");
+      }
+
+      // Ensure items parameter is preserved
+      if (currentItems) {
+        params.set("items", currentItems);
       }
 
       const nextKeywords =
@@ -451,10 +459,14 @@ export const SearchFilters = ({
   // Debounced live search for keywords
   useEffect(() => {
     const handle = setTimeout(() => {
-      applyFilters({ keywords: keywordQuery });
+      // Only apply if keywords actually changed from URL params
+      const currentKeywords = searchParams.get("search") || "";
+      if (keywordQuery !== currentKeywords) {
+        applyFilters({ keywords: keywordQuery });
+      }
     }, 300);
     return () => clearTimeout(handle);
-  }, [keywordQuery, applyFilters]);
+  }, [keywordQuery, applyFilters, searchParams]);
 
   const handleClearFilters = useCallback(() => {
     setKeywordQuery("");

@@ -59,7 +59,9 @@ export default async function SearchTalentsPage({
   console.log("Search params received:", searchParams);
 
   const currentPage = Number(searchParams.page) || 1;
-  const query = {
+
+  // Create query for API call
+  const fetchQuery = {
     items: itemsPerPage,
     page: currentPage,
     ...Object.fromEntries(
@@ -68,7 +70,18 @@ export default async function SearchTalentsPage({
       )
     )
   };
-  const { talents, count } = (await fetchTalents(query)) || {
+
+  // Create query for pagination component (includes items and preserves all search params except page/items)
+  const paginationQuery = {
+    items: itemsPerPage.toString(),
+    ...Object.fromEntries(
+      Object.entries(searchParams).filter(([key, value]) =>
+        key !== 'page' && key !== 'items' && value !== undefined && value !== ''
+      )
+    )
+  };
+
+  const { talents, count } = (await fetchTalents(fetchQuery)) || {
     talents: [],
     count: 0,
   };
@@ -244,7 +257,7 @@ export default async function SearchTalentsPage({
                 <Pagination
                   itemsPerPage={itemsPerPage}
                   totalItems={count}
-                  query={query}
+                  query={paginationQuery}
                   activePage={currentPage}
                   isSearchTalent={true}
                 />
