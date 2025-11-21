@@ -6,6 +6,7 @@ import { ReferralSection } from "@/app/components/referral/referral-section";
 import { SearchableSelectInput } from "@/app/components/searchable-select-input";
 import { HoneybeeSpinner } from "@/app/components/spinners/honey-bee-spinner/honey-bee-spinner";
 import { ToggleButton } from "@/app/components/toggle-button";
+import { AvailabilityToggle } from "@/app/components/AvailabilityToggle";
 import { createJobServices } from "@/app/constants/common";
 import { countries } from "@/app/constants/countries";
 import { skills } from "@/app/constants/skills";
@@ -864,22 +865,20 @@ export default function ProfilePage() {
           isLoading={isLinkedInImporting}
         /> */}
 
-        {/* Availability Toggle */}
-        <div className="flex w-full justify-center mt-5">
-          <label
-            htmlFor="availability"
-            className="inline-block ml-3 mr-5 text-base text-black form-label"
-          >
-            Set Availability
-          </label>
-          <ToggleButton
-            label=""
-            name="availability"
-            tooltip="If Seeking Jobs"
-            checked={profileData.availability === true || profileData.availability === "Available"}
-            setValue={handleToggleChange}
-            errorMessage={errors.availability}
-          />
+        {/* Modern Availability Toggle */}
+        <div className="flex w-full justify-center mt-8 mb-8">
+          <div className="bg-gradient-to-br from-amber-50 via-white to-yellow-50/80 backdrop-blur-xl border border-amber-200/60 shadow-2xl rounded-2xl p-8">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Set Your Availability</h3>
+              <p className="text-sm text-gray-600">Let employers know if you're open to new opportunities</p>
+            </div>
+            <AvailabilityToggle
+              name="availability"
+              checked={profileData.availability === true || profileData.availability === "Available"}
+              onChange={handleToggleChange}
+              errorMessage={errors.availability}
+            />
+          </div>
         </div>
 
         {/* Profile Header */}

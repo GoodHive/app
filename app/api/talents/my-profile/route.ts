@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       mentor,
       recruiter,
       hide_contact_details,
-      availability: availability === true ? "Available" : "Not Available", // Convert boolean to string
+      availability: availability === true || availability === "true" || availability === "Available" ? true : false, // Normalize to boolean
       wallet_address,
       user_id,
       inReview: validate === true ? true : false,
