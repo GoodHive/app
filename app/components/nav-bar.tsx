@@ -22,6 +22,7 @@ import {
 } from "@/lib/auth/thirdwebAuth";
 import { connectModalOptions, supportedWallets } from "@/lib/auth/walletConfig";
 import { CircleUserRound } from "lucide-react";
+import { ProfileDropdown } from "./ProfileDropdown";
 import { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -499,19 +500,17 @@ export const NavBar = () => {
                 />
               </div>
 
-              {/* Show profile icon when user is authenticated */}
+              {/* Show profile dropdown when user is authenticated */}
               {(isAuthenticated || loggedIn_user_id) && (
-                <ProtectedLink
-                  href="/user-profile"
-                  className="group"
-                  title="Profile"
-                  authDescription="access your profile"
-                >
-                  <CircleUserRound
-                    size={36}
-                    className="cursor-pointer text-gray-600 hover:text-amber-700 transition-all duration-300 group-hover:scale-110"
-                  />
-                </ProtectedLink>
+                <ProfileDropdown
+                  isAuthenticated={isAuthenticated || !!loggedIn_user_id}
+                  trigger={
+                    <CircleUserRound
+                      size={36}
+                      className="cursor-pointer text-gray-600 hover:text-amber-700 transition-all duration-300 group-hover:scale-110"
+                    />
+                  }
+                />
               )}
 
               <button
