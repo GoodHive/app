@@ -187,17 +187,17 @@ export default async function JobSearchPage({
             key !== "items" &&
             searchParams[key as keyof typeof searchParams],
         ) && (
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-amber-100/50">
+          <div className="max-w-4xl mx-auto mb-8 px-4 sm:px-0">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-amber-100/50">
               <div className="flex items-center mb-4">
                 <div className="w-6 h-6 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-lg mr-3 flex items-center justify-center">
                   <CheckCircle className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800">
                   Active Filters
                 </h3>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {/* Do not display a chip for free-text keyword search */}
                 {searchParams.location && (
                   <span className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 text-blue-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm flex items-center">

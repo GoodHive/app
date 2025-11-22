@@ -78,7 +78,7 @@ export default function TalentResult({ talents }: { talents: TalentData[] }) {
   return (
     <div className="space-y-6">
       {/* Results Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
           <span className="text-sm text-gray-600">
@@ -92,7 +92,7 @@ export default function TalentResult({ talents }: { talents: TalentData[] }) {
       </div>
 
       {/* Talent Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-2 sm:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {talents.map((talent, index) => {
           console.log("Talent", talent.userId || index, ":", {
             title: talent.title,
@@ -154,7 +154,7 @@ export default function TalentResult({ talents }: { talents: TalentData[] }) {
 
       {/* Quick Stats */}
       <div className="mt-8 pt-6 border-t border-amber-200/30">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div className="bg-white/50 rounded-lg p-4 border border-amber-200/20">
             <div className="text-2xl font-bold text-amber-600">
               {talents.length}

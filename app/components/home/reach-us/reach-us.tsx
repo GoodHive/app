@@ -158,7 +158,7 @@ export const ReachUs = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight px-4">
                   Let's Create Some
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-600">
                     Honey Magic
@@ -167,35 +167,35 @@ export const ReachUs = () => {
                 </h2>
 
                 {/* Description */}
-                <p className="text-xl text-gray-700 mb-8 leading-relaxed max-w-lg mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 sm:mb-8 leading-relaxed max-w-lg mx-auto px-4">
                   {TRANSLATION.description}
                 </p>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-6 mb-10 max-w-md mx-auto">
+                <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10 max-w-md mx-auto px-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-amber-600 mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-amber-600 mb-1">
                       24h
                     </div>
-                    <div className="text-sm text-gray-600">Response Time</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Response Time</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-amber-600 mb-1">
+                    <div className="text-xl sm:text-2xl font-bold text-amber-600 mb-1">
                       100%
                     </div>
-                    <div className="text-sm text-gray-600">Dedicated Support</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Dedicated Support</div>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md mx-auto sm:max-w-none">
                   <button
                     type="button"
                     onClick={onMessageUsClick}
-                    className="group relative px-8 py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                    className="group relative px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-semibold text-sm sm:text-base rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden w-full sm:w-auto"
                   >
                     <span className="relative z-10 flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5 mr-2" />
+                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Send us a Message
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -204,10 +204,10 @@ export const ReachUs = () => {
                   <button
                     type="button"
                     onClick={onContactUsClick}
-                    className="group px-8 py-4 bg-white text-amber-600 font-semibold rounded-2xl border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"
+                    className="group px-6 py-3 sm:px-8 sm:py-4 bg-white text-amber-600 font-semibold text-sm sm:text-base rounded-xl sm:rounded-2xl border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 transform hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto"
                   >
                     <span className="flex items-center justify-center">
-                      <Phone className="w-5 h-5 mr-2" />
+                      <Phone className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Book a Hive Call
                     </span>
                   </button>
