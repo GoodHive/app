@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import Script from "next/script";
 
+import "@/utils/bigint-polyfill";
 import "./globals.css";
 
 import { ClientLayout } from "./client-layout";

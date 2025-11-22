@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
+import "@/utils/bigint-polyfill";
 import { AuthProvider } from "./contexts/AuthContext";
 
 const ThirdwebProvider = dynamic(
