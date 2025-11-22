@@ -82,7 +82,7 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
   return (
     <div className="space-y-6">
       {/* Results Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
           <span className="text-sm text-gray-600">
@@ -96,7 +96,7 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
       </div>
 
       {/* Job Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredJobs.map((jobOffer, index) => {
           console.log("Job Offer", jobOffer.id, ":", {
             title: jobOffer.title,
@@ -147,7 +147,7 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
 
       {/* Quick Stats */}
       <div className="mt-8 pt-6 border-t border-amber-200/30">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-center">
           <div className="bg-white/50 rounded-lg p-4 border border-amber-200/20">
             <div className="text-2xl font-bold text-amber-600">
               {filteredJobs.length}

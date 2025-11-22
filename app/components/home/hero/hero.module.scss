@@ -212,7 +212,7 @@
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 24px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -220,6 +220,14 @@
   text-align: center;
   z-index: 10;
   min-height: calc(100vh - 64px); // Subtract navbar height (h-16 = 64px)
+
+  @media (min-width: 640px) {
+    padding: 32px 20px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 48px 24px;
+  }
 
   // Mobile viewport height fix for better centering
   @supports (-webkit-touch-callout: none) {
@@ -230,22 +238,35 @@
 // Logo styles
 .logo {
   position: relative;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
+
+  @media (min-width: 640px) {
+    margin-bottom: 32px;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 40px;
+  }
 
   .logoContainer {
-    height: 80px;
-    width: 320px;
+    height: 56px;
+    width: 224px;
     position: relative;
     z-index: 10;
 
-    @media (max-width: 640px) {
+    @media (min-width: 640px) {
       height: 64px;
       width: 256px;
     }
 
-    @media (min-width: 641px) and (max-width: 768px) {
+    @media (min-width: 768px) {
       height: 72px;
       width: 288px;
+    }
+
+    @media (min-width: 1024px) {
+      height: 80px;
+      width: 320px;
     }
   }
 }
@@ -253,41 +274,69 @@
 // Typography section
 .typography {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   z-index: 20;
   position: relative;
+
+  @media (min-width: 640px) {
+    margin-bottom: 28px;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 32px;
+  }
 
   .badge {
     display: inline-flex;
     align-items: center;
     background-color: #fffbeb;
     color: #b45309;
-    padding: 6px 16px;
+    padding: 5px 12px;
     border-radius: 9999px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     border: 1px solid #fde68a;
 
+    @media (min-width: 640px) {
+      padding: 6px 14px;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 768px) {
+      padding: 6px 16px;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
     .icon {
-      margin-right: 8px;
+      margin-right: 6px;
+
+      @media (min-width: 640px) {
+        margin-right: 8px;
+      }
     }
   }
 
   .title {
-    font-size: 2.5rem;
-    line-height: 1.1;
+    font-size: 1.875rem;
+    line-height: 1.2;
     font-weight: 700;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     letter-spacing: -0.025em;
+    padding: 0 8px;
 
     @media (min-width: 640px) {
-      font-size: 3rem;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      margin-bottom: 20px;
     }
 
     @media (min-width: 768px) {
       font-size: 3.75rem;
       line-height: 1;
+      margin-bottom: 24px;
     }
 
     @media (min-width: 1024px) {
@@ -307,11 +356,23 @@
   }
 
   .subtitle {
-    font-size: 18px;
+    font-size: 14px;
     color: #4b5563;
     font-weight: 400;
     max-width: 36rem;
     margin: 0 auto;
+    padding: 0 8px;
+    line-height: 1.5;
+
+    @media (min-width: 640px) {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 768px) {
+      font-size: 18px;
+      line-height: 1.625;
+    }
 
     .highlight {
       color: #d97706;
@@ -323,27 +384,54 @@
 // Action buttons
 .actionButtons {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   z-index: 20;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 16px;
 
-  @media (max-width: 640px) {
+  @media (max-width: 639px) {
     flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    max-width: 20rem;
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    gap: 14px;
+    max-width: 28rem;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    gap: 16px;
   }
 
   .primaryButton {
-    padding: 14px 32px;
+    padding: 12px 24px;
     background-color: #d97706;
     color: white;
     font-weight: 500;
-    border-radius: 12px;
+    font-size: 14px;
+    border-radius: 10px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     transition: background-color 0.2s;
     border: none;
     cursor: pointer;
+    width: 100%;
+
+    @media (min-width: 640px) {
+      padding: 13px 28px;
+      font-size: 15px;
+      border-radius: 11px;
+      width: auto;
+    }
+
+    @media (min-width: 768px) {
+      padding: 14px 32px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
 
     &:hover {
       background-color: #b45309;
@@ -351,14 +439,29 @@
   }
 
   .secondaryButton {
-    padding: 14px 32px;
+    padding: 12px 24px;
     background-color: white;
     color: #111827;
     font-weight: 500;
-    border-radius: 12px;
+    font-size: 14px;
+    border-radius: 10px;
     border: 1px solid #e5e7eb;
     transition: background-color 0.2s;
     cursor: pointer;
+    width: 100%;
+
+    @media (min-width: 640px) {
+      padding: 13px 28px;
+      font-size: 15px;
+      border-radius: 11px;
+      width: auto;
+    }
+
+    @media (min-width: 768px) {
+      padding: 14px 32px;
+      font-size: 16px;
+      border-radius: 12px;
+    }
 
     &:hover {
       background-color: #f9fafb;
@@ -375,14 +478,32 @@
   z-index: 20;
   position: relative;
   margin: 0 auto;
-  padding: 64px 24px;
+  padding: 32px 16px;
+
+  @media (min-width: 640px) {
+    padding: 48px 20px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 64px 24px;
+  }
 
   .rewardsCard {
     background-color: white;
-    border-radius: 16px;
-    padding: 32px;
+    border-radius: 14px;
+    padding: 24px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     border: 1px solid #f3f4f6;
+
+    @media (min-width: 640px) {
+      border-radius: 15px;
+      padding: 28px;
+    }
+
+    @media (min-width: 768px) {
+      border-radius: 16px;
+      padding: 32px;
+    }
 
     .header {
       display: flex;
