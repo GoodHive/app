@@ -5,6 +5,7 @@ import Modal from "./modal";
 import { Mail, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { analytics } from "@/lib/analytics";
 
 interface EmailVerificationModalProps {
   open: boolean;
@@ -88,10 +89,12 @@ export default function EmailVerificationModal({
       }
 
       toast.success("Verification code sent to your email!");
+      analytics.emailVerificationSent();
       setStep("otp");
       setResendTimer(60); // 60 seconds before allowing resend
     } catch (error) {
       console.error("Email submission error:", error);
+      analytics.errorOccurred('email_verification_send_failed', error instanceof Error ? error.message : 'Network error', 'email_verification_modal');
       setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
@@ -168,10 +171,12 @@ export default function EmailVerificationModal({
       }
 
       toast.success("Email verified successfully!");
+      analytics.emailVerified();
       onVerificationSuccess(data.user);
       onClose();
     } catch (error) {
       console.error("OTP verification error:", error);
+      analytics.errorOccurred('email_verification_failed', error instanceof Error ? error.message : 'Network error', 'email_verification_modal');
       setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);

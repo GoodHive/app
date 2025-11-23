@@ -12,6 +12,7 @@ import LastActiveHandler from "./components/LastActiveHandler";
 import OnboardingPopup from "./components/Onboarding/OnboardingPopup";
 import ReferralCodeHandler from "./components/referralCodeHandler/ReferralCodeHandler";
 import { Providers } from "./providers";
+import { AnalyticsProvider } from "./components/AnalyticsProvider";
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -70,6 +71,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
         <Toaster />
 
         <Suspense>
+          <AnalyticsProvider />
           <ReferralCodeHandler />
           <div className="flex-grow">
             <LastActiveHandler />

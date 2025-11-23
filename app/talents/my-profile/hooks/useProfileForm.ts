@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { resumeUploadSizeLimit } from "../constants";
 import { CountryOption, ProfileData } from "../types";
+import { analytics } from "@/lib/analytics";
 
 export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
   const isInitialMount = useRef(true);
@@ -78,6 +79,11 @@ export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
       validate: boolean,
     ) => {
       try {
+        // Track profile creation start
+        if (validate) {
+          analytics.profileCreationStarted('talent');
+        }
+
         // Validate form
         if (!validateForm(profileData, validate)) {
           return;
@@ -121,6 +127,12 @@ export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
         });
 
         if (profileResponse.ok) {
+          // Track profile completion
+          analytics.profileSaved('talent', validate);
+          if (validate) {
+            analytics.profileSubmittedForReview('talent');
+          }
+
           // Send email when profile is sent for review
           if (validate) {
             try {
@@ -185,10 +197,12 @@ export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
           fetchProfile();
         } else {
           const profileSavingErrorData = await profileResponse.json();
+          analytics.errorOccurred('profile_save_failed', profileSavingErrorData.message || 'Unknown error', 'talent_profile');
           toast.error(profileSavingErrorData.message);
         }
       } catch (error) {
         console.error(error);
+        analytics.errorOccurred('profile_save_error', error instanceof Error ? error.message : 'Unknown error', 'talent_profile');
         toast.error("Something went wrong while saving your profile");
       }
     },

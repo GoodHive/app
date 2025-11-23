@@ -8,6 +8,7 @@ import { generateCountryFlag } from "@utils/generate-country-flag";
 import type { FC } from "react";
 import LastActiveStatus from "./LastActiveStatus";
 import { OptimizedJobBalance } from "./OptimizedJobBalance";
+import { analytics } from "@/lib/analytics";
 
 interface Props {
   jobId?: string; // UUID string
@@ -142,6 +143,15 @@ export const Card: FC<Props> = ({
     type === "job" && jobId ? `/jobs/${jobId}` :
     type === "job" ? `#` : // Disable link if jobId is missing (shouldn't happen)
     `/companies/${uniqueId}`;
+
+  // Handle click tracking
+  const handleCardClick = () => {
+    if (type === "job" && jobId) {
+      analytics.jobCardClicked(jobId, title, postedBy);
+    } else if (type === "talent") {
+      analytics.buttonClicked('talent_profile_view', 'talent_card');
+    }
+  };
 
   // Flag & Escrow Icon - ensure all cards have flags
   const countryFlag = generateCountryFlag(country);
@@ -345,6 +355,7 @@ export const Card: FC<Props> = ({
 
           <Link
             href={knowMoreLink}
+            onClick={handleCardClick}
             className="flex-shrink-0 sm:ml-3 w-full sm:w-auto"
           >
             <button className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#FFC905] to-[#FFD93D] hover:from-[#FF8C05] hover:to-[#FFC905] rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FFC905]/50 focus:ring-offset-2 border border-[#FFC905]/20 shadow-md w-full sm:w-auto">
