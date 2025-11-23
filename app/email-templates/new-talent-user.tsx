@@ -4,10 +4,10 @@ import * as React from "react";
 export const TalentRegistrationTemplate: React.FC<
   Readonly<EmailTemplateProps>
 > = (props) => {
-  const { name } = props;
+  const { name, referralLink } = props;
   return (
     <div>
-      <p>Hi {name},</p>
+      <p>Hi, {name}</p>
       <p>
         Big cheers for hopping on board at GoodHive! 🚀 You&apos;re now part of
         a vibrant journey towards crafting the Future of Work. We&apos;re all
@@ -29,6 +29,21 @@ export const TalentRegistrationTemplate: React.FC<
         platform fee. It&apos;s our way of saying thanks for spreading the word
         and growing our community.
       </p>
+      {referralLink && (
+        <p>
+          <strong>Your unique referral link:</strong>{" "}
+          <a
+            href={referralLink}
+            style={{
+              color: "#FFC905",
+              textDecoration: "none",
+              fontWeight: "bold"
+            }}
+          >
+            {referralLink}
+          </a>
+        </p>
+      )}
       <p>
         Looking forward to our chat and seeing you bring your A-game to
         GoodHive. Let&apos;s make something awesome together!
