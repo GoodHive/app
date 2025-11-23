@@ -124,6 +124,41 @@ export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
           // Send email when profile is sent for review
           if (validate) {
             try {
+              // Fetch or create referral link for the user
+              let referralLink = null;
+              try {
+                // First try to get existing referral
+                const getReferralResponse = await fetch(
+                  `/api/referrals/get-referral?user_id=${user_id}`,
+                );
+
+                if (getReferralResponse.ok) {
+                  const referralData = await getReferralResponse.json();
+                  if (referralData.referral_code) {
+                    referralLink = `${window.location.origin}/?ref=${referralData.referral_code}`;
+                  }
+                } else {
+                  // If no referral exists, create one
+                  const createReferralResponse = await fetch(`/api/referrals/create-referral`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ user_id }),
+                  });
+
+                  if (createReferralResponse.ok) {
+                    const newReferralData = await createReferralResponse.json();
+                    if (newReferralData.referral_code) {
+                      referralLink = `${window.location.origin}/?ref=${newReferralData.referral_code}`;
+                    }
+                  }
+                }
+              } catch (referralError) {
+                console.error("Error handling referral:", referralError);
+                // Continue with email sending even if referral fails
+              }
+
               await fetch("/api/send-email", {
                 method: "POST",
                 headers: {
@@ -134,6 +169,7 @@ export const useProfileForm = (user_id: string, countries: CountryOption[]) => {
                   type: "new-talent",
                   subject: `Welcome to GoodHive, ${formData.first_name}! 🎉 Your profile has been sent for review`,
                   toUserName: `${formData.first_name} ${formData.last_name}`,
+                  referralLink,
                 }),
               });
             } catch (error) {

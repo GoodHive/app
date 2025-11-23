@@ -344,7 +344,7 @@ export const Card: FC<Props> = ({
           </div>
 
           <Link
-            href={type === "job" ? knowMoreLink : { pathname: knowMoreLink, query: { id: jobId } }}
+            href={knowMoreLink}
             className="flex-shrink-0 sm:ml-3 w-full sm:w-auto"
           >
             <button className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#FFC905] to-[#FFD93D] hover:from-[#FF8C05] hover:to-[#FFC905] rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FFC905]/50 focus:ring-offset-2 border border-[#FFC905]/20 shadow-md w-full sm:w-auto">

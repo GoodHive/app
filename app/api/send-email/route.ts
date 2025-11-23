@@ -40,6 +40,7 @@ interface RequestContentType {
   jobtitle?: string;
   userProfile?: string;
   jobLink?: string;
+  referralLink?: string;
 }
 
 export async function POST(request: Request) {
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
     message,
     userProfile,
     jobLink,
+    referralLink,
   }: RequestContentType = await request.json();
 
   console.log(
@@ -120,6 +122,7 @@ export async function POST(request: Request) {
           message,
           userProfile,
           jobLink,
+          referralLink,
           email: userEmail || email,
         }) as React.ReactElement,
       });

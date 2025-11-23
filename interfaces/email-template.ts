@@ -4,4 +4,5 @@ export interface EmailTemplateProps {
   userProfile?: string;
   message?: string;
   jobLink?: string;
+  referralLink?: string;
 }
