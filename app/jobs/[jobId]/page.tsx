@@ -4,6 +4,7 @@ import { JobPageHeader } from "@/app/components/job-page/JobPageHeader";
 import { JobPageSidebar } from "@/app/components/job-page/JobPageSidebar";
 import { JobSectionsDisplay } from "@/app/components/job-sections-display/job-sections-display";
 import styles from "./page.module.scss";
+import { JobPageAnalytics } from "@/app/components/job-page/JobPageAnalytics";
 
 interface Job {
   id: string;
@@ -147,6 +148,9 @@ export default async function JobPage({ params }: { params: { jobId: string } })
 
   return (
     <div className={styles.pageContainer}>
+      {/* Analytics tracking */}
+      <JobPageAnalytics jobId={job.id} jobTitle={job.title} />
+
       {/* Job Header */}
       <JobPageHeader job={job} />
 

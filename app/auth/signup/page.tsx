@@ -3,12 +3,19 @@
 import React from "react";
 import Cookies from "js-cookie";
 import { useAuthCheck } from "@/app/hooks/useAuthCheck";
+import { analytics } from "@/lib/analytics";
 
 const Signup = () => {
   const referralCode = Cookies.get("referralCode");
   const { openConnectModal } = useAuthCheck();
 
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // Track signup page view
+  React.useEffect(() => {
+    analytics.pageViewed('signup_page');
+    analytics.signupStarted(referralCode || 'direct');
+  }, [referralCode]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent the default form submission
@@ -42,11 +49,13 @@ const Signup = () => {
 
     if (response.ok) {
       setIsLoading(false);
+      analytics.signupCompleted('email', referralCode || 'direct');
       Cookies.remove("referralCode");
       window.alert("Account created! Please connect your wallet to continue.");
       void openConnectModal?.();
     } else {
       setIsLoading(false);
+      analytics.errorOccurred('signup_failed', responseBody.message || 'Unknown signup error', 'signup_page');
       window.alert(responseBody.message || "Failed to sign up!");
     }
   };
