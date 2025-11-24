@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import Script from "next/script";
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import "@/utils/bigint-polyfill";
 import "./globals.css";
@@ -43,6 +44,7 @@ gtag('config', '${GA_TRACKING_ID}', { send_page_view: false });`}
         )}
         <ClientLayout>{children}</ClientLayout>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
