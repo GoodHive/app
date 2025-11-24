@@ -110,6 +110,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@14.0.1(@babel/core@7.28.5)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(sass@1.93.3))(react@18.3.1)
+      '@vercel/speed-insights':
+        specifier: ^1.2.0
+        version: 1.2.0(next@14.0.1(@babel/core@7.28.5)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(sass@1.93.3))(react@18.3.1)
       autoprefixer:
         specifier: 10.4.14
         version: 10.4.14(postcss@8.4.21)
@@ -5159,6 +5162,29 @@ packages:
 
   '@vercel/edge@1.2.2':
     resolution: {integrity: sha512-1+y+f6rk0Yc9ss9bRDgz/gdpLimwoRteKHhrcgHvEpjbP1nyT3ByqEMWm2BTcpIO5UtDmIFXc8zdq4LR190PDA==}
+
+  '@vercel/speed-insights@1.2.0':
+    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vitejs/plugin-react@4.7.0':
     resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
@@ -18035,6 +18061,11 @@ snapshots:
       react: 18.3.1
 
   '@vercel/edge@1.2.2': {}
+
+  '@vercel/speed-insights@1.2.0(next@14.0.1(@babel/core@7.28.5)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(sass@1.93.3))(react@18.3.1)':
+    optionalDependencies:
+      next: 14.0.1(@babel/core@7.28.5)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(sass@1.93.3)
+      react: 18.3.1
 
   '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@18.15.11)(jiti@1.21.7)(sass@1.93.3)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
