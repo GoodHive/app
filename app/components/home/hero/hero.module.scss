@@ -1,11 +1,11 @@
-// Hero Section Styles
+/* Hero Section Styles */
 .hero {
   position: relative;
   width: 100%;
   overflow: hidden;
 }
 
-// Background Styles
+/*  Background Styles */
 .background {
   position: absolute;
   inset: 0;
@@ -79,53 +79,79 @@
     20px 35px;
 }
 
-// Hexagon Clusters - Better responsive control
+/*  Hexagon Clusters - Better responsive control */
 .hexagonCluster {
   position: absolute;
 
-  // Default: hidden on mobile and tablet
+/*  Default: hidden on mobile and tablet */
   display: none;
 
-  // Show on large screens (1024px and up) - but with more precise control
+/*  Show on large screens (1024px and up) - but with more precise control */
   @media (min-width: 1024px) {
     display: block;
   }
 
-  // Ensure consistent visibility across all large screen sizes
+/*  Ensure consistent visibility across all large screen sizes */
   @media (min-width: 1024px) and (max-width: 1920px) {
     display: block !important;
   }
 }
 
 .topLeftCluster {
-  @extend .hexagonCluster;
+  position: absolute;
+  display: none;
   left: -80px;
   top: -40px;
+}
 
-  svg {
-    width: 450px;
-    height: 450px;
+@media (min-width: 1024px) {
+  .topLeftCluster {
+    display: block;
   }
+}
+
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .topLeftCluster {
+    display: block !important;
+  }
+}
+
+.topLeftCluster svg {
+  width: 450px;
+  height: 450px;
 }
 
 .bottomRightCluster {
-  @extend .hexagonCluster;
+  position: absolute;
+  display: none;
   right: -80px;
-  bottom: 20px; // Changed from -40px to 20px to keep it within viewport
+  bottom: 20px; /* Changed from -40px to 20px to keep it within viewport */
+}
 
-  svg {
-    width: 500px;
-    height: 500px;
+@media (min-width: 1024px) {
+  .bottomRightCluster {
+    display: block;
   }
 }
 
-// Scattered hexagons container
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .bottomRightCluster {
+    display: block !important;
+  }
+}
+
+.bottomRightCluster svg {
+  width: 500px;
+  height: 500px;
+}
+
+/*  Scattered hexagons container */
 .scatteredHexagons {
   position: absolute;
   inset: 0;
   pointer-events: none;
 
-  // Same responsive behavior as clusters
+/*  Same responsive behavior as clusters */
   display: none;
 
   @media (min-width: 1024px) {
@@ -137,7 +163,7 @@
   }
 }
 
-// Individual scattered hexagon positions
+/*  Individual scattered hexagon positions */
 .topCenterHex {
   position: absolute;
   top: 80px;
@@ -145,28 +171,54 @@
   transform: translateX(-50%);
 }
 
-// Top-right hexagon cluster
+/*  Top-right hexagon cluster */
 .topRightCluster {
-  @extend .hexagonCluster;
+  position: absolute;
+  display: none;
   right: -80px;
   top: -30px;
+}
 
-  svg {
-    width: 400px;
-    height: 400px;
+@media (min-width: 1024px) {
+  .topRightCluster {
+    display: block;
   }
 }
 
-// Bottom-left hexagon cluster
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .topRightCluster {
+    display: block !important;
+  }
+}
+
+.topRightCluster svg {
+  width: 400px;
+  height: 400px;
+}
+
+/*  Bottom-left hexagon cluster */
 .bottomLeftCluster {
-  @extend .hexagonCluster;
+  position: absolute;
+  display: none;
   left: -60px;
   bottom: 20px;
+}
 
-  svg {
-    width: 350px;
-    height: 350px;
+@media (min-width: 1024px) {
+  .bottomLeftCluster {
+    display: block;
   }
+}
+
+@media (min-width: 1024px) and (max-width: 1920px) {
+  .bottomLeftCluster {
+    display: block !important;
+  }
+}
+
+.bottomLeftCluster svg {
+  width: 350px;
+  height: 350px;
 }
 
 .midLeftHex {
@@ -207,7 +259,7 @@
   left: 208px;
 }
 
-// Main content container - Takes up exactly 100vh minus navbar height
+/*  Main content container - Takes up exactly 100vh minus navbar height */
 .content {
   position: relative;
   max-width: 1200px;
@@ -219,7 +271,7 @@
   justify-content: center;
   text-align: center;
   z-index: 10;
-  min-height: calc(100vh - 64px); // Subtract navbar height (h-16 = 64px)
+  min-height: calc(100vh - 64px); /* Subtract navbar height (h-16 = 64px) */
 
   @media (min-width: 640px) {
     padding: 32px 20px;
@@ -229,13 +281,13 @@
     padding: 48px 24px;
   }
 
-  // Mobile viewport height fix for better centering
+/*  Mobile viewport height fix for better centering */
   @supports (-webkit-touch-callout: none) {
     min-height: calc(-webkit-fill-available - 64px);
   }
 }
 
-// Logo styles
+/*  Logo styles */
 .logo {
   position: relative;
   margin-bottom: 24px;
@@ -271,7 +323,7 @@
   }
 }
 
-// Typography section
+/*  Typography section */
 .typography {
   text-align: center;
   margin-bottom: 24px;
@@ -381,7 +433,7 @@
   }
 }
 
-// Action buttons
+/*  Action buttons */
 .actionButtons {
   display: flex;
   gap: 12px;
@@ -469,7 +521,7 @@
   }
 }
 
-// Rewards section - Positioned after 100vh
+/*  Rewards section - Positioned after 100vh */
 .rewardsSection {
   max-width: 32rem;
   display: flex;
@@ -563,16 +615,16 @@
   }
 }
 
-// Debug styles for testing hexagon visibility
+/*  Debug styles for testing hexagon visibility */
 .debugHexagons {
-  // Force hexagons to be visible at all screen sizes for testing
+/*  Force hexagons to be visible at all screen sizes for testing */
   .hexagonCluster,
   .scatteredHexagons {
     display: block !important;
   }
 }
 
-// Additional responsive breakpoints for fine-tuning
+/*  Additional responsive breakpoints for fine-tuning */
 @media (min-width: 1024px) and (max-width: 1079px) {
   .hexagonCluster,
   .scatteredHexagons {
