@@ -53,18 +53,6 @@ export interface JobOffer {
 }
 
 export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
-  console.log("Job offers received:", jobOffers.length);
-  console.log("Sample job offer:", jobOffers[0]);
-  console.log(
-    "Talent/Mentor/Recruiter values:",
-    jobOffers.map((job) => ({
-      id: job.id,
-      title: job.title,
-      talent: job.talent,
-      mentor: job.mentor,
-      recruiter: job.recruiter,
-    })),
-  );
 
   const filteredJobs = jobOffers.filter((job) => !job.in_saving_stage);
 
@@ -99,13 +87,6 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
       {/* Job Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredJobs.map((jobOffer, index) => {
-          console.log("Job Offer", jobOffer.id, ":", {
-            title: jobOffer.title,
-            talent: jobOffer.talent,
-            mentor: jobOffer.mentor,
-            recruiter: jobOffer.recruiter,
-            type: typeof jobOffer.talent,
-          });
           return (
             <div key={`job-${jobOffer.id}-${index}`} className="group relative">
               <Card

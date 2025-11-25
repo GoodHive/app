@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--max-old-space-size=4096 --experimental-worker' next dev",
+    "dev:fast": "NODE_OPTIONS='--max-old-space-size=4096 --experimental-worker --enable-source-maps' next dev --turbo",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' next build --no-lint",
     "start": "next start",
     "build-no-check": "NODE_OPTIONS='--max-old-space-size=4096' next build --no-lint",

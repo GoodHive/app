@@ -216,15 +216,10 @@ export async function fetchJobs({
 
     const whereClause = whereConditions.join(" AND ");
 
-    console.log("WHERE clause:", whereClause);
-    console.log("Parameters:", params);
-
     // Count query
     const countQuery = `SELECT COUNT(*) FROM goodhive.job_offers WHERE ${whereClause}`;
     const countJobs = await sql.unsafe(countQuery, params);
     const count = countJobs[0].count as number;
-
-    console.log("Total count:", count);
 
     const limit = Number(items);
     const offset = limit * (Number(page) - 1);
@@ -253,8 +248,6 @@ export async function fetchJobs({
       ${orderClause}
       LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
     const jobsResult = await sql.unsafe(jobsQuery, [...params, limit, offset]);
-
-    console.log("Jobs found:", jobsResult.length);
 
     const jobs = jobsResult.map((item) => ({
       id: item.id,
