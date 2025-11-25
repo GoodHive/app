@@ -10,6 +10,7 @@ export interface ApiJobOffer {
   companyName: string;
   posted_at: Date;
   image_url: string;
+  company_logo_url?: string;
   country: string;
   city: string;
   budget: string;
@@ -115,12 +116,12 @@ export default function JobResult({ jobOffers }: { jobOffers: ApiJobOffer[] }) {
                 title={jobOffer.title || "Job Position"}
                 postedBy={jobOffer.companyName || "Company"}
                 postedOn={`Posted ${moment(jobOffer.posted_at).fromNow()}`}
-                image={jobOffer.image_url || "/img/company_img.png"}
+                image={jobOffer.company_logo_url || "/img/company_img.png"}
                 country={jobOffer.country || ""}
                 city={jobOffer.city || "Remote"}
                 budget={Number(jobOffer.budget) || 0}
                 projectType={jobOffer.projectType || "hourly"}
-                currency={jobOffer.currency || "€"}
+                currency={jobOffer.currency || "USDC"}
                 description={
                   jobOffer.jobDescription ||
                   "No description available for this position."
