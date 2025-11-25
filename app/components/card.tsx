@@ -64,40 +64,12 @@ export const Card: FC<Props> = ({
   availability,
   type,
 }) => {
-  console.log(
-    "Card props - type:",
-    type,
-    "talent:",
-    talent,
-    "mentor:",
-    mentor,
-    "recruiter:",
-    recruiter,
-    "title:",
-    title,
-    "jobId:",
-    jobId,
-    availability,
-    "availability...",
-  );
   // Function to generate dynamic "Open to" text
   const getOpenToText = () => {
     const openToTypes = [];
     if (talent) openToTypes.push("Talents");
     if (mentor) openToTypes.push("Mentors");
     if (recruiter) openToTypes.push("Recruiters");
-    console.log(
-      "Open to types for",
-      title,
-      ":",
-      openToTypes,
-      "talent:",
-      talent,
-      "mentor:",
-      mentor,
-      "recruiter:",
-      recruiter,
-    );
 
     if (openToTypes.length === 0) return "Open to All"; // Changed from null to "Open to All"
     if (openToTypes.length === 1) return `Open to ${openToTypes[0]}`;
@@ -108,7 +80,6 @@ export const Card: FC<Props> = ({
     return `Open to ${openToTypes.slice(0, -1).join(", ")} & ${openToTypes[openToTypes.length - 1]}`;
   };
 
-  console.log(getOpenToText(), "getOpenToText", title, "title", jobId, "jobId");
 
   // Rate formatting
   // const rate =
