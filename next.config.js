@@ -3,10 +3,6 @@ const nextConfig = {
   reactStrictMode: false,
   experimental: {
     typedRoutes: true,
-    optimizeCss: true,
-    turbo: {
-      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json']
-    }
   },
   async headers() {
     return [
