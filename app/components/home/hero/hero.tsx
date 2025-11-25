@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { GoodhiveQuestLink } from "@/app/constants/common";
-import styles from "./hero.module.scss";
+import styles from "./hero.module.css";
 
 export const Hero = () => {
   const router = useRouter();
