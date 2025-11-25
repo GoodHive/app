@@ -17,14 +17,14 @@ export const OptimizedJobBalance: React.FC<OptimizedJobBalanceProps> = ({
   className = "",
   amount,
 }) => {
-  // Hardcoded placeholder for now
-  const displayAmount = "0.00";
+  // Use the passed amount or default to 0
+  const displayAmount = amount ? amount.toFixed(2) : "0.00";
 
   // Function to get proper currency symbol from contract address or currency string
   const getCurrencySymbol = (currencyInput: string): string => {
     // If it's a contract address (starts with 0x), return a default symbol
     if (currencyInput.startsWith("0x")) {
-      return "ETH"; // Default to ETH for contract addresses
+      return "USDC"; // Default to USDC for contract addresses
     }
 
     // Handle common currency cases
@@ -35,12 +35,14 @@ export const OptimizedJobBalance: React.FC<OptimizedJobBalanceProps> = ({
       case "USD":
       case "$":
         return "$";
+      case "USDC":
+        return "USDC";
       case "ETH":
         return "ETH";
       case "BTC":
         return "BTC";
       default:
-        return "ETH"; // Default fallback
+        return "USDC"; // Default fallback to USDC instead of ETH
     }
   };
 

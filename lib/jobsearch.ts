@@ -240,10 +240,18 @@ export async function fetchJobs({
       orderClause = "ORDER BY CAST(NULLIF(budget, '') AS INTEGER) ASC NULLS LAST, posted_at DESC";
     }
 
-    // Main query
+    // Main query with company logo JOIN
     const limitIndex = ++paramIndex;
     const offsetIndex = ++paramIndex;
-    const jobsQuery = `SELECT * FROM goodhive.job_offers WHERE ${whereClause} ${orderClause} LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
+    const jobsQuery = `
+      SELECT
+        jo.*,
+        c.image_url as company_logo_url
+      FROM goodhive.job_offers jo
+      LEFT JOIN goodhive.companies c ON jo.user_id = c.user_id
+      WHERE ${whereClause}
+      ${orderClause}
+      LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
     const jobsResult = await sql.unsafe(jobsQuery, [...params, limit, offset]);
 
     console.log("Jobs found:", jobsResult.length);
@@ -263,6 +271,7 @@ export async function fetchJobs({
       city: item.city,
       walletAddress: item.wallet_address,
       image_url: item.image_url,
+      company_logo_url: item.company_logo_url,
       talent: item.talent === "true" || item.talent === true || item.talent === 1,
       mentor: item.mentor === "true" || item.mentor === true || item.mentor === 1,
       recruiter: item.recruiter === "true" || item.recruiter === true || item.recruiter === 1,
