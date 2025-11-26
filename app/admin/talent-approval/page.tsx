@@ -13,9 +13,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { MoreHorizontal, CheckSquare, Square } from "lucide-react";
 import { ProfileData } from "@/app/talents/my-profile/page";
 import ApprovalPopup from "./components/ApprovalPopup";
+import { BulkApproval } from "@/app/components/admin/BulkApproval";
+import toast from "react-hot-toast";
 import moment from "moment";
 
 export default function AdminTalentApproval() {
@@ -25,17 +28,111 @@ export default function AdminTalentApproval() {
   const [loading, setLoading] = useState(false);
   const [showApprovePopup, setShowApprovePopup] = useState(false);
   const [selectedUser, setSelectedUser] = useState<ProfileData | null>(null);
+  const [selectedItems, setSelectedItems] = useState<ProfileData[]>([]);
+  const [showBulkApproval, setShowBulkApproval] = useState(false);
 
   const handleApproveClick = (user: ProfileData) => {
     setSelectedUser(user);
     setShowApprovePopup(true);
   };
 
+  const toggleItemSelection = (user: ProfileData) => {
+    setSelectedItems((prev) => {
+      const exists = prev.find((item) => item.user_id === user.user_id);
+      if (exists) {
+        return prev.filter((item) => item.user_id !== user.user_id);
+      } else {
+        return [...prev, user];
+      }
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === filteredUsers.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems([...filteredUsers]);
+    }
+  };
+
+  const handleBulkApprove = async (
+    itemIds: string[],
+    approvalTypes?: Record<string, boolean>
+  ) => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/admin/talents/bulk-approve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userIds: itemIds,
+          approvalTypes: approvalTypes || { talent: true },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to approve talents");
+      }
+
+      toast.success(`Successfully approved ${itemIds.length} talent(s)`);
+      setSelectedItems([]);
+      fetchPendingUsers();
+    } catch (error) {
+      console.error("Error approving talents:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBulkReject = async (itemIds: string[], reason?: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/admin/talents/bulk-reject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userIds: itemIds,
+          reason: reason || "Rejected by admin",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to reject talents");
+      }
+
+      toast.success(`Successfully rejected ${itemIds.length} talent(s)`);
+      setSelectedItems([]);
+      fetchPendingUsers();
+    } catch (error) {
+      console.error("Error rejecting talents:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const columns = [
+    {
+      key: "select",
+      header: "",
+      width: "5%",
+      render: (value: any, row: ProfileData) => (
+        <Checkbox
+          checked={selectedItems.some((item) => item.user_id === row.user_id)}
+          onCheckedChange={() => toggleItemSelection(row)}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ),
+    },
     {
       key: "name",
       header: "Name",
-      width: "24%",
+      width: "22%",
       render: (value: any, row: ProfileData) => {
         const fullName = `${row.first_name} ${row.last_name}`;
         return (
@@ -54,7 +151,7 @@ export default function AdminTalentApproval() {
     {
       key: "status",
       header: "Status",
-      width: "13%",
+      width: "12%",
       render: () => (
         <Badge
           variant="outline"
@@ -67,7 +164,7 @@ export default function AdminTalentApproval() {
     {
       key: "applied_for",
       header: "Applied For",
-      width: "13%",
+      width: "12%",
       render: (value: any, row: ProfileData) => {
         return (
           <div className="flex flex-col gap-2 w-full justify-center items-center">
@@ -105,12 +202,12 @@ export default function AdminTalentApproval() {
     {
       key: "email",
       header: "Email",
-      width: "28%",
+      width: "25%",
     },
     {
       key: "created_at",
       header: "Created on",
-      width: "14%",
+      width: "13%",
       render: (value: string) => moment(value).format("MMM D, YYYY"),
     },
     {
@@ -176,6 +273,12 @@ export default function AdminTalentApproval() {
       return searchStr.includes(searchQuery.toLowerCase());
     });
     setFilteredUsers(filtered);
+    // Clear selection when filtering
+    setSelectedItems((prev) =>
+      prev.filter((item) =>
+        filtered.some((user) => user.user_id === item.user_id)
+      )
+    );
   }, [searchQuery, users]);
 
   return (
@@ -184,11 +287,48 @@ export default function AdminTalentApproval() {
       subtitle="Review and approve talent applications"
     >
       <div className="space-y-6">
-        <SearchInput
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search by name or email..."
-        />
+        <div className="flex items-center justify-between">
+          <SearchInput
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search by name or email..."
+          />
+          {selectedItems.length > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                {selectedItems.length} selected
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowBulkApproval(true)}
+              >
+                Bulk Actions
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {selectedItems.length > 0 && (
+          <div className="bg-[#FFC905]/10 border border-[#FFC905] rounded-lg p-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={selectedItems.length === filteredUsers.length}
+                onCheckedChange={toggleSelectAll}
+              />
+              <span className="text-sm font-medium text-gray-900">
+                Select All ({filteredUsers.length})
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowBulkApproval(true)}
+            >
+              Manage Selected ({selectedItems.length})
+            </Button>
+          </div>
+        )}
 
         {loading ? (
           <div className="py-12">
@@ -222,6 +362,15 @@ export default function AdminTalentApproval() {
           setLoading={setLoading}
         />
       )}
+
+      <BulkApproval
+        open={showBulkApproval}
+        onOpenChange={setShowBulkApproval}
+        selectedItems={selectedItems}
+        entityType="talent"
+        onApprove={handleBulkApprove}
+        onReject={handleBulkReject}
+      />
     </AdminPageLayout>
   );
 }

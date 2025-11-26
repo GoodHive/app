@@ -2,12 +2,26 @@ import sql from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
 
 const ADMIN_JWT_SECRET =
   process.env.ADMIN_JWT_SECRET || "your-admin-secret-key";
 
 // Verify admin token middleware
-const verifyAdminToken = async () => {
+const verifyAdminToken = async (req: NextRequest | Request) => {
+  // Check Authorization header first
+  const authHeader = req.headers.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.substring(7);
+    try {
+      const decoded = verify(token, ADMIN_JWT_SECRET) as { role: string };
+      if (decoded.role === "admin") return decoded;
+    } catch (error) {
+      // Fall through to cookie check
+    }
+  }
+
+  // Fallback to cookie check
   const cookieStore = cookies();
   const token = cookieStore.get("admin_token")?.value;
 
@@ -26,9 +40,9 @@ const verifyAdminToken = async () => {
   }
 };
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    await verifyAdminToken();
+    await verifyAdminToken(req);
 
     const admins = await sql`
       SELECT id, name, email, created_at
@@ -49,7 +63,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    await verifyAdminToken();
+    await verifyAdminToken(req);
 
     const { name, email, password } = await req.json();
 
