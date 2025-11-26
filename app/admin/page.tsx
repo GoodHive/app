@@ -52,10 +52,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchStatistics();
-  }, [fetchStatistics]);
-
   const getAuthHeaders = () => {
     const token = Cookies.get("admin_token");
     if (!token) {
@@ -72,12 +68,12 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const headers = getAuthHeaders();
       if (!headers) return;
 
       const response = await fetch("/api/admin/statistics", { headers });
-      
+
       if (response.status === 401) {
         router.push("/admin/login");
         return;
@@ -95,6 +91,10 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchStatistics();
+  }, []);
 
   if (loading) {
     return (
