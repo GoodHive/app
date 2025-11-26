@@ -145,6 +145,8 @@ options:
 
 ### Phase 3: Domain & SSL Configuration
 
+> **Note**: Initial rollout will use the production (`34.155.128.27`) and staging (`34.163.149.168`) IPs directly. DNS and SSL work can be executed later without blocking the remaining phases.
+
 #### 3.1 Google Cloud DNS Setup
 **Status**: ⏳ PENDING
 
