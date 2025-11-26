@@ -28,6 +28,8 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
+.env.staging
 
 # vercel
 .vercel
@@ -41,3 +43,11 @@ package-lock.json
 
 # yarn lock
 yarn.lock
+
+# Google Cloud config
+.gcloud/
+*-key.json
+github-actions-key.json
+
+# Deployment artifacts
+goodhive-build.tar.gz

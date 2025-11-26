@@ -1,0 +1,28 @@
+steps:
+  - name: 'gcr.io/cloud-builders/npm'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        npm install -g pnpm@9 && pnpm install --frozen-lockfile
+  - name: 'gcr.io/cloud-builders/npm'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - pnpm build
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args: ['scripts/deploy-staging.sh']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args: ['scripts/deploy-production.sh']
+    waitFor: ['-']
+options:
+  machineType: 'E2_HIGHCPU_8'
+  substitutionOption: 'ALLOW_LOOSE'
+substitutions:
+  _STAGING_VM: 'goodhive-staging-vm'
+  _PROD_VM: 'goodhive-prod-vm'
+  _GCP_PROJECT: 'goodhive-1706112296263'
+  _STAGING_IP: '34.163.149.168'
+  _PROD_IP: '34.155.128.27'

@@ -73,6 +73,7 @@ export type ProfileData = {
   hide_contact_details?: boolean;
   referrer?: string;
   availability?: boolean | string;
+  wallet_address?: string;
   approved: boolean;
   user_id?: string;
   inreview?: boolean;

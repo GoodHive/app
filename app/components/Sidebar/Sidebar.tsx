@@ -14,6 +14,7 @@ import {
   Bell,
   Home,
   CreditCard,
+  BarChart3,
 } from "lucide-react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -31,6 +32,12 @@ interface NavItem {
 }
 
 const personalNavItems: NavItem[] = [
+  {
+    href: "/admin",
+    icon: <Home className={styles.navIcon} />,
+    label: "Dashboard",
+    dataE2e: "admin-dashboard-menu",
+  },
   {
     href: "/admin/talent-approval",
     icon: <UserCheck className={styles.navIcon} />,
@@ -73,6 +80,12 @@ const personalNavItems: NavItem[] = [
     label: "Manage Admins",
     dataE2e: "admins-menu",
   },
+  {
+    href: "/admin/analytics",
+    icon: <BarChart3 className={styles.navIcon} />,
+    label: "Analytics",
+    dataE2e: "analytics-menu",
+  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -105,7 +118,12 @@ const Sidebar = ({ children }: SidebarProps) => {
     router.push("/admin/login");
   };
 
-  const isActiveLink = (href: string) => pathname === href;
+  const isActiveLink = (href: string) => {
+    if (href === "/admin") {
+      return pathname === "/admin" || pathname === "/admin/";
+    }
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   return (
     <div className={styles.layout}>
