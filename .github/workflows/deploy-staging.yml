@@ -1,0 +1,175 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Build and Deploy to Staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Next.js application
+        run: NODE_OPTIONS='--max-old-space-size=4096' pnpm build
+        env:
+          NODE_ENV: production
+          # Database
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Google OAuth
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          # JWT Secrets
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          # Thirdweb (public values - safe to expose)
+          NEXT_PUBLIC_THIRDWEB_CLIENT_ID: "4cbd356d64bab5853980d03c39c0a10b"
+          THIRDWEB_SECRET_KEY: ${{ secrets.THIRDWEB_SECRET_KEY }}
+          # API Keys
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          BRIGHTDATA_API_KEY: ${{ secrets.BRIGHTDATA_API_KEY }}
+          LINKEDIN_SCRAPER_API_KEY: ${{ secrets.LINKEDIN_SCRAPER_API_KEY }}
+          # Backblaze B2
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          B2_APP_KEY: ${{ secrets.B2_APP_KEY }}
+          B2_BUCKET: "goodhive"
+          B2_ENDPOINT: "https://s3.us-east-005.backblazeb2.com/"
+          B2_REGION: "us-east-005"
+          B2_HOST: "s3.us-east-005.backblazeb2.com"
+          # Public environment variables (safe to expose)
+          NEXT_PUBLIC_ENVIRONMENT: "production"
+          NEXT_PUBLIC_NETWORK_ENV: "development"
+          NEXT_PUBLIC_CHAIN_NAME: "polygon-amoy"
+          NEXT_PUBLIC_CHAIN_ID: "80002"
+          NEXT_PUBLIC_BLOCK_EXPLORER: "https://amoy.polygonscan.com/"
+          NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: "G-LW6D4ME9JY"
+          NEXT_PUBLIC_SANITY_DATASET: "production"
+          NEXT_PUBLIC_SANITY_PROJECT_ID: "bk6p174g"
+          NEXT_PUBLIC_CLIENT_SWA: "0x62565e5ea086c3c6Be06D6132729732882659BbD"
+          NEXT_PUBLIC_GOODHIVE_USDC_TOKEN_POLYGON: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+          NEXT_PUBLIC_GOODHIVE_POLYGON_MAINNET_DEPLOYED_CONTRACT_ADDRESS: "0x26781503b90309CFD6f63A090E49f8C526D71267"
+          NEXT_PUBLIC_GOODHIVE_INFURA_API: "https://polygon-mainnet.infura.io/v3/a39e33b2a78b4fc18e40505127893123"
+          NEXT_PUBLIC_JOB_MANAGER_CONTRACT_ADDRESS: "0xB02588d9b7CC53eA6CC99Bf6BD522e30bb6366b5"
+          NEXT_PUBLIC_TREASURY_ADDRESS: "0xed948545Ec9e86678979e05cbafc39ef92BBda80"
+          NEXT_PUBLIC_GA_ID: "G-LW6D4ME9JY"
+          NEXT_PUBLIC_USE_THIRDWEB: "true"
+          NEXT_PUBLIC_SMART_ACCOUNTS: "true"
+          NEXT_PUBLIC_SHOW_MIGRATION: "false"
+          NEXT_PUBLIC_ROLLOUT_PERCENT: "100"
+          NEXT_PUBLIC_ENABLE_GASLESS: "true"
+          POLYGON_RPC_URL: "https://polygon-rpc.com/4cbd356d64bab5853980d03c39c0a10b"
+          POLYGON_AMOY_RPC_URL: "https://polygon-rpc.com/4cbd356d64bab5853980d03c39c0a10b"
+          EMAIL_FROM: "no-reply@goodhive.io"
+          NEXT_PUBLIC_UPLOAD_PROFILE_IMAGE_SIZE_LIMIT_MB: "10"
+          NEXT_IRON_PASSWORD: ${{ secrets.NEXT_IRON_PASSWORD }}
+          GOOGLE_CLOUD_PROJECT: "juhans-agents"
+          GOOGLE_CLOUD_LOCATION: "us-east5"
+          BRIGHTDATA_DATASET_ID: "gd_l1viktl72bvl7bjuj0"
+          NEXT_PUBLIC_ADMIN_VERIFICATION_KEY: ${{ secrets.NEXT_PUBLIC_ADMIN_VERIFICATION_KEY }}
+          NEXT_PUBLIC_CLIENT_PRIVATE_KEY: ${{ secrets.NEXT_PUBLIC_CLIENT_PRIVATE_KEY }}
+
+      - name: Create deployment package
+        run: |
+          tar -czf goodhive-build.tar.gz \
+            .next \
+            public \
+            package.json \
+            pnpm-lock.yaml \
+            ecosystem.staging.config.js \
+            next.config.js
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload build to Staging VM
+        run: |
+          gcloud compute scp goodhive-build.tar.gz goodhive-staging-vm:~/ \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263
+
+      - name: Deploy on staging server
+        run: |
+          gcloud compute ssh goodhive-staging-vm \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263 \
+            --command="
+              set -e
+              cd /home/juhan/goodhive-web
+
+              echo '📦 Extracting build...'
+              tar -xzf ~/goodhive-build.tar.gz
+
+              echo '📥 Installing production dependencies...'
+              pnpm install --prod --no-frozen-lockfile
+
+              echo '🔄 Restarting application...'
+              pm2 delete goodhive-staging 2>/dev/null || true
+              pm2 start ecosystem.staging.config.js
+              pm2 save
+
+              echo '✅ Staging deployment complete!'
+              pm2 status
+
+              # Cleanup
+              rm ~/goodhive-build.tar.gz
+            "
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for application to start..."
+          sleep 10
+          gcloud compute ssh goodhive-staging-vm \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263 \
+            --command="curl -f http://localhost:3000 || exit 1"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Staging deployment successful!"
+            echo "🌐 Staging URL: http://34.163.149.168:3000"
+          else
+            echo "❌ Staging deployment failed!"
+            exit 1
+          fi
