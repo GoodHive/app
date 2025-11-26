@@ -1,0 +1,118 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Build and Deploy to GCP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js application
+        run: NODE_OPTIONS='--max-old-space-size=4096' pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Create deployment package
+        run: |
+          tar -czf goodhive-build.tar.gz \
+            .next \
+            public \
+            package.json \
+            pnpm-lock.yaml \
+            ecosystem.config.js \
+            next.config.js
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload build to VM
+        run: |
+          gcloud compute scp goodhive-build.tar.gz goodhive-prod-vm:~/ \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263
+
+      - name: Deploy on production server
+        run: |
+          gcloud compute ssh goodhive-prod-vm \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263 \
+            --command="
+              set -e
+              cd /home/juhan/goodhive-web
+
+              echo '📦 Extracting build...'
+              tar -xzf ~/goodhive-build.tar.gz
+
+              echo '📥 Installing production dependencies...'
+              pnpm install --prod --frozen-lockfile
+
+              echo '🔄 Restarting application...'
+              pm2 delete goodhive-web 2>/dev/null || true
+              pm2 start ecosystem.config.js
+              pm2 save
+
+              echo '✅ Deployment complete!'
+              pm2 status
+
+              # Cleanup
+              rm ~/goodhive-build.tar.gz
+            "
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for application to start..."
+          sleep 10
+          gcloud compute ssh goodhive-prod-vm \
+            --zone=europe-west9-b \
+            --project=goodhive-1706112296263 \
+            --command="curl -f http://localhost:3000 || exit 1"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
