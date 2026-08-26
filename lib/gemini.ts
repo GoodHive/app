@@ -1,7 +1,7 @@
 import Groq from "groq-sdk";
 
-const GROQ_DEFAULT_MODEL = "llama-3.3-70b-versatile";
-const GROQ_FAST_MODEL = "llama-3.1-8b-instant";
+const GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b";
+const GROQ_FAST_MODEL = "openai/gpt-oss-20b";
 
 // Maps Gemini model name env vars to Groq model names
 const resolveGroqModel = (modelName: string): string => {

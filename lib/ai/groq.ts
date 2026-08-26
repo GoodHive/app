@@ -2,19 +2,25 @@ import Groq from "groq-sdk";
 import sql from "@/lib/db";
 
 export const GROQ_MODELS = {
-  LLAMA_70B: "llama-3.3-70b-versatile",
-  LLAMA_8B: "llama-3.1-8b-instant",
-  MIXTRAL: "mixtral-8x7b-32768",
-  GEMMA2: "gemma2-9b-it",
+  QWEN_38: "qwen/qwen3.8-27b",
+  GPT_OSS_120B: "openai/gpt-oss-120b",
+  GPT_OSS_20B: "openai/gpt-oss-20b",
+  QWEN_36: "qwen/qwen3.6-27b",
+  COMPOUND_MINI: "groq/compound-mini",
 } as const;
 
 export type GroqModelId = (typeof GROQ_MODELS)[keyof typeof GROQ_MODELS];
 
+// Ordered by daily token budget on the free tier: qwen3.8 allows 2M TPD,
+// the gpt-oss pair and qwen3.6 allow 200K each. compound-mini is last — it has
+// the lowest daily request cap (250 RPD) and runs built-in tools we don't want
+// firing on deterministic formatting work.
 export const DEFAULT_MODEL_POOL: GroqModelId[] = [
-  GROQ_MODELS.LLAMA_70B,
-  GROQ_MODELS.LLAMA_8B,
-  GROQ_MODELS.MIXTRAL,
-  GROQ_MODELS.GEMMA2,
+  GROQ_MODELS.QWEN_38,
+  GROQ_MODELS.GPT_OSS_120B,
+  GROQ_MODELS.GPT_OSS_20B,
+  GROQ_MODELS.QWEN_36,
+  GROQ_MODELS.COMPOUND_MINI,
 ];
 
 export interface GenerateOptions {
@@ -39,6 +45,19 @@ function getRotatedModels(models: string[]): string[] {
   return [...models.slice(start), ...models.slice(0, start)];
 }
 
+/**
+ * Some models (qwen3.6) emit their chain of thought as <think> blocks inside
+ * the message content, which breaks every caller that parses JSON or HTML.
+ * An unterminated block means reasoning consumed the whole token budget, so
+ * nothing usable follows — returning "" lets the caller rotate to the next model.
+ */
+function stripReasoning(raw: string): string {
+  let text = raw.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  const unterminated = text.search(/<think>/i);
+  if (unterminated !== -1) text = text.slice(0, unterminated);
+  return text.trim();
+}
+
 function isRateLimitError(error: unknown): boolean {
   const status = (error as { status?: number })?.status;
   const message = (error as { message?: string })?.message ?? "";
@@ -55,7 +74,7 @@ function getGroqClient(): Groq {
 
 /**
  * Generate text with automatic model fallback.
- * Rotates through `models` (default: all 4 Groq models) and returns the first
+ * Rotates through `models` (default: the full pool) and returns the first
  * successful response. Throws only when every model has failed.
  */
 export async function generateWithFallback(
@@ -82,7 +101,7 @@ export async function generateWithFallback(
         ...(maxTokens !== undefined ? { max_tokens: maxTokens } : {}),
       });
 
-      const text = completion.choices[0]?.message?.content ?? "";
+      const text = stripReasoning(completion.choices[0]?.message?.content ?? "");
       if (text) {
         if (completion.usage) logUsage(model, feature, completion.usage);
         return text;

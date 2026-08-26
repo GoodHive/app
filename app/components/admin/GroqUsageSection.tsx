@@ -30,13 +30,25 @@ interface AiUsageData {
 }
 
 const MODEL_COLORS: Record<string, string> = {
-  "llama-3.3-70b-versatile": "#FFC905",
-  "llama-3.1-8b-instant": "#3b82f6",
-  "mixtral-8x7b-32768": "#10b981",
-  "gemma2-9b-it": "#8b5cf6",
+  "openai/gpt-oss-120b": "#FFC905",
+  "openai/gpt-oss-20b": "#3b82f6",
+  "qwen/qwen3.8-27b": "#10b981",
+  "qwen/qwen3.6-27b": "#06b6d4",
+  "groq/compound-mini": "#8b5cf6",
+  // Decommissioned — retained so historical usage rows keep their colour.
+  "llama-3.3-70b-versatile": "#f97316",
+  "llama-3.1-8b-instant": "#ec4899",
+  "mixtral-8x7b-32768": "#14b8a6",
+  "gemma2-9b-it": "#a855f7",
 };
 
 function shortModel(model: string): string {
+  if (model.includes("gpt-oss-120b")) return "GPT-OSS 120B";
+  if (model.includes("gpt-oss-20b")) return "GPT-OSS 20B";
+  if (model.includes("qwen3.8")) return "Qwen3.8 27B";
+  if (model.includes("qwen3.6")) return "Qwen3.6 27B";
+  if (model.includes("compound")) return "Compound Mini";
+  // Decommissioned models still present in historical usage rows.
   if (model.includes("70b")) return "Llama 70B";
   if (model.includes("8b")) return "Llama 8B";
   if (model.includes("mixtral")) return "Mixtral";
