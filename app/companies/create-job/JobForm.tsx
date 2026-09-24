@@ -207,6 +207,8 @@ export const JobForm = ({
   const isReadOnlyReviewState =
     currentReviewStatus === "pending_review" ||
     currentReviewStatus === "approved";
+  // Live jobs stay editable, but chain, currency and services are fixed on-chain.
+  const isLiveJob = currentReviewStatus === "active";
 
   const onChainCurrency = useMemo(() => {
     const currency = selectedCurrency?.value || jobData?.currency;
@@ -364,7 +366,7 @@ export const JobForm = ({
           }
         }
       } else {
-        throw new Error(data.message || "Failed to save job");
+        throw new Error(data.error || data.message || "Failed to save job");
       }
     } catch (error: any) {
       console.error("Error saving job:", error);
@@ -721,6 +723,14 @@ export const JobForm = ({
           )}
         </div>
       )}
+      {isLiveJob && (
+        <div className="mb-6 rounded-xl border border-sky-200 bg-sky-50 px-4 py-4 text-sm text-sky-900">
+          This job is <strong>live</strong>. You can update the title,
+          description, skills, and budget. Changes are visible to talents as
+          soon as you save. Chain, currency, and services are fixed on-chain.
+          Use <strong>Manage Funds</strong> below to add or withdraw funds.
+        </div>
+      )}
       {currentReviewStatus === "rejected" && jobData?.admin_feedback && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
           <strong>Admin feedback:</strong> {jobData.admin_feedback}
@@ -897,7 +907,7 @@ export const JobForm = ({
                 checked={isChecked}
                 tooltip={tooltip}
                 onChange={onJobServicesChange}
-                disabled={isTalent}
+                disabled={isTalent || isLiveJob}
               />
             );
           })}
@@ -1183,7 +1193,7 @@ export const JobForm = ({
               labelText="Currency"
               name="currency"
               required={true}
-              disabled={!selectedChain}
+              disabled={!selectedChain || isLiveJob}
               inputValue={selectedCurrency}
               setInputValue={setSelectedCurrency}
               options={
@@ -1282,7 +1292,7 @@ export const JobForm = ({
               </button>
             </Tooltip>
           )}
-          {!!jobData?.job_id && (
+          {!!jobData?.job_id && !isLiveJob && (
             <button
               className="my-2 text-base font-semibold bg-transparent border-2 border-[#FFC905] h-14 w-56 rounded-full transition duration-150 ease-in-out cursor-pointer"
               type="button"
@@ -1313,7 +1323,7 @@ export const JobForm = ({
                   isLoading || isBlockchainLoading || !companyData?.user_id
                 }
               >
-                Save Draft
+                {isLiveJob ? "Save Changes" : "Save Draft"}
               </button>
 
               {!jobData?.published && currentReviewStatus !== "pending_review" && (

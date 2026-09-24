@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Briefcase, Clock3, ExternalLink, FileStack, Plus, Send, Users, Zap } from "lucide-react";
+import { Briefcase, Clock3, ExternalLink, FileStack, Pencil, Plus, Send, Users, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { JobApplicationsDrawer } from "@/app/components/applications";
@@ -288,9 +288,12 @@ export default function JobsManagementClient({
                   <div key={job.id} className="px-6 py-5">
                     <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_180px_140px_140px_140px] lg:items-start">
                       <div>
-                        <p className="text-lg font-semibold text-slate-900">
+                        <Link
+                          href={`/companies/create-job?id=${job.id}`}
+                          className="text-lg font-semibold text-slate-900 transition hover:text-amber-700"
+                        >
                           {job.title}
-                        </p>
+                        </Link>
                         {job.adminFeedback && job.reviewStatus === "rejected" ? (
                           <p className="mt-2 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
                             Admin feedback: {job.adminFeedback}
@@ -356,6 +359,16 @@ export default function JobsManagementClient({
                           {primaryAction.label}
                         </button>
                       )}
+
+                      {job.reviewStatus === "active" ? (
+                        <Link
+                          href={`/companies/create-job?id=${job.id}`}
+                          className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
+                        >
+                          <Pencil className="h-4 w-4" />
+                          Edit & Manage Funds
+                        </Link>
+                      ) : null}
 
                       {canSubmit ? (
                         <button

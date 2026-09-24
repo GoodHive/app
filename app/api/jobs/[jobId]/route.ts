@@ -9,7 +9,9 @@ import {
 } from "@/lib/jobs/format-job-content";
 import {
   COMPANY_ALWAYS_LOCKED_JOB_FIELDS,
+  COMPANY_LIVE_LOCKED_JOB_FIELDS,
   COMPANY_PRICE_FIELDS,
+  type JobReviewStatus,
   resolveJobReviewStatus,
 } from "@/lib/jobs/review";
 
@@ -46,14 +48,32 @@ const COMPANY_EDITABLE_JOB_FIELDS = new Set([
   "wallet_address",
 ]);
 
+type CurrentJobValues = Record<
+  PriceField | (typeof COMPANY_LIVE_LOCKED_JOB_FIELDS)[number],
+  unknown
+>;
+
 type PriceField = (typeof COMPANY_PRICE_FIELDS)[number];
+
+function toBoolean(value: unknown) {
+  return value === true || value === "true";
+}
 
 function normalizePatchPayload(
   payload: Record<string, unknown>,
-  current: { isDraft: boolean } & Record<PriceField, unknown>,
+  reviewStatus: JobReviewStatus,
+  current: CurrentJobValues,
 ) {
+  const isLive = reviewStatus === "active";
   const lockedFields = new Set<string>();
   const updateFields: Record<string, unknown> = {};
+
+  // The form re-sends every field on each save, so a locked field is only
+  // rejected when its value actually changes.
+  const isUnchanged = (field: keyof CurrentJobValues, value: unknown) =>
+    typeof current[field] === "boolean"
+      ? current[field] === toBoolean(value)
+      : String(value ?? "") === String(current[field] ?? "");
 
   for (const [rawKey, rawValue] of Object.entries(payload)) {
     if (rawValue === undefined || rawKey === "sections") {
@@ -67,13 +87,31 @@ function normalizePatchPayload(
       continue;
     }
 
-    // Price is editable on drafts. After submission it is locked, but the
-    // form re-sends it on every save, so only reject an actual change.
+    // A live job is never moved back into the saving stage by an edit.
+    if (isLive && normalizedKey === "in_saving_stage") {
+      continue;
+    }
+
+    // Price is editable on drafts and locked once submitted. A live job may
+    // still change its budget (DB-only), but not its on-chain currency.
     if (COMPANY_PRICE_FIELDS.includes(normalizedKey as never)) {
       const field = normalizedKey as PriceField;
-      if (current.isDraft) {
+      const isEditable =
+        reviewStatus === "draft" || (isLive && field === "budget");
+      if (isEditable) {
         updateFields[field] = rawValue;
-      } else if (String(rawValue ?? "") !== String(current[field] ?? "")) {
+      } else if (!isUnchanged(field, rawValue)) {
+        lockedFields.add(field);
+      }
+      continue;
+    }
+
+    if (
+      isLive &&
+      COMPANY_LIVE_LOCKED_JOB_FIELDS.includes(normalizedKey as never)
+    ) {
+      const field = normalizedKey as keyof CurrentJobValues;
+      if (!isUnchanged(field, rawValue)) {
         lockedFields.add(field);
       }
       continue;
@@ -280,12 +318,18 @@ export async function PATCH(
     const jobRows = await sql<{
       id: string;
       budget: string | null;
+      chain: string | null;
       currency: string | null;
+      mentor: boolean | string | null;
       published: boolean | null;
+      recruiter: boolean | string | null;
       review_status: string | null;
+      talent: boolean | string | null;
       user_id: string;
     }[]>`
-      SELECT id, user_id, review_status, published, budget, currency
+      SELECT
+        id, user_id, review_status, published, budget, currency,
+        chain, talent, recruiter, mentor
       FROM goodhive.job_offers
       WHERE id = ${jobId}::uuid
       LIMIT 1
@@ -307,22 +351,33 @@ export async function PATCH(
     }
 
     const reviewStatus = resolveJobReviewStatus(job.review_status, job.published);
-    if (reviewStatus !== "draft" && reviewStatus !== "rejected") {
+    if (
+      reviewStatus !== "draft" &&
+      reviewStatus !== "rejected" &&
+      reviewStatus !== "active"
+    ) {
       return NextResponse.json(
         {
           success: false,
           error:
-            "Job cannot be edited while under review or approved. Contact admin.",
+            "Job cannot be edited while under review, approved, or closed. Contact admin.",
         },
         { status: 403 },
       );
     }
 
-    const { lockedFields, updateFields } = normalizePatchPayload(body, {
-      isDraft: reviewStatus === "draft",
-      budget: job.budget,
-      currency: job.currency,
-    });
+    const { lockedFields, updateFields } = normalizePatchPayload(
+      body,
+      reviewStatus,
+      {
+        budget: job.budget,
+        chain: job.chain,
+        currency: job.currency,
+        mentor: toBoolean(job.mentor),
+        recruiter: toBoolean(job.recruiter),
+        talent: toBoolean(job.talent),
+      },
+    );
     if (lockedFields.length > 0) {
       return NextResponse.json(
         {

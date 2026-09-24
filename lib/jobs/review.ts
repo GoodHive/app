@@ -14,6 +14,17 @@ export const COMPANY_LOCKED_FIELDS_AFTER_SUBMIT = [
   ...COMPANY_BLOCKCHAIN_FIELDS,
 ] as const;
 
+// Fixed on-chain once a job is live (chain, payment token, service flags),
+// so the company can no longer change them. Budget is DB-only and stays
+// editable on a live job.
+export const COMPANY_LIVE_LOCKED_JOB_FIELDS = [
+  "chain",
+  "currency",
+  "talent",
+  "recruiter",
+  "mentor",
+] as const;
+
 export const COMPANY_ALWAYS_LOCKED_JOB_FIELDS = [
   ...COMPANY_BLOCKCHAIN_FIELDS,
   "published",
