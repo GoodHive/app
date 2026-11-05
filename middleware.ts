@@ -67,6 +67,19 @@ async function validateSessionToken(token: string) {
   }
 }
 
+async function hasValidAdminToken(req: NextRequest) {
+  const adminToken = req.cookies.get("admin_token")?.value;
+  if (!adminToken) {
+    return false;
+  }
+  try {
+    await jwtVerify(adminToken, ADMIN_JWT_SECRET);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function middleware(req: NextRequest) {
   if (process.env.NODE_ENV === "development") {
     return NextResponse.next();
@@ -132,6 +145,11 @@ export async function middleware(req: NextRequest) {
       const sessionToken = req.cookies.get("session_token")?.value;
 
       if (!sessionToken) {
+        // Admins hold only `admin_token`; let them reach shared API routes
+        // (e.g. /api/talents/approve), which enforce admin access themselves.
+        if (path.startsWith("/api/") && (await hasValidAdminToken(req))) {
+          return NextResponse.next();
+        }
         if (path.startsWith("/api/")) {
           return NextResponse.json(
             { error: "Authentication required", code: "MISSING_TOKEN" },
